@@ -1,0 +1,59 @@
+<%- include("../layouts/header.ejs") %>
+
+<body class="bg-black text-white flex justify-center items-center h-screen">
+    <div class="w-full max-w-md p-8 space-y-6 bg-gray-900 rounded-lg shadow-lg">
+        <h2 class="text-center text-3xl font-bold">OTP Verification</h2>
+        <p class="text-center text-gray-400">Enter the OTP sent to your email</p>
+        <form action="/verify-otp" method="POST" class="space-y-4">
+            <div>
+
+                <input type="text" id="otp" name="otp" maxlength="6" required 
+                    class="mt-1 block w-full p-3 rounded-md bg-white text-black outline-none focus:ring-2 focus:ring-white"
+                    placeholder="Enter OTP">
+            </div>
+
+            <div id="otp-timer" class="text-center text-gray-400 text-sm">
+                OTP expires in <span id="timer">01:00</span>
+            </div>
+
+            <button type="submit" class="w-full py-2 bg-white text-black font-bold rounded-md hover:bg-gray-300">
+                Verify OTP
+            </button>
+        </form>
+        <form action="/resend-otp" method="post" class="text-center">
+            <p>
+                Didn't receive the code? 
+                <button type="submit" class="text-white underline hover:text-gray-300 bg-transparent border-none cursor-pointer text-center">
+                    Resend OTP
+                </button>
+                <p class="text-center text-red-500"><%= locals.msg %></p>
+
+            </p>
+        </form>
+    </div>
+
+    <script>
+        // Timer logic
+        let timerElement = document.getElementById("timer");
+        let time = 60
+        ; // 1 minute
+
+        const countdown = setInterval(() => {
+            let minutes = Math.floor(time / 60);
+            let seconds = time % 60;
+
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            timerElement.innerHTML = `${minutes}:${seconds}`;
+
+            time--;
+            
+            if (time < 0) {
+                clearInterval(countdown);
+                timerElement.innerHTML = "00:00";
+                // Optionally, disable the form when the timer expires
+            }
+        }, 1000);
+    </script>
+</body>
+
+<%- include("../layouts/footer.ejs") %>

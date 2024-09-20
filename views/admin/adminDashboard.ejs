@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoveHive - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-color: #3c096c;
+            --secondary-color: #5a189a;
+            --tertiary-color: #7b2cbf;
+            --accent-color: #ff9f1c;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-[var(--primary-color)] text-white">
+            <div class="p-6">
+                <h1 class="text-2xl font-bold">CoveHive</h1>
+            </div>
+            <nav class="mt-6">
+                <ul>
+                    <li class="mb-4">
+                        <a href="/admin/products" class="flex items-center px-4 py-2 hover:bg-[var(--secondary-color)] rounded">
+                            Products
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="/admin/customers" class="flex items-center px-4 py-2 hover:bg-[var(--secondary-color)] rounded">
+                            Customers
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="/admin/orders" class="flex items-center px-4 py-2 hover:bg-[var(--secondary-color)] rounded">
+                            Orders
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="/admin/coupons" class="flex items-center px-4 py-2 hover:bg-[var(--secondary-color)] rounded">
+                            Coupons
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="/admin/banners" class="flex items-center px-4 py-2 hover:bg-[var(--secondary-color)] rounded">
+                            Banners
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="/admin/offers" class="flex items-center px-4 py-2 hover:bg-[var(--secondary-color)] rounded">
+                            Offers
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="/admin/categories" class="flex items-center px-4 py-2 hover:bg-[var(--secondary-color)] rounded">
+                            Categories
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="/admin/logout" class="flex items-center px-4 py-2 hover:bg-[var(--secondary-color)] rounded">
+                            Logout
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-10 bg-white">
+            <header class="flex justify-between items-center">
+                <h2 class="text-3xl font-bold text-[var(--tertiary-color)]">Admin Dashboard</h2>
+                <div class="text-[var(--accent-color)]">Welcome, Admin!</div>
+            </header>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Category - CoveHive</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-color: #3c096c;
+            --secondary-color: #5a189a;
+            --tertiary-color: #7b2cbf;
+            --accent-color: #ff9f1c;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-lg p-8 bg-white shadow-lg rounded-md">
+        <h1 class="text-3xl font-bold text-[var(--primary-color)] mb-6">Edit Category</h1>
+        <form action="/admin/categories/<%= category._id %>/edit" method="POST" class="space-y-4">
+            <!-- Category Name Input -->
+            <div>
+                <label for="name" class="block text-[var(--secondary-color)] font-medium mb-2">Category Name</label>
+                <input type="text" name="name" value="<%= category.name %>" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-[var(--tertiary-color)]" required>
+            </div>
+
+            <!-- Description Input -->
+            <div>
+                <label for="description" class="block text-[var(--secondary-color)] font-medium mb-2">Description</label>
+                <textarea name="description" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-[var(--tertiary-color)]"><%= category.description %></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex justify-end">
+                <button type="submit" class="bg-[var(--accent-color)] text-white px-6 py-2 rounded-md hover:bg-orange-600 transition">
+                    Update Category
+                </button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

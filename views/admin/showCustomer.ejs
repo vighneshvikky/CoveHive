@@ -1,0 +1,60 @@
+<%- include('../layouts/header') %>
+
+<table class="w-full text-left bg-white shadow-md rounded-lg overflow-hidden">
+    <thead class="bg-primary-color text-white">
+        <tr>
+            <th class="px-4 py-2">SL</th>
+            <th class="px-4 py-2">Name</th>
+            <th class="px-4 py-2">Email</th>
+            <th class="px-4 py-2">Phone</th>
+            <th class="px-4 py-2">Status</th>
+            <th class="px-4 py-2">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    <% 
+    if (users.length > 0) {
+        for (let i = 0; i < users.length; i++) {
+    %>
+        <tr class="bg-gray-100 hover:bg-gray-200">
+            <td class="px-4 py-2"><%= i + 1 %></td> 
+            <td class="px-4 py-2"><%= users[i].fullName %></td>
+            <td class="px-4 py-2"><%= users[i].email %></td>
+            <td class="px-4 py-2"><%= users[i].phone%></td>
+            <td class="px-4 py-2">
+                <%= users[i].is_blocked ? 'Blocked' : 'Active' %>
+            </td>
+            <td class="px-4 py-2">
+                <form action="/admin/toggle-block-user/<%= users[i]._id %>" method="POST" style="display:inline;">
+                    <input type="hidden" name="is_blocked" value="<%= users[i].is_blocked %>" />
+                    <button type="submit" class="<%= users[i].is_blocked ? 'bg-green-500 text-white' : 'bg-red-500 text-white' %> px-4 py-2 rounded">
+                  <%= users[i].is_blocked ? 'Unblock' : 'Block' %>
+                    </button>
+
+                </form>
+            </td>
+        </tr>
+    <% 
+        }
+    } else {
+    %>
+    <tr>
+        <td colspan="6" class="px-4 py-2 text-center text-gray-500">User Not Found</td>
+    </tr>
+    <% } %>
+    </tbody>
+</table>
+
+<%- include('../layouts/footer') %>
+
+<style>
+    .bg-primary-color {
+        background-color: #3c096c;
+    }
+    .bg-accent-color {
+        background-color: #ff9f1c;
+    }
+    .bg-accent-color-dark {
+        background-color: #e07a00;
+    }
+</style>

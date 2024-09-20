@@ -1,0 +1,100 @@
+<%- include('../layouts/header')  %>
+<body class="bg-black text-white font-sans">
+    <!-- Navbar -->
+    <nav class="bg-black border-b border-gray-800">
+      <div class="container mx-auto flex items-center justify-between py-4">
+        <!-- Logo -->
+        <a href="#" class="text-2xl font-bold text-white">CoveHive</a>
+  
+        <!-- Navbar links -->
+        <div class="hidden md:flex space-x-8">
+          <a href="#" class="hover:text-gray-400">Home</a>
+          <a href="#" class="hover:text-gray-400">Device</a>
+          <a href="#" class="hover:text-gray-400">Sale</a>
+        </div>
+  
+        <!-- Search Bar -->
+        <div class="relative hidden md:block w-1/3">
+          <input type="text" class="w-full bg-gray-800 border border-gray-700 rounded-full py-2 px-4 text-white focus:outline-none focus:ring-2 focus:ring-gray-600" placeholder="Search for products">
+          <button class="absolute right-0 top-0 mt-2 mr-4 text-gray-500 hover:text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4a8 8 0 0115.166 5.948m-4.823 7.334A7.5 7.5 0 118.464 5.622m5.64 7.334a1.5 1.5 0 11-2.25-2.25"></path>
+            </svg>
+          </button>
+        </div>
+  
+        <!-- User Links -->
+        <div class="hidden md:flex space-x-6">
+          <a href="#" class="hover:text-gray-400">My Account</a>
+          <a href="#" class="hover:text-gray-400">My Orders</a>
+          <a href="#" class="hover:text-gray-400">Wishlist</a>
+        </div>
+  
+        <!-- Mobile Menu Icon -->
+        <div class="md:hidden flex items-center">
+          <button id="mobile-menu-button" class="focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+  
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="hidden md:hidden">
+        <a href="#" class="block py-2 px-4 hover:bg-gray-700">Home</a>
+        <a href="#" class="block py-2 px-4 hover:bg-gray-700">Device</a>
+        <a href="#" class="block py-2 px-4 hover:bg-gray-700">Sale</a>
+        <a href="#" class="block py-2 px-4 hover:bg-gray-700">My Account</a>
+        <a href="#" class="block py-2 px-4 hover:bg-gray-700">My Orders</a>
+        <a href="#" class="block py-2 px-4 hover:bg-gray-700">Wishlist</a>
+      </div>
+    </nav>
+  
+    <!-- Hero Section -->
+    <section class="bg-gray-900 text-center py-24">
+      <div class="container mx-auto">
+        <h1 class="text-4xl md:text-6xl font-bold mb-6">Discover Premium Leather Covers</h1>
+        <p class="text-lg md:text-xl mb-10">Luxurious protection for your Apple, Samsung, and Pixel devices.</p>
+        <a href="#" class="bg-white text-black py-3 px-6 rounded-full text-lg font-semibold hover:bg-gray-300 transition duration-300">Shop Now</a>
+      </div>
+    </section>
+  
+    <!-- Product Section -->
+    <section class="py-16 bg-black">
+      <div class="container mx-auto">
+        <h2 class="text-3xl font-semibold text-center mb-10">Our Best Sellers</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Product 1 -->
+          <div class="bg-gray-800 p-6 rounded-lg shadow-lg hover:shadow-2xl transition duration-300">
+            <img src="iphone 14.jpg" alt="Phone Cover" class="w-full h-64 object-cover rounded mb-6">
+            <h3 class="text-xl font-bold mb-4">iPhone 14 Leather Cover</h3>
+            <p class="text-gray-400 mb-4">$49.99</p>
+            <a href="#" class="bg-white text-black py-2 px-4 rounded-full hover:bg-gray-300 transition duration-300">Add to Cart</a>
+          </div>
+          <!-- Product 2 -->
+          <div class="bg-gray-800 p-6 rounded-lg shadow-lg hover:shadow-2xl transition duration-300">
+            <img src="Samsung Galaxy S23 Leather Cover.jpg" alt="Phone Cover" class="w-full h-64 object-cover rounded mb-6">
+            <h3 class="text-xl font-bold mb-4">Samsung Galaxy S23 Leather Cover</h3>
+            <p class="text-gray-400 mb-4">$54.99</p>
+            <a href="#" class="bg-white text-black py-2 px-4 rounded-full hover:bg-gray-300 transition duration-300">Add to Cart</a>
+          </div>
+          <!-- Product 3 -->
+          <div class="bg-gray-800 p-6 rounded-lg shadow-lg hover:shadow-2xl transition duration-300">
+            <img src="Google Pixel 7 Leather Cover.jpg" alt="Phone Cover" class="w-full h-64 object-cover rounded mb-6">
+            <h3 class="text-xl font-bold mb-4">Google Pixel 7 Leather Cover</h3>
+            <p class="text-gray-400 mb-4">$39.99</p>
+            <a href="#" class="bg-white text-black py-2 px-4 rounded-full hover:bg-gray-300 transition duration-300">Add to Cart</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  
+    <!-- Footer -->
+    <footer class="bg-gray-900 py-8">
+      <div class="container mx-auto text-center">
+        <p class="text-gray-500">&copy; 2024 CoveHive. All rights reserved.</p>
+      </div>
+    </footer>
+  </body>
+<%- include('../layouts/footer') %>
