@@ -23,6 +23,36 @@
         </div>
     </div>
 </div>
+<table>
+    <tr>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Actions</th>
+    </tr>
+    <% categories.forEach(category => { %>
+    <tr>
+        <td><img src="/categoryImages/<%= category.img %>" alt="<%= category.name %>" /></td>
+        <td><%= category.name %></td>
+        <td>
+         
+             <a href="/admin/categories/edit/<%= category._id %>">Edit</a>
+            <form action="/admin/categories/delete/<%= category._id %>" method="POST">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    <% }); %>
+</table>
+
+<!-- Pagination Controls -->
+<div>
+    <% for (let i = 1; i <= totalPages; i++) { %>
+        <a href="/admin/categories?page=<%= i %>" class="<%= i === currentPage ? 'active' : '' %>">
+            <%= i %>
+        </a>
+    <% } %>
+</div>
+
 <%- include('../layouts/footer.ejs') %>
 <script>
     const form = document.querySelector('form');

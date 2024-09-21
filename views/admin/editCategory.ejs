@@ -1,0 +1,8 @@
+<%- include('../layouts/header.ejs') %>
+<form action="/admin/categories/edit/<%= category._id %>" method="POST" enctype="multipart/form-data">
+    <input type="text" name="name" value="<%= category.name %>" required>
+    <input type="file" name="image" accept="image/*"> <!-- Optional: Allow image upload -->
+    <button type="submit">Update Category</button>
+</form>
+
+<%- include('../layouts/header.ejs') %>

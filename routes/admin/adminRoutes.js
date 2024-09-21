@@ -35,6 +35,12 @@ admin_routes.post('/toggle-block-user/:id',adminAuth.auth,customerController.blo
 admin_routes.get('/categories',categoryController.loadCategories);
 admin_routes.post('/categories/add',upload.single('image'),categoryController.insertCategories)
 
+
+//-------------------------------------------edit categories------------------------------------------------------------
+
+admin_routes.get('/categories/edit/:id',categoryController.editCategory)
+admin_routes.post('/categories/edit/:id',upload.single('image'),categoryController.updateCategory)
+
 module.exports = admin_routes;
 
 
