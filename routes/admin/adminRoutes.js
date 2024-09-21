@@ -41,6 +41,9 @@ admin_routes.post('/categories/add',upload.single('image'),categoryController.in
 admin_routes.get('/categories/edit/:id',categoryController.editCategory)
 admin_routes.post('/categories/edit/:id',upload.single('image'),categoryController.updateCategory)
 
+//------------------------------------------blockUnblock categories-----------------------------------------------------
+
+admin_routes.post('/categories/block-unblock/:id',categoryController.blockUnblockCategory)
 module.exports = admin_routes;
 
 

@@ -1,5 +1,13 @@
 <%- include('../layouts/header.ejs') %>
-
+<% if (success_msg) { %>
+    <div class="alert alert-success"><%= success_msg %></div>
+  <% } %>
+  
+  <% if (error_msg) { %>
+    <div class="alert alert-danger"><%= error_msg %></div>
+  <% } %>
+  
+  
 <form action="/admin/categories/add" method="POST" enctype="multipart/form-data">
     <div>
         <label for="name">Category Name:</label>
@@ -36,8 +44,8 @@
         <td>
          
              <a href="/admin/categories/edit/<%= category._id %>">Edit</a>
-            <form action="/admin/categories/delete/<%= category._id %>" method="POST">
-                <button type="submit">Delete</button>
+            <form action="/admin/categories/block-unblock/<%=category._id%>" method="post">
+                <button type="submit"><%= category.isBlocked ?'Unblock': 'Block' %></button>
             </form>
         </td>
     </tr>

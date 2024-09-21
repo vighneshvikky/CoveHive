@@ -22,7 +22,7 @@ exports.loadCategories = async (req,res) => {
 }
 
 
-exports.insertCategories = async (req,res) => {
+exports.insertCategories = async (req,res) => { 
   try {
 
 
@@ -68,5 +68,30 @@ exports.updateCategory = async (req,res) => {
   } catch (error) {
    console.log(error.message);
     
+  }
+}
+
+
+
+//------------------blockunblock category-------
+
+exports.blockUnblockCategory = async (req,res) => {
+  try {
+    const categoryId = req.params.id;
+    const category = await Category.findById(categoryId);
+    
+    if(!category){
+      req.flash('error_msg','Category not found');
+      res.redirect('/admin/categories')
+    }
+
+    category.isBlocked = !category.isBlocked;
+    await category.save();
+    const message = category.isBlocked ? 'Category blocked successfully':'Category unblocked successfully';
+    req.flash('success_msg',message);
+    res.redirect('/admin/categories')
+  } catch (error) {
+    console.log(error.message);
+
   }
 }
