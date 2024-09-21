@@ -1,43 +1,80 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Category - CoveHive</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        :root {
-            --primary-color: #3c096c;
-            --secondary-color: #5a189a;
-            --tertiary-color: #7b2cbf;
-            --accent-color: #ff9f1c;
-        }
-    </style>
-</head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
-    <div class="w-full max-w-lg p-8 bg-white shadow-lg rounded-md">
-        <h1 class="text-3xl font-bold text-[var(--primary-color)] mb-6">Add New Category</h1>
-        <form action="/admin/categories/add" method="POST" class="space-y-4">
-            <!-- Category Name Input -->
-            <div>
-                <label for="name" class="block text-[var(--secondary-color)] font-medium mb-2">Category Name</label>
-                <input type="text" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-[var(--tertiary-color)]" required>
-            </div>
+<%- include('../layouts/header.ejs') %>
 
-            <!-- Description Input -->
-            <div>
-                <label for="description" class="block text-[var(--secondary-color)] font-medium mb-2">Description</label>
-                <textarea name="description" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-[var(--tertiary-color)]"></textarea>
-            </div>
-
-            <!-- Submit Button -->
-            <div class="flex justify-end">
-                <button type="submit" class="bg-[var(--accent-color)] text-white px-6 py-2 rounded-md hover:bg-orange-600 transition">
-                    Add Category
-                </button>
-            </div>
-        </form>
+<form action="/admin/categories/add" method="POST" enctype="multipart/form-data">
+    <div>
+        <label for="name">Category Name:</label>
+        <input type="text" id="name" name="name" required>
     </div>
-</body>
-</html>
+    <div>
+        <label for="image">Category Image:</label>
+        <input type="file" id="image" name="image" accept="image/*" required>
+    </div>
+    <div>
+        <button type="submit">Add Category</button>
+    </div>
+</form>
+<!-- Modal Structure -->
+<div id="validationModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
+        <span class="absolute top-2 right-2 text-gray-600 cursor-pointer close">&times;</span>
+        <p id="modalMessage" class="text-gray-800"></p>
+        <div class="mt-4">
+            <button id="closeModalButton" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Close</button>
+        </div>
+    </div>
+</div>
+<%- include('../layouts/footer.ejs') %>
+<script>
+    const form = document.querySelector('form');
+    const modal = document.getElementById('validationModal');
+    const modalMessage = document.getElementById('modalMessage');
+    const closeModalButton = document.getElementById('closeModalButton');
+    const closeModalSpan = document.querySelector('.close');
+
+    form.addEventListener('submit', function (event) {
+        const name = document.getElementById('name').value;
+        const trimmedName = name.trim();
+        const image = document.getElementById('image').files[0];
+
+        if (!trimmedName) {
+            showModal("Category name is required!");
+            event.preventDefault();
+        } else if (name !== trimmedName) {
+            showModal("Category name should not contain leading or trailing spaces!");
+            event.preventDefault();
+        } else if (trimmedName.length < 3) {
+            showModal("Category name must be at least 3 characters long!");
+            event.preventDefault();
+        }
+
+        if (!image) {
+            showModal("Please upload a category image!");
+            event.preventDefault();
+        } else if (!['image/jpeg', 'image/png', 'image/gif'].includes(image.type)) {
+            showModal("Only JPG, PNG, and GIF formats are allowed!");
+            event.preventDefault();
+        }
+    });
+
+    function showModal(message) {
+        modalMessage.textContent = message;
+        modal.classList.remove("hidden");
+    }
+
+    const closeModal = () => {
+        modal.classList.add("hidden");
+    };
+
+    closeModalButton.onclick = closeModal;
+    closeModalSpan.onclick = closeModal;
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            closeModal();
+        }
+    }
+</script>
+
+
+
 

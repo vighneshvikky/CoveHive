@@ -4,13 +4,12 @@ const session = require('express-session');
 const dotenv = require('dotenv');
 const adminRoutes = require('./routes/admin/adminRoutes')
 const userRoutes = require('./routes/user/userRoutes')  
-//const googleRoutes = require('./routes/user/googleAuthRoute')
 const nocache = require('nocache');
 const passport = require('passport');
 require('./passport');
 dotenv.config()
 const app = express();
-
+const multer = require('multer');
 const path = require('path');
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -42,12 +41,13 @@ app.use(passport.session());
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use('/uploads', express.static('uploads'));
 
 // Set view engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 // Admin routes
-app.use('/admin', adminRoutes);
+app.use('/admin',adminRoutes);
 // User routes
 app.use('/',userRoutes);
 

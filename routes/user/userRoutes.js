@@ -24,7 +24,7 @@ user_route.post('/resend-otp',userController.resendOtp)
 
 //---------------------------------home of the user ----------------------------------
 
-user_route.get('/home',userController.loadHome);
+user_route.get('/home',userAuth.isLogin,userController.loadHome);
 
 //----------------------------------google authentication ---------------------------
 user_route.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
