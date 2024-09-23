@@ -1,0 +1,27 @@
+admin side 
+
+#E5CEF6
+
+#E9D8E1
+
+#E5CEF6
+
+#B655C8
+
+const storage = multer.diskStorage({
+    destination:function(req,file,cb){
+        cb(null,path.join(__dirname,'../../public/categoryImages'))
+    },
+    filename:function(req,file,cb){
+     const name = Date.now()+'-'+file.originalname;
+     cb(null,name);
+    }
+})
+
+const upload = multer({storage:storage})
+
+
+    const newCategory = new Category({
+        name: req.body.name,
+        img: req.file.filename,
+    });

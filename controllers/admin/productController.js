@@ -1,62 +1,32 @@
-const product = require('../../models/admin/productModel');
+const productSchema = require('../../models/admin/productModel');
 
+const categorySchema = require('../../models/admin/categoryModel');
 
-exports.addProduct = async (req,res) => {
+const upload = require('../../middlewares/multer');
+
+const fs = require('fs');
+
+exports.product = async (req,res) => {
     try {
-
-        const{name,description,price,stock,category} = req.body;
-        const images = req.files.map(file=> file.filename);
-
-        const product = new Product({
-            name,
-            description,
-            price,
-            stock,
-            category,
-            images
-        });
-
-        await product.save();
-        res.redirect('/admin/products');
+        const search = req.query.search || "";
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 8;
         
+        const products = await productSchema.find({ productName: { $regex: search, $options: 'i' } })
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .sort({ updatedAt : -1 });
+
+        const count = await productSchema.countDocuments({ productName: { $regex: search, $options: 'i' } });
+
+        res.render('admin/products',{
+            totalPages: Math.ceil(count / limit),
+            currentPage: page,
+            search,
+            limit,page
+        });
     } catch (error) {
-        console.log(error.message)
+        console.log(error.message);
+        
     }
-};
-
-exports.listProducts = async (req,res) => {
-    try {
-        const products = await Product.find({isDeleted:false}).populate('category');
-        res.render('admin/admimProduct',{products});
-    } catch (error) {
-        console.log(error.message)
-    }
-};
-
-exportss.editProduct = async (req,res) => {
-  try {
-    
-   const {id} = req.params;
-   const {name,description,price,stock,category} = req.body;
-
-   const product = await Product.findById(id);
-   if(!product) return res.status(404).send('Product not found');
-
-   product.name = name;
-   product.description = description;
-   product.price = price;
-   product.stock = stock;
-   product.category = category;
-   
-   if(req.files.length > 0){
-    product.images = req.files.map(file => file.filename);
-   }
-
-   await product.save();
-   res.redirect('/admin/products');
-
-  } catch (error) {
-    console.log(error.message);
-    
-  }
 }

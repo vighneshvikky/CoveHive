@@ -1,8 +1,20 @@
 <%- include('../layouts/header.ejs') %>
-<form action="/admin/categories/edit/<%= category._id %>" method="POST" enctype="multipart/form-data">
-    <input type="text" name="name" value="<%= category.name %>" required>
-    <input type="file" name="image" accept="image/*"> <!-- Optional: Allow image upload -->
-    <button type="submit">Update Category</button>
+
+<!-- Edit Category Form -->
+<form action="/admin/categories/edit/<%= category._id %>" method="POST" enctype="multipart/form-data" class="bg-[#E5CEF6] shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <div class="mb-4">
+        <label for="name" class="block text-[#8d99ae] text-sm font-bold mb-2">Category Name:</label>
+        <input type="text" name="name" value="<%= category.name %>" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+    </div>
+    <div class="mb-4">
+        <label for="image" class="block text-[#8d99ae] text-sm font-bold mb-2">Category Image:</label>
+        <input type="file" name="image" accept="image/*" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+    </div>
+    <div class="flex items-center justify-between">
+        <button type="submit" class="bg-[#E9D8E1] hover:bg-[#B655C8] text-orange-900 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Update Category</button>
+    </div>
 </form>
 
-<%- include('../layouts/header.ejs') %>
+<%- include('../layouts/footer.ejs') %>
+
+

@@ -2,7 +2,9 @@ const express = require('express');
 const admin_routes = express.Router();
 const adminController = require('../../controllers/admin/adminController')
 const customerController = require('../../controllers/admin/customerController');
-const categoryController = require('../../controllers/admin/categoryController')
+const categoryController = require('../../controllers/admin/categoryController');
+const productController = require('../../controllers/admin/productController');
+
 const adminAuth = require('../../middlewares/admin/adminAuth');
 const multer = require('multer');
 const path = require('path');
@@ -45,6 +47,16 @@ admin_routes.post('/categories/edit/:id',upload.single('image'),categoryControll
 
 admin_routes.post('/categories/block-unblock/:id',categoryController.blockUnblockCategory)
 module.exports = admin_routes;
+
+
+//------------------------------------------Product management ----------------------------------------------------------
+
+
+
+
+
+
+module.exports = admin_routes   ;
 
 
 
