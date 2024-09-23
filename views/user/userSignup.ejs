@@ -31,7 +31,13 @@
         <!-- Password -->
         <div>
           <label for="password" class="sr-only">Password</label>
-          <input id="password" name="password" type="password" autocomplete="current-password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-white bg-gray-900 rounded-b-md focus:outline-none focus:ring-white focus:border-white focus:z-10 sm:text-sm" placeholder="Password">
+          <input id="password" name="password" type="password" autocomplete="current-password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-white bg-gray-900 focus:outline-none focus:ring-white focus:border-white focus:z-10 sm:text-sm" placeholder="Password">
+        </div>
+
+        <!-- Confirm Password -->
+        <div>
+          <label for="confirm_password" class="sr-only">Confirm Password</label>
+          <input id="confirm_password" name="confirm_password" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-white bg-gray-900 rounded-b-md focus:outline-none focus:ring-white focus:border-white focus:z-10 sm:text-sm" placeholder="Confirm Password">
         </div>
       </div>
 
@@ -58,11 +64,11 @@
     <p class="mt-2 text-center text-sm text-gray-400">
       Already have an account? <a href="/login" class="font-medium text-white hover:text-gray-300">Log In</a>
     </p>
-    
+
     <!-- Centered Google Sign-In Button -->
     <div class="text-center mt-4">
       <a href="/auth/google" class="bg-white border border-gray-300 text-gray-900 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center dark:focus:ring-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:hover:bg-gray-700">
-        <img src="/google.png" class="w-5 h-5 mr-2" alt="Google icon" />
+        <img src="categoryImages/googleimage.png" class="w-5 h-5 mr-2" alt="Google icon" />
         Sign in with Google
       </a>
     </div>
@@ -113,9 +119,15 @@
 
       // Password validation
       const password = document.getElementById('password').value;
-      const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+      const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
       if (!passwordPattern.test(password)) {
-        message += 'Password must be at least 6 characters long and include both numbers and letters.\n';
+        message += 'Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a special character, and a number.\n';
+      }
+
+      // Confirm Password validation
+      const confirmPassword = document.getElementById('confirm_password').value;
+      if (password !== confirmPassword) {
+        message += 'Passwords do not match.\n';
       }
 
       // Terms and Conditions validation

@@ -14,11 +14,10 @@ const productSchema = new mongoose.Schema({
       {
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         reviewText: String,
-        rating: Number,
+        rating: Number
       },
     ],
     isAvailable: { type: Boolean, default: true }, // Availability status
-    discount: { type: Number, default: 0 }, // Discount percentage, if applicable
     createdAt: { type: Date, default: Date.now },
     isBlocked: {type:Boolean,default:false}
   });

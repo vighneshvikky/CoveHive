@@ -1,32 +1,44 @@
-const productSchema = require('../../models/admin/productModel');
+const Product = require('../../models/admin/productModel');
 
 const categorySchema = require('../../models/admin/categoryModel');
 
-const upload = require('../../middlewares/multer');
-
-const fs = require('fs');
-
-exports.product = async (req,res) => {
+exports.loadProduct = async(req,res) => {
     try {
-        const search = req.query.search || "";
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 8;
-        
-        const products = await productSchema.find({ productName: { $regex: search, $options: 'i' } })
-            .limit(limit)
-            .skip((page - 1) * limit)
-            .sort({ updatedAt : -1 });
-
-        const count = await productSchema.countDocuments({ productName: { $regex: search, $options: 'i' } });
-
-        res.render('admin/products',{
-            totalPages: Math.ceil(count / limit),
-            currentPage: page,
-            search,
-            limit,page
-        });
+        const productData = await Product.find({isBlocked:false})
+        res.render('admin/adminProduct',{products:productData})
     } catch (error) {
-        console.log(error.message);
+     console.log(error.message);
+        
+    }
+}
+exports.addProduct = async(req,res) => {
+    try {
+       res.render('admin/addProduct') 
+    } catch (error) {
+      console.log(error.message)  
+    }
+}
+exports.postAddProduct = async(req,res) => {
+    try {
+
+        const images = req.files.map(file => file.filename);
+        const { name, description, price, stock, category, subcategory, compatibleDevices } = req.body;
+    const newProduct = new Product({
+      name,
+      description,
+      price,
+      stock,
+      category,
+      subcategory,
+      compatibleDevices,
+      image:images  
+    });
+
+    await newProduct.save();
+    res.status(201).json({ message: 'Product added successfully' });
+    console.log(newProduct) 
+    } catch (error) {
+      console.log(error.message);
         
     }
 }

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Product</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+</head>
+<body>
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-6">Add New Product</h1>
+
+    <form action="/admin/product/add" method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <!-- Product Name -->
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
+          Product Name
+        </label>
+        <input 
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+          type="text" 
+          id="name" 
+          name="name"
+          value="Apple" 
+          required>
+      </div>
+
+      <!-- Description -->
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
+          Product Description
+        </label>
+        
+        <textarea 
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+          id="description" 
+          name="description" 
+          rows="3"></textarea>
+      </div>
+
+      <!-- Price -->
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="price">
+          Price
+        </label>
+        <input 
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+          type="number" 
+          id="price" 
+          name="price" 
+          value="2000"
+          required>
+      </div>
+
+      <!-- Stock -->
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="stock">
+          Stock
+        </label>
+        <input 
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+          type="number" 
+          id="stock" 
+          name="stock"
+          value="5" 
+          required>
+      </div>
+
+      <!-- Category -->
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="category">
+          Category
+        </label>
+        <input 
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+          type="text" 
+          id="category" 
+          name="category"
+          value="Apple" 
+          required>
+      </div>
+
+      <!-- Subcategory -->
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="subcategory">
+          Subcategory
+        </label>
+        <input 
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+          type="text" 
+          id="subcategory" 
+          name="subcategory"
+          value="Apple 15 series" 
+          required>
+      </div>
+
+      <!-- Compatible Devices -->
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="compatibleDevices">
+          Compatible Devices (Comma separated)
+        </label>
+        <input 
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+          type="text" 
+          id="compatibleDevices" 
+          value="iphone 15 Pro"
+          name="compatibleDevices" 
+          placeholder="iPhone 15 Pro, iPhone 15 Pro Max">
+        
+      </div>
+
+      <!-- Image Upload -->
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="image">
+          Product Images
+        </label>
+        <input 
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+          type="file" 
+          id="image" 
+          name="image" 
+          multiple>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="flex items-center justify-between">
+        <button 
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
+          type="submit">
+          Add Product
+        </button>
+      </div>
+    </form>
+
+  </div>
+</body>
+</html>
