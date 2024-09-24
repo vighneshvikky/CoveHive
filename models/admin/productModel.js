@@ -6,7 +6,8 @@ const productSchema = new mongoose.Schema({
     price: { type: Number, required: true }, // Product price
     stock: { type: Number, required: true }, // Stock count
     image: [String], // Array to hold image URLs
-    category: { type: String, required: true }, // e.g., 'Apple', 'Pixel', 'Galaxy'
+    //category:{type:String,required:true},
+    category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true }, // e.g., 'Apple', 'Pixel', 'Galaxy'
     subcategory: { type: String, required: true }, // e.g., 'iPhone 15 Series', 'iPhone 14 Series'
     compatibleDevices: [String], // e.g., ['iPhone 15 Pro', 'iPhone 15 Pro Max']
     ratings: { type: Number, default: 0 }, // Optional field for average ratings

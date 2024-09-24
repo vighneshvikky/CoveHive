@@ -25,3 +25,12 @@ const upload = multer({storage:storage})
         name: req.body.name,
         img: req.file.filename,
     });
+
+      <div class="mb-4"> 
+    <label for="genderCategory" class="block text-sm font-medium text-gray-700">Gender Category</label>
+    <select name="genderCategory" id="genderCategory"  class="mt-1 p-2 border border-gray-300 rounded w-full">
+      <% genderCategories.forEach(gender => { %>
+        <option  value="<%= gender._id  %>" <%= gender._id.toString() === product.genderCategory._id.toString() ? 'selected' : '' %> ><%= gender.name %> </option>  
+      <% }) %>
+    </select>
+  </div>

@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Add Product</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+ 
 </head>
 <body>
-  <div class="container mx-auto px-4 py-8">
+  
+  <div class="container mx-auto px-4 py-8"> 
     <h1 class="text-3xl font-bold mb-6">Add New Product</h1>
 
-    <form action="/admin/product/add" method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <form action="/admin/product/add" method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" id="productForm"> <!-- Added ID here -->
       <!-- Product Name -->
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
@@ -30,7 +33,6 @@
         <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
           Product Description
         </label>
-        
         <textarea 
           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
           id="description" 
@@ -69,17 +71,22 @@
       <!-- Category -->
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="category">
-          Category
+            Category
         </label>
-        <input 
-          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-          type="text" 
-          id="category" 
-          name="category"
-          value="Apple" 
-          required>
+        <select 
+            id="category" 
+            name="category" 
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+            required>
+            <option value="">Select a Category</option>
+            <% categories.forEach(category => { %>
+                <option value="<%= category._id %>">
+                    <%= category.name %>
+                </option>
+            <% }); %>
+        </select>
       </div>
-
+    
       <!-- Subcategory -->
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="subcategory">
@@ -106,7 +113,6 @@
           value="iphone 15 Pro"
           name="compatibleDevices" 
           placeholder="iPhone 15 Pro, iPhone 15 Pro Max">
-        
       </div>
 
       <!-- Image Upload -->
@@ -117,21 +123,19 @@
         <input 
           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
           type="file" 
-          id="image" 
+          id="imageInput"  
           name="image" 
-          multiple>
+          multiple required>
       </div>
+  
+      
 
-      <!-- Submit Button -->
-      <div class="flex items-center justify-between">
-        <button 
-          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
-          type="submit">
-          Add Product
-        </button>
+   
       </div>
     </form>
 
   </div>
+
+  
 </body>
 </html>

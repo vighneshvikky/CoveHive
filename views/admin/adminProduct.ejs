@@ -1,17 +1,62 @@
 <%- include('../layouts/header.ejs') %>
+<div class="mb-4">
+  <% if (success_msg) { %>
+      <div class="bg-green-500 text-white p-4 rounded-md shadow-md ">
+          <%= success_msg %>
+          <button class="absolute top-2 right-2 text-white " onclick="this.parentElement.style.display='none';"></button>
+      </div>
+  <% } else if (error_msg) { %>
+      <div class="bg-red-500 text-white p-4 rounded-md shadow-md relative">
+          <%= error_msg %>
+          <button class="absolute top-2 right-2 text-white" onclick="this.parentElement.style.display='none';">✖</button>
+      </div>
+  <% } %>
+</div>
+
+
+
 <h1 class="bg-red-300 border border-spacing-4 text-center">Welocome to Product Management</h1>
-<table>
-    <%= products %>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Price</th>
-        <th>Stock</th>
-        <th>Actions</th>
+<table class="table-auto w-full bg-white shadow-md rounded">
+  <thead>
+    <tr class="bg-gray-200 text-left">
+      <th class="p-4">Product Name</th>
+      <th class="p-4">Category</th>
+      <th class="p-4">Price</th>
+      <th class="p-4">Stock</th>
+      <th class="p-4">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% products.forEach(product => { %>
+      <tr class="border-t">
+        <td class="p-4"><%= product.name %></td>
+        <td class="p-4"><%= product.category ? product.category.name : 'No Category' %></td>
+        <td class="p-4">$<%= product.price %></td>
+        <td class="p-4"><%= product.stock %></td>
+        <td class="p-4">
+          <!-- Edit Button -->
+          <a href="/admin/products/edit/<%= product._id %>" class="text-blue-500">Edit</a>
+          
+          <!-- Delete Button (Trigger Modal) -->
+          <a href="/admin/products/delete/<%= product._id %>" class="text-red-500 ml-4">Delete</a>
+
+          <form action="/admin/toggle-block-product/<%= product._id %>" method="POST" style="display:inline;">
+            <input type="hidden" name="is_blocked" value="<%= product.isBlocked %>" />
+            <button type="submit" class="<%= product.isBlocked ? 'bg-green-500 text-white' : 'bg-red-500 text-white' %> px-4 py-2 rounded">
+          <%= product.isBlocked ? 'Unblock' : 'Block' %>
+            </button>
+
+        </form>
+          <!-- Block/Unblock Button -->
+          <!-- <% if (product.isBlocked) { %>
+            <a href="/admin/products/unblock/<%= product._id %>" class="text-green-500 ml-4">Unblock</a>
+          <% } else { %>
+            <a href="/admin/products/block/<%= product._id %>" class="text-yellow-500 ml-4">Block</a>
+          <% } %> -->
+        </td>
       </tr>
-    </thead>
-    <tbody>
-    </tbody>
-  </table>
+    <% }) %>
+  </tbody>
+</table>
   
 <%- include('../layouts/footer.ejs') %>

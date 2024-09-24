@@ -1,0 +1,59 @@
+<%- include('../layouts/header.ejs') %>
+
+<form action="/admin/products/edit/<%= product._id %>" method="POST" enctype="multipart/form-data" class="bg-white p-8 rounded-md shadow-md">
+
+    <div class="mb-4">
+        <label for="name" class="block text-gray-700">Product Name</label>
+        <input type="text" id="name" name="name" value="<%= product.name %>" class="w-full p-2 border border-gray-300 rounded-md" required>
+    </div>
+
+    <!-- Product Description -->
+    <div class="mb-4">
+        <label for="description" class="block text-gray-700">Description</label>
+        <textarea id="description" name="description" class="w-full p-2 border border-gray-300 rounded-md" rows="5" required><%= product.description %></textarea>
+    </div>
+
+    <!-- Product Price -->
+    <div class="mb-4">
+        <label for="price" class="block text-gray-700">Price</label>
+        <input type="number" id="price" name="price" value="<%= product.price %>" class="w-full p-2 border border-gray-300 rounded-md" required>
+    </div>
+
+    <!-- Product Category -->   
+    <div class="mb-4">
+        <label for="category" class="block text-gray-700">Category</label>
+        <select id="category" name="category" class="w-full p-2 border border-gray-300 rounded-md" required>
+            <% categories.forEach(function(category) { %>
+                <option value="<%= category._id %>" <%= category._id.equals(product.category._id) ? 'selected' : '' %> >
+                    <%= category.name %>
+                </option>
+            <% }); %>
+        </select>
+    </div>
+    
+    
+    
+
+    <!-- Product Images -->
+    <div class="mb-4">
+        <label for="images" class="block text-gray-700">Images</label>
+        <input type="file" id="images" name="images" class="w-full p-2 border border-gray-300 rounded-md" multiple>
+        <!-- Display existing product images -->
+        <div class="flex space-x-4 mt-2">
+            <% if (product.images && Array.isArray(product.images) && product.images.length > 0) { %>
+                <% product.images.forEach(function(image) { %>
+                    <img src="/uploads/<%= image %>" alt="Product Image" class="h-24 w-24 object-cover">
+                <% }); %>
+            <% } else { %>
+                <p>No images available for this product.</p>
+            <% } %>
+        </div>
+        
+    </div>
+
+    <!-- Submit Button -->
+    <div class="flex justify-end">
+        <button type="submit" class="bg-blue-500 text-white p-2 rounded-md">Update Product</button>
+    </div>
+</form>
+<%- include('../layouts/footer.ejs') %>

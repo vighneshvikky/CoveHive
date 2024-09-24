@@ -27,6 +27,7 @@ app.use(session({
 
 app.use(flash())  
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static('uploads'));
 
 
 app.use((req, res, next) => {
@@ -40,7 +41,7 @@ mongoose.connect(process.env.MONGO_URI)
 .catch((err) => console.error('MongoDB connection error:', err));
 
 // Set up session management
-app.use(nocache());
+//app.use(nocache());
 
 
 

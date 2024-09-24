@@ -1,39 +1,32 @@
 const multer = require('multer');
 const path = require('path');
 
-// // Define storage for images
-// const storage = multer.diskStorage({
-
-//     //--------------------- files will be saved location -----------------------
-
-//     destination: function(req,file,cb){
-//         cb(null,'../public/uploads')
-//     },
-
-//     //------------------ file name of the file to be saved ---------------------
-
-//     filename: function (req, file, cb) {
-//         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-//         cb(null, uniqueSuffix + `-${file.originalname}`)
-//     }
-// })
-
-// const upload = multer({
-//     storage:storage,
-// })
-
-// module.exports = upload ;
-
+// Set up storage for images
 const storage = multer.diskStorage({
-    destination:function(req,file,cb){
-        cb(null,path.join(__dirname,'../public/uploads'))
+    destination: function(req, file, cb) {
+        cb(null, path.join(__dirname, '../public/uploads')); // Ensure this directory exists
     },
-    filename:function(req,file,cb){
-     const name = Date.now()+'-'+file.originalname;
-     cb(null,name);
+    filename: function(req, file, cb) {
+        // Create a unique filename using the timestamp and original name
+        const name = Date.now() + '-' + file.originalname.replace(/\s+/g, '-'); // Replace spaces with hyphens
+        cb(null, name);
     }
-})
+});
 
-const upload = multer({storage:storage})
+// Create upload middleware for multiple files
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // Limit file size to 5MB (optional)
+    fileFilter: (req, file, cb) => {
+        const filetypes = /jpeg|jpg|png|gif/; // Acceptable file types
+        const mimetype = filetypes.test(file.mimetype);
+        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
 
- module.exports = upload ;
+        if (mimetype && extname) {
+            return cb(null, true);
+        }
+        cb(new Error('Error: File upload only supports the following filetypes - ' + filetypes));
+    }
+});
+
+module.exports = upload;

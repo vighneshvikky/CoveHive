@@ -24,7 +24,7 @@ exports.loginAdmin = (req, res) => {
        res.render('admin/adminDashboard');
     
     }else{
-        res.status(400).send('Invalid email or password');
+        res.render('admin/adminLogin',{message:"invalid password and mail"});
     }
 
 

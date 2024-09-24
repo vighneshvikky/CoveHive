@@ -44,6 +44,7 @@ exports.insertCategories = async (req,res) => {
 exports.editCategory  = async (req,res) => {
   try {
     const category = await Category.findById(req.params.id);
+    console.log(category._id)
     res.render('admin/editCategory', { category }); 
   } catch (error) {
     console.log(error.message);

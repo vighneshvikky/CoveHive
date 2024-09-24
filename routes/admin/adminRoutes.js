@@ -5,7 +5,7 @@ const customerController = require('../../controllers/admin/customerController')
 const categoryController = require('../../controllers/admin/categoryController');
 const productController = require('../../controllers/admin/productController');
 //const work = require('../../middlewares/multer')
-const work = require('../../middlewares/multer')
+const load = require('../../middlewares/multer')
 
 //const work = require('../../middlewares/multer')
 
@@ -56,8 +56,11 @@ module.exports = admin_routes;
 //------------------------------------------Product management ----------------------------------------------------------
 admin_routes.get('/products',productController.loadProduct);
 admin_routes.get('/addProducts',productController.addProduct)
-admin_routes.post('/product/add',work.array('image', 10),productController.postAddProduct);
-
+admin_routes.post('/product/add',load.array('image', 10),productController.postAddProduct);
+admin_routes.post('/toggle-block-product/:id',productController.blockUnblockProduct);
+admin_routes.get('/products/edit/:id',productController.loadEditProduct);
+admin_routes.post('/products/edit/:id',load.array('image', 10),productController.postEditProduct);
+admin_routes.get('/products/delete/:id',productController.deleteProduct)
 
 
 
