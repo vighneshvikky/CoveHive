@@ -1,84 +1,108 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CoveHive - Admin Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        :root {
-            --primary-color: #3c096c;
-            --secondary-color: #5a189a;
-            --tertiary-color: #7b2cbf;
-            --accent-color: #ff9f1c;
-        }
-    </style>
-</head>
-<body class="bg-gray-100">
-    <div class="min-h-screen flex">
-        <!-- Sidebar -->
-        <aside class="w-64 bg-[var(--primary-color)] text-white">
-            <div class="p-6">
-                <h1 class="text-2xl font-bold">CoveHive</h1>
-            </div>
-            <nav class="mt-6">
-                <ul>
-                    <li class="mb-4">
-                        <a href="/admin/products" class="flex items-center px-4 py-2 hover:bg-[var(--secondary-color)] rounded">
-                            Products
-                        </a>
-                    </li>
-                    <li class="mb-4"></li>
-                        <a href="/admin/addProducts" class="flex items-center px-4 py-2 hover:bg-[var(--secondary-color)] rounded">
-                            Add Products
-                        </a>
-                    </li>
-                    <li class="mb-4">
-                        <a href="/admin/customers" class="flex items-center px-4 py-2 hover:bg-[var(--secondary-color)] rounded">
-                            Customers
-                        </a>
-                    </li>
-                    <li class="mb-4">
-                        <a href="/admin/orders" class="flex items-center px-4 py-2 hover:bg-[var(--secondary-color)] rounded">
-                            Orders
-                        </a>
-                    </li>
-                    <li class="mb-4">
-                        <a href="/admin/coupons" class="flex items-center px-4 py-2 hover:bg-[var(--secondary-color)] rounded">
-                            Coupons
-                        </a>
-                    </li>
-                    <li class="mb-4">
-                        <a href="/admin/banners" class="flex items-center px-4 py-2 hover:bg-[var(--secondary-color)] rounded">
-                            Banners
-                        </a>
-                    </li>
-                    <li class="mb-4">
-                        <a href="/admin/offers" class="flex items-center px-4 py-2 hover:bg-[var(--secondary-color)] rounded">
-                            Offers
-                        </a>
-                    </li>
-                    <li class="mb-4">
-                        <a href="/admin/categories" class="flex items-center px-4 py-2 hover:bg-[var(--secondary-color)] rounded">
-                            Categories
-                        </a>
-                    </li>
-                    <li class="mb-4">
-                        <a href="/admin/logout" class="flex items-center px-4 py-2 hover:bg-[var(--secondary-color)] rounded">
-                            Logout
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
+<%- include('../layouts/header.ejs') %>
+<nav class="bg-[#f7f7f8] h-screen fixed top-0 left-0 min-w-[250px] py-6 px-4 font-[sans-serif]">
+  
+    <p class="ml-8 text-3xl">CoveHive</p>
 
-        <!-- Main Content -->
-        <div class="flex-1 p-10 bg-white">
-            <header class="flex justify-between items-center">
-                <h2 class="text-3xl font-bold text-[var(--tertiary-color)]">Admin Dashboard</h2>
-                <div class="text-[var(--accent-color)]">Welcome, Admin!</div>
-            </header>
-        </div>
+    <div class="overflow-auto py-6 h-full mt-4">
+      <ul class="space-y-1">
+        <li>
+          <a href="javascript:void(0)"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 512 512">
+            </svg>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/customers"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 512 512">
+            </svg>
+            <span>Customers</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/products"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 24 24">
+            </svg>
+            <span>Products</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/addProducts"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all ">
+              <g fill-opacity=".9">
+              </g>
+            </svg>
+            <span class="ml-8">Add products</span>
+          </a>
+        </li>
+    
+        <li>
+          <a href="/admin/coupons"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 512.003 512.003">
+            </svg>
+            <span>Coupons</span>
+          </a>
+        </li>
+          <a href="/admin/orders"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 512.003 512.003">
+            </svg>
+            <span>Orders</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/banners"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 511.877 511.877">
+            </svg>
+            <span>Banners</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/offers"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 193.769 193.769">
+            </svg>
+            <span>Offers</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/categories"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 512 512">
+            </svg>
+            <span>Categories</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/logout"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 6.35 6.35">
+            </svg>
+            <span>Logout</span>
+          </a>
+        </li>
+      </ul>
     </div>
-</body>
-</html>
+  </nav>
+  <div class="ml-[250px] p-6">
+    <!-- Main content goes here -->
+    <h1>Dashboard</h1>
+    <p>Welcome to the admin dashboard!</p>
+  </div>
+  
+
+<%- include('../layouts/footer.ejs') %>
