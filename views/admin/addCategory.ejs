@@ -1,140 +1,175 @@
 <%- include('../layouts/header.ejs') %>
 
-<!-- Success and Error Messages -->
-<div class="mb-4">
-    <% if (success_msg) { %>
-        <div class="bg-green-500 text-white p-4 rounded-md shadow-md relative">
-            <%= success_msg %>
-            <button class="absolute top-2 right-2 text-white " onclick="this.parentElement.style.display='none';"></button>
+<nav class="bg-[#f7f7f8] h-screen fixed top-0 left-0 min-w-[250px] py-6 px-4 font-[sans-serif]">
+  
+    <p class="ml-8 text-3xl">CoveHive</p>
+
+    <div class="overflow-auto py-6 h-full mt-4">
+      <ul class="space-y-1">
+        <li>
+          <a href="javascript:void(0)"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 512 512">
+            </svg>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/customers"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 512 512">
+            </svg>
+            <span>Customers</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/products"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 24 24">
+            </svg>
+            <span>Products</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/addProducts"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all ">
+              <g fill-opacity=".9">
+              </g>
+            </svg>
+            <span class="ml-8">Add products</span>
+          </a>
+        </li>
+    
+        <li>
+          <a href="/admin/coupons"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 512.003 512.003">
+            </svg>
+            <span>Coupons</span>
+          </a>
+        </li>
+          <a href="/admin/orders"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 512.003 512.003">
+            </svg>
+            <span>Orders</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/banners"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 511.877 511.877">
+            </svg>
+            <span>Banners</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/offers"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 193.769 193.769">
+            </svg>
+            <span>Offers</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/categories"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 512 512">
+            </svg>
+            <span>Categories</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/logout"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 6.35 6.35">
+            </svg>
+            <span>Logout</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  
+    <div class="flex items-center justify-start h-full ml-64">
+        <div class="w-full max-w-md ml-4"> <!-- Added ml-4 for margin-left -->
+            <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                <div class="mb-4">
+                    <label for="category" class="block text-gray-700 text-sm font-bold mb-2">Category Name</label>
+                    <input type="text" id="category" name="category" required 
+                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+                           placeholder="Enter category name">
+                </div>
+                <div class="mb-6">
+                    <label for="image" class="block text-gray-700 text-sm font-bold mb-2">Upload Image</label>
+                    <input type="file" id="image" name="image" accept="image/*" required 
+                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <div class="flex items-center justify-between">
+                    <button type="submit" 
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Add Category
+                    </button>
+                </div>
+            </form>
         </div>
-    <% } else if (error_msg) { %>
-        <div class="bg-red-500 text-white p-4 rounded-md shadow-md relative">
-            <%= error_msg %>
-            <button class="absolute top-2 right-2 text-white" onclick="this.parentElement.style.display='none';">✖</button>
-        </div>
-    <% } %>
-</div>
-
-
-
-
-
-<!-- Add Category Form -->
-<form action="/admin/categories/add" method="POST" enctype="multipart/form-data" class="mb-6 p-4 border border-gray-300 rounded shadow">
-    <div class="mb-4">
-        <label for="name" class="block text-gray-700">Category Name:</label>
-        <input type="text" id="name" name="name" required class="mt-1 p-2 border border-gray-300 rounded w-full" placeholder="Enter category name">
     </div>
-    <div class="mb-4">
-        <label for="image" class="block text-gray-700">Category Image:</label>
-        <input type="file" id="image" name="image" accept="image/*" required class="mt-1">
-    </div>
-    <div>
-        <button type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Add Category</button>
-    </div>
-</form>
+    <div class="font-sans overflow-x-auto flex items-center ml-64">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-100 whitespace-nowrap">
+          <tr>
+            <th class="px-4 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              Image
+            </th>
+            <th class="px-4 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              Name
+            </th>
+            <th class="px-4 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              Actions
+            </th>
+          </tr>
+        </thead>
 
-<!-- Modal Structure -->
-<div id="validationModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-    <div class="bg-white p-6 rounded shadow-lg">
-        <span class="close cursor-pointer text-red-500 float-right">&times;</span>
-        <p id="modalMessage" class="text-gray-800"></p>
-        <div class="mt-4">
-            <button id="closeModalButton" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Close</button>
-        </div>
-    </div>
-</div>
-
-<!-- Category Table -->
-<table class="min-w-full border border-gray-300">
-    <thead>
-        <tr class="bg-gray-200">
-            <th class="border border-gray-300 p-2">Image</th>
-            <th class="border border-gray-300 p-2">Name</th>
-            <th class="border border-gray-300 p-2">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        <% categories.forEach(category => { %>
-        <tr class="hover:bg-gray-100">
-            <td class="border border-gray-300 p-2">
-                <img src="/categoryImages/<%= category.img %>" alt="<%= category.name %>" class="w-16 h-16 object-cover">
+        <tbody class="bg-white divide-y divide-gray-200 whitespace-nowrap">
+          <% categories.forEach(category => { %>
+          <tr>
+            <td class="px-4 py-4 text-sm text-gray-800">
+ <img src="/categoryImages/<%= category.img %>" alt="<%= category.name %>" class="w-16 h-16 object-cover">
             </td>
-            <td class="border border-gray-300 p-2"><%= category.name %></td>
-            <td class="border border-gray-300 p-2">
-                <a href="/admin/categories/edit/<%= category._id %>" class="text-blue-500 hover:underline">Edit</a>
+            <td class="px-4 py-4 text-sm text-gray-800">
+             <%= category.name %>
+            </td>
+            <td class="px-4 py-4 text-sm text-gray-800">
+             <a href="/admin/categories/edit/<%= category._id %>" class="text-blue-500 hover:underline">Edit</a>
                 <form action="/admin/categories/block-unblock/<%=category._id%>" method="post" class="inline">
                     <button type="submit" class="text-red-500 hover:underline ml-2">
                         <%= category.isBlocked ? 'Unblock' : 'Block' %>
                     </button>
                 </form>
+                
+          
+                    </td>
+                  </tr>
             </td>
-        </tr>
-        <% }); %>
-    </tbody>
-</table>
-
-<!-- Pagination Controls -->
-<div class="mt-4">
-    <% for (let i = 1; i <= totalPages; i++) { %>
-        <a href="/admin/categories?page=<%= i %>" class="inline-block mx-1 bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
-            <%= i %>
-        </a>
-    <% } %>
-</div>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
 
 <%- include('../layouts/footer.ejs') %>
 
-<script>
-    const form = document.querySelector('form');
-    const modal = document.getElementById('validationModal');
-    const modalMessage = document.getElementById('modalMessage');
-    const closeModalButton = document.getElementById('closeModalButton');
-    const closeModalSpan = document.querySelector('.close');
 
-    form.addEventListener('submit', function (event) {
-        const name = document.getElementById('name').value;
-        const trimmedName = name.trim();
-        const image = document.getElementById('image').files[0];
 
-        if (!trimmedName) {
-            showModal("Category name is required!");
-            event.preventDefault();
-        } else if (name !== trimmedName) {
-            showModal("Category name should not contain leading or trailing spaces!");
-            event.preventDefault();
-        } else if (trimmedName.length < 3) {
-            showModal("Category name must be at least 3 characters long!");
-            event.preventDefault();
-        }
-
-        if (!image) {
-            showModal("Please upload a category image!");
-            event.preventDefault();
-        } else if (!['image/jpeg', 'image/png', 'image/gif'].includes(image.type)) {
-            showModal("Only JPG, PNG, and GIF formats are allowed!");
-            event.preventDefault();
-        }
-    });
-
-    function showModal(message) {
-        modalMessage.textContent = message;
-        modal.classList.remove("hidden");
-    }
-
-    const closeModal = () => {
-        modal.classList.add("hidden");
-    };
-
-    closeModalButton.onclick = closeModal;
-    closeModalSpan.onclick = closeModal;
-
-    window.onclick = function(event) {
-        if (event.target === modal) {
-            closeModal();
-        }
-    }
-</script>
 <style>
     .notification {
     padding: 16px;

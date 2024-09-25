@@ -1,62 +1,228 @@
 <%- include('../layouts/header.ejs') %>
-<div class="mb-4">
-  <% if (success_msg) { %>
-      <div class="bg-green-500 text-white p-4 rounded-md shadow-md ">
-          <%= success_msg %>
-          <button class="absolute top-2 right-2 text-white " onclick="this.parentElement.style.display='none';"></button>
-      </div>
-  <% } else if (error_msg) { %>
-      <div class="bg-red-500 text-white p-4 rounded-md shadow-md relative">
-          <%= error_msg %>
-          <button class="absolute top-2 right-2 text-white" onclick="this.parentElement.style.display='none';">✖</button>
-      </div>
-  <% } %>
+<nav class="bg-[#f7f7f8] h-screen fixed top-0 left-0 min-w-[250px] py-6 px-4 font-[sans-serif]">
+  
+    <p class="ml-8 text-3xl">CoveHive</p>
+
+    <div class="overflow-auto py-6 h-full mt-4">
+      <ul class="space-y-1">
+        <li>
+          <a href="javascript:void(0)"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 512 512">
+            </svg>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/customers"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 512 512">
+            </svg>
+            <span>Customers</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/products"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 24 24">
+            </svg>
+            <span>Products</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/addProducts"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all ">
+              <g fill-opacity=".9">
+              </g>
+            </svg>
+            <span class="ml-8">Add products</span>
+          </a>
+        </li>
+    
+        <li>
+          <a href="/admin/coupons"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 512.003 512.003">
+            </svg>
+            <span>Coupons</span>
+          </a>
+        </li>
+          <a href="/admin/orders"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 512.003 512.003">
+            </svg>
+            <span>Orders</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/banners"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 511.877 511.877">
+            </svg>
+            <span>Banners</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/offers"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 193.769 193.769">
+            </svg>
+            <span>Offers</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/categories"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 512 512">
+            </svg>
+            <span>Categories</span>
+          </a>
+        </li>
+        <li>
+          <a href="/admin/logout"
+            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
+              viewBox="0 0 6.35 6.35">
+            </svg>
+            <span>Logout</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="font-sans overflow-x-auto">
+    <table class="min-w-full bg-white">
+      <thead class="bg-gray-100 whitespace-nowrap">
+        <tr>
+          <th class="p-4 text-left text-xs font-semibold text-gray-800">
+            Product Name
+          </th>
+          <th class="p-4 text-left text-xs font-semibold text-gray-800">
+            Category
+          </th>
+          <th class="p-4 text-left text-xs font-semibold text-gray-800">
+            Price
+          </th>
+          <th class="p-4 text-left text-xs font-semibold text-gray-800">
+            Stock
+          </th>
+          <th class="p-4 text-left text-xs font-semibold text-gray-800">
+            Actions
+          </th>
+        </tr>
+      </thead>
+
+      <tbody class="whitespace-nowrap">
+           <% products.forEach(product => { %>
+        <tr class="hover:bg-gray-50">
+          <td class="p-4 text-[15px] text-gray-800">
+           <%= product.name %>
+          </td>
+          <td class="p-4 text-[15px] text-gray-800">
+            <%= product.category ? product.category.name : 'No Category' %>
+          </td>
+          <td class="p-4 text-[15px] text-gray-800">
+            <i class="fa-solid fa-indian-rupee-sign"></i> <%= product.price %>
+          </td>
+          <td class="p-4 text-[15px] text-gray-800">
+            <%= product.stock %>
+          </td>
+          <td class="p-4">
+            <a href="/admin/products/edit/<%= product._id %>" class="text-blue-500">Edit</a>
+
+            <!-- <button class="mr-4" title="Edit">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 fill-blue-500 hover:fill-blue-700"
+                viewBox="0 0 348.882 348.882">
+                <path
+                  d="m333.988 11.758-.42-.383A43.363 43.363 0 0 0 304.258 0a43.579 43.579 0 0 0-32.104 14.153L116.803 184.231a14.993 14.993 0 0 0-3.154 5.37l-18.267 54.762c-2.112 6.331-1.052 13.333 2.835 18.729 3.918 5.438 10.23 8.685 16.886 8.685h.001c2.879 0 5.693-.592 8.362-1.76l52.89-23.138a14.985 14.985 0 0 0 5.063-3.626L336.771 73.176c16.166-17.697 14.919-45.247-2.783-61.418zM130.381 234.247l10.719-32.134.904-.99 20.316 18.556-.904.99-31.035 13.578zm184.24-181.304L182.553 197.53l-20.316-18.556L294.305 34.386c2.583-2.828 6.118-4.386 9.954-4.386 3.365 0 6.588 1.252 9.082 3.53l.419.383c5.484 5.009 5.87 13.546.861 19.03z"
+                  data-original="#000000" />
+                <path
+                  d="M303.85 138.388c-8.284 0-15 6.716-15 15v127.347c0 21.034-17.113 38.147-38.147 38.147H68.904c-21.035 0-38.147-17.113-38.147-38.147V100.413c0-21.034 17.113-38.147 38.147-38.147h131.587c8.284 0 15-6.716 15-15s-6.716-15-15-15H68.904C31.327 32.266.757 62.837.757 100.413v180.321c0 37.576 30.571 68.147 68.147 68.147h181.798c37.576 0 68.147-30.571 68.147-68.147V153.388c.001-8.284-6.715-15-14.999-15z"
+                  data-original="#000000" />
+              </svg>
+            </button> -->
+            <!-- <button class="mr-4" title="Delete">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 fill-red-500 hover:fill-red-700" viewBox="0 0 24 24">
+                <path
+                  d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z"
+                  data-original="#000000" />
+                <path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z"
+                  data-original="#000000" />
+              </svg>
+            </button> -->
+             <a href="/admin/products/delete/<%= product._id %>" class="text-red-500 ml-4">delete</a>
+
+            
+
+        <!-- Block/Unblock Button (Trigger Modal) -->
+        <button onclick="openModal('<%= product._id %>', '<%= product.isBlocked %>')" class="<%= product.isBlocked ? 'bg-green-500 text-white' : 'bg-red-500 text-white' %> px-4 py-2 rounded">
+          <%= product.isBlocked ? 'Unblock' : 'Block' %>
+        </button>
+       <!-- category -->
+       <button onclick="openModal('<%= category._id %>', '<%= category.isBlocked %>')" class="<%= category.isBlocked ? 'bg-green-500 text-white' : 'bg-red-500 text-white' %> px-4 py-2 rounded">
+        <%= category.isBlocked ? 'Unblock' : 'Block' %>
+      </button>
+          </td>
+        </tr>
+
+        
+            <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <!-- Modal -->
+<div id="confirmation-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+<div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
+  <h2 class="text-lg font-bold mb-4">Confirm Action</h2>
+  <p id="modal-message" class="mb-6"></p>
+  <div class="flex justify-end">
+    <button id="cancel-btn" class="bg-gray-500 text-white px-4 py-2 rounded mr-2" onclick="closeModal()">Cancel</button>
+    <form id="confirm-form" action="" method="POST" style="display: inline;">
+      <input type="hidden" name="is_blocked" id="isBlocked" value="" />
+      <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded">Confirm</button>
+    </form>
+  </div>
+</div>
 </div>
 
+<script>
+function openModal(productId, isBlocked) {
+  const modal = document.getElementById('confirmation-modal');
+  const message = document.getElementById('modal-message');
+  const form = document.getElementById('confirm-form');
+  const isBlockedInput = document.getElementById('isBlocked');
+
+  // Set the form action
+  form.action = `/admin/toggle-block-product/${productId}`;
+  //set the form action
+
+  //form.action = `/admin/`
+  // Set the modal message and hidden input value
+  if (isBlocked == 'true') {
+    message.textContent = 'Are you sure you want to unblock this product?';
+    isBlockedInput.value = 'false';
+  } else {
+    message.textContent = 'Are you sure you want to block this product?';
+    isBlockedInput.value = 'true';
+  }
+
+  modal.classList.remove('hidden'); // Show the modal
+}
+
+function closeModal() {
+  const modal = document.getElementById('confirmation-modal');
+  modal.classList.add('hidden'); // Hide the modal
+}
+</script>
 
 
-<h1 class="bg-red-300 border border-spacing-4 text-center">Welocome to Product Management</h1>
-<table class="table-auto w-full bg-white shadow-md rounded">
-  <thead>
-    <tr class="bg-gray-200 text-left">
-      <th class="p-4">Product Name</th>
-      <th class="p-4">Category</th>
-      <th class="p-4">Price</th>
-      <th class="p-4">Stock</th>
-      <th class="p-4">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% products.forEach(product => { %>
-      <tr class="border-t">
-        <td class="p-4"><%= product.name %></td>
-        <td class="p-4"><%= product.category ? product.category.name : 'No Category' %></td>
-        <td class="p-4">$<%= product.price %></td>
-        <td class="p-4"><%= product.stock %></td>
-        <td class="p-4">
-          <!-- Edit Button -->
-          <a href="/admin/products/edit/<%= product._id %>" class="text-blue-500">Edit</a>
-          
-          <!-- Delete Button (Trigger Modal) -->
-          <a href="/admin/products/delete/<%= product._id %>" class="text-red-500 ml-4">Delete</a>
-
-          <form action="/admin/toggle-block-product/<%= product._id %>" method="POST" style="display:inline;">
-            <input type="hidden" name="is_blocked" value="<%= product.isBlocked %>" />
-            <button type="submit" class="<%= product.isBlocked ? 'bg-green-500 text-white' : 'bg-red-500 text-white' %> px-4 py-2 rounded">
-          <%= product.isBlocked ? 'Unblock' : 'Block' %>
-            </button>
-
-        </form>
-          <!-- Block/Unblock Button -->
-          <!-- <% if (product.isBlocked) { %>
-            <a href="/admin/products/unblock/<%= product._id %>" class="text-green-500 ml-4">Unblock</a>
-          <% } else { %>
-            <a href="/admin/products/block/<%= product._id %>" class="text-yellow-500 ml-4">Block</a>
-          <% } %> -->
-        </td>
-      </tr>
-    <% }) %>
-  </tbody>
-</table>
-  
 <%- include('../layouts/footer.ejs') %>
+
