@@ -4,9 +4,20 @@ const User = require('../../models/user/userSchema');
 
 //---------------------------loading Customers--------------------------------------------------------------
 exports.loadCustomers = async (req,res) => {
+      const page = parseInt(req.query.page) || 1; // Get page from query or default to 1
+      const limit = parseInt(req.query.limit) || 10;
     try {
+      const totalUsers = await User.countDocuments();
+      
         const usersData = await User.find({is_admin:0})
-        res.render('admin/showCustomer',{users:usersData})
+        .skip((page-1)*limit)
+        .limit(limit);
+        res.render('admin/showCustomer',{
+          
+          users:usersData,
+          currentPage: page, 
+          totalPages: Math.ceil(totalUsers / limit) 
+        })
     } catch (error) {
         console.log(error.message);
         

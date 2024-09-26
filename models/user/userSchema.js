@@ -8,7 +8,8 @@ const userSchema = new mongoose.Schema({
     is_blocked:{type:Boolean,default:false},
     is_varified:{type:Number,default:0},
     is_admin:{type:Number,default:0},
-    googleId: { type: String } 
+    googleId: { type: String },
+    createdAt: { type: Date }, 
 });
 
 

@@ -2,17 +2,17 @@ const Category = require('../../models/admin/categoryModel');
 
 
 exports.loadCategories = async (req,res) => {
-  const page = parseInt(req.query.page)||1;
-  const limit = 10;
-  const skip = (page - 1) * limit; //skip for pagination
+ const page = parseInt(req.query.page)||1;
+ const limit = parseInt(req.query.limit)||10
   try {
-    const categories = await Category.find().skip(skip).limit(limit);
     const totalCategories = await Category.countDocuments();
-    const totalPages = Math.ceil(totalCategories/limit)
+    const categories = await Category.find()
+    .skip((page-1)*limit)
+    .limit(limit)
     res.render('admin/addCategory',{
       categories,
       currentPage:page,
-      totalPages : totalPages
+      totalPages : Math.ceil(totalCategories / limit)
       
     });
   } catch (error) {
@@ -22,20 +22,40 @@ exports.loadCategories = async (req,res) => {
 }
 
 
-exports.insertCategories = async (req,res) => { 
-  try {
+// exports.insertCategories = async (req,res) => { 
+//   try {
 
+
+//     const newCategory = new Category({
+//         name: req.body.name,
+//         img: req.file.filename,
+//     });
+//    console.log(newCategory)
+//     await newCategory.save();
+//     res.redirect('/admin/categories');
+//   } catch (error) {
+//     console.log(error.message);
+    
+//   }
+// }
+exports.insertCategories = async (req, res) => { 
+  try {
+    // Ensure a file is uploaded
+    if (!req.file) {
+      throw new Error('Image file is required.');
+    }
 
     const newCategory = new Category({
-        name: req.body.name,
-        img: req.file.filename,
+      name: req.body.name,
+      img: req.file.filename,
     });
-
+    
+    console.log(newCategory);
     await newCategory.save();
     res.redirect('/admin/categories');
   } catch (error) {
     console.log(error.message);
-    
+    res.status(500).send(error.message); // Handle error response
   }
 }
 

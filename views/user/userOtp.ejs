@@ -6,7 +6,6 @@
         <p class="text-center text-gray-400">Enter the OTP sent to your email</p>
         <form action="/verify-otp" method="POST" class="space-y-4">
             <div>
-
                 <input type="text" id="otp" name="otp" maxlength="6" required 
                     class="mt-1 block w-full p-3 rounded-md bg-white text-black outline-none focus:ring-2 focus:ring-white"
                     placeholder="Enter OTP">
@@ -23,11 +22,10 @@
         <form action="/resend-otp" method="post" class="text-center">
             <p>
                 Didn't receive the code? 
-                <button type="submit" class="text-white underline hover:text-gray-300 bg-transparent border-none cursor-pointer text-center">
+                <button type="submit" id="resend-otp" class="text-white underline hover:text-gray-300 bg-transparent border-none cursor-pointer text-center" disabled>
                     Resend OTP
                 </button>
                 <p class="text-center text-red-500"><%= locals.msg %></p>
-
             </p>
         </form>
     </div>
@@ -35,8 +33,8 @@
     <script>
         // Timer logic
         let timerElement = document.getElementById("timer");
-        let time = 60
-        ; // 1 minute
+        let resendButton = document.getElementById("resend-otp");
+        let time = 60; // 1 minute
 
         const countdown = setInterval(() => {
             let minutes = Math.floor(time / 60);
@@ -50,10 +48,11 @@
             if (time < 0) {
                 clearInterval(countdown);
                 timerElement.innerHTML = "00:00";
-                // Optionally, disable the form when the timer expires
+                resendButton.disabled = false; // Enable the resend OTP button
             }
         }, 1000);
     </script>
 </body>
 
 <%- include("../layouts/footer.ejs") %>
+

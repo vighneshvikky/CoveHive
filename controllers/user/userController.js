@@ -174,7 +174,7 @@ exports.resendOtp = async (req, res) => {
     try {
         otp = Math.floor(Math.random() * 100000); // Generate new OTP
         otpExpirationTime = Date.now() + (1 * 60 * 1000); // Reset OTP expiration
-
+         console.log(`resend OTP :${otp}`)
         let mailOptions = {
             to: email,
             subject: "OTP for registration",
