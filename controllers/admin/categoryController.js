@@ -50,7 +50,7 @@ exports.insertCategories = async (req, res) => {
       img: req.file.filename,
     });
     
-    console.log(newCategory);
+    
     await newCategory.save();
     res.redirect('/admin/categories');
   } catch (error) {
@@ -64,7 +64,7 @@ exports.insertCategories = async (req, res) => {
 exports.editCategory  = async (req,res) => {
   try {
     const category = await Category.findById(req.params.id);
-    console.log(category._id)
+
     res.render('admin/editCategory', { category }); 
   } catch (error) {
     console.log(error.message);

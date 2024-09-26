@@ -1,111 +1,12 @@
 <%- include('../layouts/header.ejs') %>
-<nav class="bg-[#f7f7f8] h-screen fixed top-0 left-0 min-w-[250px] py-6 px-4 font-[sans-serif]">
-  
-  <p class="ml-8 text-3xl">CoveHive</p>
-
-  <div class="overflow-auto py-6 h-full mt-4">
-    <ul class="space-y-1">
-      <li>
-        <a href="javascript:void(0)"
-          class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
-            viewBox="0 0 512 512">
-          </svg>
-          <span>Dashboard</span>
-        </a>
-      </li>
-      <li>
-        <a href="/admin/customers"
-          class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
-            viewBox="0 0 512 512">
-          </svg>
-          <span>Customers</span>
-        </a>
-      </li>
-      <li>
-        <a href="/admin/products"
-          class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
-            viewBox="0 0 24 24">
-          </svg>
-          <span>Products</span>
-        </a>
-      </li>
-      
-      <li>
-        <a href="/admin/addProducts"
-          class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all ">
-            <g fill-opacity=".9">
-            </g>
-          </svg>
-          <span class="ml-8">Add products</span>
-        </a>
-      </li>
-  
-      <li>
-        <a href="/admin/coupons"
-          class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
-            viewBox="0 0 512.003 512.003">
-          </svg>
-          <span>Coupons</span>
-        </a>
-      </li>
-        <a href="/admin/orders"
-          class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
-            viewBox="0 0 512.003 512.003">
-          </svg>
-          <span>Orders</span>
-        </a>
-      </li>
-      <li>
-        <a href="/admin/banners"
-          class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
-            viewBox="0 0 511.877 511.877">
-          </svg>
-          <span>Banners</span>
-        </a>
-      </li>
-      <li>
-        <a href="/admin/offers"
-          class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
-            viewBox="0 0 193.769 193.769">
-          </svg>
-          <span>Offers</span>
-        </a>
-      </li>
-      <li>
-        <a href="/admin/categories"
-          class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
-            viewBox="0 0 512 512">
-          </svg>
-          <span>Categories</span>
-        </a>
-      </li>
-      <li>
-        <a href="/admin/logout"
-          class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
-            viewBox="0 0 6.35 6.35">
-          </svg>
-          <span>Logout</span>
-        </a>
-      </li>
-    </ul>
-  </div>
-</nav>  
-
+<%- include('../layouts/sidebar.ejs') %>
   <div class="container mx-auto px-4 py-8 flex items-center justify-center min-h-screen"> 
 
 
-    <form action="/admin/product/add" method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-1/2" id="productForm" > <!-- Added ID here -->
-      <!-- Product Name -->
-      <div class="mb-4">
+    <form action="/admin/product/add" method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-1/2" id="productForm" >
+
+       <!-- Product Name -->
+       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
           Product Name
         </label>
@@ -115,7 +16,7 @@
           id="name" 
           name="name"
           value="Apple" 
-          required>
+          required  >
       </div>
 
       <!-- Description -->
@@ -167,7 +68,7 @@
             id="category" 
             name="category" 
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-            required>
+             required >
             <option value="">Select a Category</option>
             <% categories.forEach(category => { %>
                 <option value="<%= category._id %>">
@@ -202,30 +103,10 @@
           id="compatibleDevices" 
           value="iphone 15 Pro"
           name="compatibleDevices" 
-          placeholder="iPhone 15 Pro, iPhone 15 Pro Max">
+          placeholder="iPhone 15 Pro, iPhone 15 Pro Max"
+          required>
       </div>
 
-      <!-- Image Upload -->
-      <!-- <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="image">
-          Product Images
-        </label>
-        <input 
-          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-          type="file" 
-          id="imageInput"  
-          name="image" 
-          multiple required>
-      </div>
-    
-      
-
-      <div class="font-[sans-serif] space-x-4 space-y-4 text-center">
-        <button type="submit"
-          class="px-5 py-2.5 rounded-lg text-sm tracking-wider font-medium border border-blue-700 outline-none bg-transparent hover:bg-blue-700 text-blue-700 hover:text-white transition-all duration-300">Add Product</button>
-      </div>
-    </form> -->
- <!-- Image Upload -->
  <div class="mb-4">
   <label class="block text-gray-700 text-sm font-bold mb-2" for="image">Product Images</label>
   <input class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-700 leading-tight focus:outline-none focus:shadow-outline" type="file" id="imageInput" name="images" accept="image/*" multiple required>
@@ -245,22 +126,47 @@
 
 <!-- Crop Buttons -->
 <div class="flex justify-between mt-4">
-  <button type="button" id="cropButton" style="display: none;">Crop Images</button>
-  <button type="button" id="cancelButton" style="display: none;">Cancel</button>
+  <button 
+    type="button" 
+    id="cropButton" 
+    style="display: none;" 
+    class="bg-purple-600 text-white font-semibold py-2 px-4 rounded hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition duration-300"
+  >
+    Add Product
+  </button>
+  
+  <button 
+    type="button" 
+    id="cancelButton" 
+    style="display: none;" 
+    class="bg-gray-400 text-white font-semibold py-2 px-4 rounded hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-50 transition duration-300"
+  >
+    Cancel
+  </button>
 </div>
+
 
 
 
   <!-- Submit Button -->
   <div class="font-[sans-serif] space-x-4 space-y-4 text-center mt-6">
-    <button type="submit" class="px-5 py-2.5 rounded-lg text-sm tracking-wider font-medium border border-blue-700 outline-none bg-transparent hover:bg-blue-700 text-blue-700 hover:text-white transition-all duration-300">Add Product</button>
-</div>
-
+    <button type="submit" id="addProductBtn" class="px-5 py-2.5 rounded-lg text-sm tracking-wider font-medium border border-blue-700 outline-none bg-transparent hover:bg-blue-700 text-blue-700 hover:text-white transition-all duration-300 hidden">Add Product</button>
   </div>
 
+
+
+    </form> <!-- Added ID here -->
+  </div>
+
+  <div id="productModal" class="fixed inset-0 bg-black bg-opacity-80  items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+      <p class="text-center text-green-500 mb-4">Add Product Successfully.</p>
+      <button id="closeModal" class="bg-blue-700 text-white px-4 py-2 rounded">Close</button>
+    </div>
+  </div>
   <!-- Modal -->
 
-  <div id="confirmation-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+  <div id="confirmation-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50  items-center justify-center hidden">
     <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
         <h2 class="text-lg font-bold mb-4">Confirm Action</h2>
         <p id="modal-message" class="mb-6"></p>
@@ -277,6 +183,33 @@
 <!-- Modal -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 <script>
+  document.addEventListener('DOMContentLoaded', function() {
+  const addProductBtn = document.getElementById('addProductBtn');
+  const productModal = document.getElementById('productModal');
+  const closeModalBtn = document.getElementById('closeModal');
+
+  function showModal() {
+    productModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function hideModal() {
+    productModal.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  addProductBtn.addEventListener('click', showModal);
+
+  // Close modal on click outside
+  window.onclick = function(event) {
+    if (event.target === productModal) {
+      hideModal();
+    }
+  };
+
+  // Close modal on close button click
+  closeModalBtn.addEventListener('click', hideModal);
+});
   let cropperInstances = [];
 const imageInput = document.getElementById('imageInput');
 const imagePreviewsContainer = document.getElementById('imagePreviews');

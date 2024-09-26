@@ -34,7 +34,7 @@ exports.addProduct = async(req,res) => {
 }
 exports.postAddProduct = async(req,res) => {
     try { 
-      console.log(JSON.stringify(req.files, null, 2)+'hai')
+      //console.log(JSON.stringify(req.files, null, 2)+'hai')
         const images = req.files.map(file => file.filename);
         const { name, description, price, stock, category, subcategory, compatibleDevices } = req.body;
     const newProduct = new Product({
@@ -48,8 +48,10 @@ exports.postAddProduct = async(req,res) => {
       image:images  
     });
 
+    //console.log(newProduct)
+
     await newProduct.save();
-    res.status(201).json({ message: 'Product added successfully' });
+    res.redirect('/admin/addProducts')
     //console.log(newProduct) 
     } catch (error) {
       console.log(error.message);
