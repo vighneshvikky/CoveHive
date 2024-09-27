@@ -4,10 +4,10 @@ const Category = require('../../models/admin/categoryModel');
 const { default: mongoose } = require('mongoose');
 
 exports.loadProduct = async(req,res) => {
-    const page = parseInt(req.query.page);
-    const limit = parseInt(req.query.limit);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
     try {
-         const totalUsers = await Product.countDocuments();
+         const totalProduct = await Product.countDocuments();
         const productData = await Product.find({isAvailable:true}).populate('category')
         .skip((page-1)*limit)
         .limit(limit);        
@@ -17,7 +17,7 @@ exports.loadProduct = async(req,res) => {
           products:productData,
          categories,
          currentPage:page,
-         totalPages:Math.ceil(totalUsers / limit)
+         totalPages:Math.ceil(totalProduct / limit)
         })
     } catch (error) {
      console.log(error.message);

@@ -65,7 +65,7 @@
 
   <% for(let i = 1 ; i <=totalPages ; i++) { %>
     <a href="?page=<%= i %>&limit=10" class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300 <%= currentPage === i ? 'bg-gray-400' : '' %>">
-      <%= I %>
+      <%= i %>
     </a>
     <% } %>
 

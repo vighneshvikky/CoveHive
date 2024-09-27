@@ -43,7 +43,7 @@ exports.blockUser = async (req, res) => {
       // Save the updated user to the database
       await user.save();
   
-      console.log('Updated User:', user);
+      // console.log('Updated User:', user);
   
       res.redirect('/admin/customers');
     } catch (error) {

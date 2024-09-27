@@ -13,9 +13,9 @@
           <th class="p-4 text-left text-sm font-medium text-white">
             Email
           </th>
-          <th class="p-4 text-left text-sm font-medium text-white">
+          <!-- <th class="p-4 text-left text-sm font-medium text-white">
             Date
-          </th>
+          </th> -->
            <th class="p-4 text-left text-sm font-medium text-white">
             Action
           </th>
@@ -36,12 +36,10 @@
           <td class="p-4 text-sm text-black">
           <%= users[i].fullName %>
           </td>
-          <td class="p-4 text-sm text-black">
-            <%= users[i].email %>
-          </td>
-          <td class="p-4 text-sm text-black">
-           <%= users[i].createdAt%>
-          </td>
+           <td class="p-4 text-sm text-black">
+           <%= users[i].email %>
+           </td>
+        
        <td>
         <button onclick="openModal('<%= users[i]._id %>', '<%= users[i].is_blocked %>')" class="<%= users[i].is_blocked ? 'bg-green-500 text-white' : 'bg-red-500 text-white' %> px-4 py-2 rounded">
   <%= users[i].is_blocked ? 'Unblock' : 'Block' %>
@@ -82,7 +80,7 @@
 
   // Modal
 
-  <div id="confirmation-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+  <div id="confirmation-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50  items-center justify-center hidden">
   <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
     <h2 class="text-lg font-bold mb-4">Confirm Action</h2>
     <p id="modal-message" class="mb-6"></p>
@@ -99,21 +97,21 @@
 
 
 <script>
-  function openModal(categoryId, isBlocked) {
+  function openModal(userId, isBlocked) {
   const modal = document.getElementById('confirmation-modal');
   const message = document.getElementById('modal-message');
   const form = document.getElementById('confirm-form');
   const isBlockedInput = document.getElementById('isBlocked');
 
-  // Set the form action
-  form.action = `/admin/categories/block-unblock/${categoryId}`;
+  // Set the form action 
+  form.action = `/admin/toggle-block-user/${userId}`;
   
   // Set the modal message and hidden input value
   if (isBlocked === true) {
-  message.textContent = 'Are you sure you want to unblock this category?';
+  message.textContent = 'Are you sure you want to unblock this user?';
   isBlockedInput.value = 'false';
 } else {
-  message.textContent = 'Are you sure you want to block this category?';
+  message.textContent = 'Are you sure you want to block this user?';
   isBlockedInput.value = 'true';
 }
 

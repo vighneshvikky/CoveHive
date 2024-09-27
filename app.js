@@ -41,7 +41,7 @@ mongoose.connect(process.env.MONGO_URI)
 .catch((err) => console.error('MongoDB connection error:', err));
 
 // Set up session management
-//app.use(nocache());
+ app.use(nocache());
 
 
 
