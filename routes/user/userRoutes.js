@@ -39,7 +39,7 @@ user_route.get('/auth/google/callback',
      if(user.is_blocked){
       res.render('user/userSignup',{message:'Your Account has Been blocked'})
      }else{
-      res.redirect('/home')
+      res.render('user/userHome')
      }
 
     } catch (error) {

@@ -1,0 +1,56 @@
+<%- include('../layouts/header') %>
+<form action="/admin/products" method="POST" enctype="multipart/form-data">
+    <div>
+      <label for="name">Product Name</label>
+      <input type="text" name="name" required>
+    </div>
+    
+    <div>
+      <label for="description">Description</label>
+      <textarea name="description"></textarea>
+    </div>
+    
+    <div>
+      <label for="price">Price</label>
+      <input type="number" name="price" required>
+    </div>
+    
+    <div>
+      <label for="stock">Stock</label>
+      <input type="number" name="stock" required>
+    </div>
+    
+    <div>
+      <label for="category">Category</label>
+      <select name="category" required>
+        <% categories.forEach(category => { %>
+          <option value="<%= category._id %>"><%= category.name %></option>
+        <% }); %>
+      </select>
+    </div>
+    
+    <div>
+      <label for="subcategory">Subcategory</label>
+      <input type="text" name="subcategory" required>
+    </div>
+    
+    <div>
+      <label for="compatibleDevices">Compatible Devices</label>
+      <input type="text" name="compatibleDevices" required>
+    </div>
+    
+    <div>
+      <label for="discount">Discount</label>
+      <input type="number" name="discount" min="0" max="100">
+    </div>
+    
+    <div>
+      <label for="image">Product Images</label>
+      <input type="file" name="image" multiple accept="image/*">
+    </div>
+    
+    <button type="submit">Add Product</button>
+  </form>
+  
+  
+<%- include('../layouts/footer') %>
