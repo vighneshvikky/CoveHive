@@ -18,7 +18,7 @@ const productSchema = new mongoose.Schema({
         rating: Number
       },
     ],
-    isAvailable: { type: Boolean, default: true }, // Availability status
+    isAvailable: { type: Boolean, default: true },
     createdAt: { type: Date, default: Date.now },
     isBlocked: {type:Boolean,default:false}
   });
