@@ -45,7 +45,7 @@ user_route.get('/auth/google/callback',
     } catch (error) {
       console.log(error.message);
       
-    }
+    } 
   }
 );
 
