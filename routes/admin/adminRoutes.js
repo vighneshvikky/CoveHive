@@ -62,16 +62,7 @@ admin_routes.get('/products/edit/:id',productController.loadEditProduct);
 admin_routes.post('/products/edit/:id',load.array('images', 10),productController.postEditProduct);
 admin_routes.get('/products/delete/:id',productController.deleteProduct)
 
-//------------------------------------------Croping and resizing ---------------------------------------------------------
-// admin_routes.post('/upload-product-image', load.single('productImage'), (req, res) => {
-//     if (!req.file) {
-//       return res.status(400).send('No file uploaded.');
-//     }
-  
-//     // Process the file or save to disk here
-//     // You can use Sharp or other processing libraries to further handle the image if needed
-//     res.json({ message: 'Image uploaded successfully.' });
-//   });
+
 
 
 

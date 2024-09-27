@@ -51,7 +51,7 @@ exports.postAddProduct = async(req,res) => {
     //console.log(newProduct)
 
     await newProduct.save();
-    res.redirect('/admin/addProducts')
+    
     //console.log(newProduct) 
     } catch (error) {
       console.log(error.message);
@@ -105,7 +105,7 @@ exports.loadEditProduct = async (req,res) =>{
 exports.postEditProduct = async (req,res) => {
  // const { name, description, price, category } = req.body;
   try {
-console.log(req.files+"hai")
+//console.log(req.files+"hai")
     const productId = req.params.id; // Get product ID from the route
     const imagePaths = req.files.map(file => file.filename);
 
