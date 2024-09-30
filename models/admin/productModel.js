@@ -5,7 +5,7 @@ const productSchema = new mongoose.Schema({
     description: { type: String }, // Optional product description
     price: { type: Number, required: true }, // Product price
     stock: { type: Number, required: true }, // Stock count
-    image: [String], // Array to hold image URLs
+    image: [{type:String,required:true}], // Array to hold image URLs
     //category:{type:String,required:true},
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true }, // e.g., 'Apple', 'Pixel', 'Galaxy'
     subcategory: { type: String, required: true }, // e.g., 'iPhone 15 Series', 'iPhone 14 Series'

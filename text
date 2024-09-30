@@ -26,175 +26,155 @@ const upload = multer({storage:storage})
         img: req.file.filename,
     });
 
-      <div class="mb-4"> 
-    <label for="genderCategory" class="block text-sm font-medium text-gray-700">Gender Category</label>
-    <select name="genderCategory" id="genderCategory"  class="mt-1 p-2 border border-gray-300 rounded w-full">
-      <% genderCategories.forEach(gender => { %>
-        <option  value="<%= gender._id  %>" <%= gender._id.toString() === product.genderCategory._id.toString() ? 'selected' : '' %> ><%= gender.name %> </option>  
-      <% }) %>
-    </select>
-  </div>
-
-  //
-
-  <nav class="bg-[#f7f7f8] h-screen fixed top-0 left-0 min-w-[250px] py-6 px-4 font-[sans-serif]">
-  
-    <p class="ml-8 text-3xl">CoveHive</p>
-
-    <div class="overflow-auto py-6 h-full mt-4">
-      <ul class="space-y-1">
-        <li>
-          <a href="javascript:void(0)"
-            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
-              viewBox="0 0 512 512">
-            </svg>
-            <span>Dashboard</span>
-          </a>
-        </li>
-        <li>
-          <a href="/admin/customers"
-            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
-              viewBox="0 0 512 512">
-            </svg>
-            <span>Customers</span>
-          </a>
-        </li>
-        <li>
-          <a href="/admin/products"
-            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
-              viewBox="0 0 24 24">
-            </svg>
-            <span>Products</span>
-          </a>
-        </li>
-        <li>
-          <a href="/admin/addProducts"
-            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all ">
-              <g fill-opacity=".9">
-              </g>
-            </svg>
-            <span class="ml-8">Add products</span>
-          </a>
-        </li>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     
-        <li>
-          <a href="/admin/coupons"
-            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
-              viewBox="0 0 512.003 512.003">
-            </svg>
-            <span>Coupons</span>
-          </a>
-        </li>
-          <a href="/admin/orders"
-            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
-              viewBox="0 0 512.003 512.003">
-            </svg>
-            <span>Orders</span>
-          </a>
-        </li>
-        <li>
-          <a href="/admin/banners"
-            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
-              viewBox="0 0 511.877 511.877">
-            </svg>
-            <span>Banners</span>
-          </a>
-        </li>
-        <li>
-          <a href="/admin/offers"
-            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
-              viewBox="0 0 193.769 193.769">
-            </svg>
-            <span>Offers</span>
-          </a>
-        </li>
-        <li>
-          <a href="/admin/categories"
-            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
-              viewBox="0 0 512 512">
-            </svg>
-            <span>Categories</span>
-          </a>
-        </li>
-        <li>
-          <a href="/admin/logout"
-            class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4"
-              viewBox="0 0 6.35 6.35">
-            </svg>
-            <span>Logout</span>
-          </a>
-        </li>
-      </ul>
+    </head>
+    <body>
+        <div class="font-sans">
+            <div class="p-4 lg:max-w-5xl max-w-lg mx-auto">
+                <div class="grid items-start grid-cols-1 lg:grid-cols-2 gap-6 max-lg:gap-12">
+        
+                    <div class="w-full lg:sticky top-0 sm:flex gap-2">
+                        <div class="sm:space-y-3 w-16 max-sm:w-12 max-sm:flex max-sm:mb-4 max-sm:gap-4">
+                            <img src="https://readymadeui.com/images/product1.webp" alt="Product1" class="w-full cursor-pointer rounded-md outline" />
+                            <img src="https://readymadeui.com/images/product6.webp" alt="Product2" class="w-full cursor-pointer rounded-md" />
+                            
+                        </div>
+                        <img src="https://readymadeui.com/images/product2.webp" alt="Product" class="w-4/5 rounded-md object-cover" />
+                    </div>
+        
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Adjective Attire | T-shirt</h2>
+                        <div class="flex flex-wrap gap-4 mt-4">
+                            <p class="text-gray-800 text-xl font-bold">$12</p>
+                            <p class="text-gray-400 text-xl"><strike>$16</strike> <span class="text-sm ml-1.5">Tax included</span></p>
+                        </div>
+        
+                        <div class="flex space-x-2 mt-4">
+                            <svg class="w-5 fill-blue-600" viewBox="0 0 14 13" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M7 0L9.4687 3.60213L13.6574 4.83688L10.9944 8.29787L11.1145 12.6631L7 11.2L2.8855 12.6631L3.00556 8.29787L0.342604 4.83688L4.5313 3.60213L7 0Z" />
+                            </svg>
+                            <svg class="w-5 fill-blue-600" viewBox="0 0 14 13" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M7 0L9.4687 3.60213L13.6574 4.83688L10.9944 8.29787L11.1145 12.6631L7 11.2L2.8855 12.6631L3.00556 8.29787L0.342604 4.83688L4.5313 3.60213L7 0Z" />
+                            </svg>
+                            <svg class="w-5 fill-blue-600" viewBox="0 0 14 13" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M7 0L9.4687 3.60213L13.6574 4.83688L10.9944 8.29787L11.1145 12.6631L7 11.2L2.8855 12.6631L3.00556 8.29787L0.342604 4.83688L4.5313 3.60213L7 0Z" />
+                            </svg>
+                            <svg class="w-5 fill-blue-600" viewBox="0 0 14 13" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M7 0L9.4687 3.60213L13.6574 4.83688L10.9944 8.29787L11.1145 12.6631L7 11.2L2.8855 12.6631L3.00556 8.29787L0.342604 4.83688L4.5313 3.60213L7 0Z" />
+                            </svg>
+                            <svg class="w-5 fill-[#CED5D8]" viewBox="0 0 14 13" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M7 0L9.4687 3.60213L13.6574 4.83688L10.9944 8.29787L11.1145 12.6631L7 11.2L2.8855 12.6631L3.00556 8.29787L0.342604 4.83688L4.5313 3.60213L7 0Z" />
+                            </svg>
+                        </div>
+        
+                       
+        
+                     <div class="mt-8 flex space-x-4">
+        <button type="button" class="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md">
+            Add to Cart
+        </button>
+        <button type="button" class="w-full px-6 py-3 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-md">
+            Buy Now
+        </button>
     </div>
-  </nav>
-  
-    <div class="flex items-center justify-start h-full ml-64">
-        <div class="w-full max-w-md ml-4"> <!-- Added ml-4 for margin-left -->
-            <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                <div class="mb-4">
-                    <label for="category" class="block text-gray-700 text-sm font-bold mb-2">Category Name</label>
-                    <input type="text" id="category" name="category" required 
-                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-                           placeholder="Enter category name">
+    
+        
+                        <div class="mt-8">
+                            <h3 class="text-xl font-bold text-gray-800">About the item</h3>
+                            <ul class="space-y-3 list-disc mt-4 pl-4 text-sm text-gray-800">
+                                <li>A gray t-shirt is a wardrobe essential because it is so versatile.</li>
+                                <li>Available in a wide range of sizes, from extra small to extra large, and even in tall and petite sizes.</li>
+                                <li>This is easy to care for. They can usually be machine-washed and dried on low heat.</li>
+                                <li>You can add your own designs, paintings, or embroidery to make it your own.</li>
+                            </ul>
+                        </div>
+        
+                        <div class="mt-8">
+                            <h3 class="text-xl font-bold text-gray-800">Reviews(10)</h3>
+                            <div class="space-y-3 mt-4">
+                                <div class="flex items-center">
+                                    <p class="text-sm text-gray-800 font-bold">5.0</p>
+                                    <svg class="w-5 fill-blue-600 ml-1.5" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M7 0L9.4687 3.60213L13.6574 4.83688L10.9944 8.29787L11.1145 12.6631L7 11.2L2.8855 12.6631L3.00556 8.29787L0.342604 4.83688L4.5313 3.60213L7 0Z" />
+                                    </svg>
+                                    <div class="bg-gray-300 rounded-md w-full h-2 ml-3">
+                                        <div class="w-2/3 h-full rounded-md bg-blue-600"></div>
+                                    </div>
+                                    <p class="text-sm text-gray-800 font-bold ml-3">66%</p>
+                                </div>
+        
+                                <div class="flex items-center">
+                                    <p class="text-sm text-gray-800 font-bold">4.0</p>
+                                    <svg class="w-5 fill-blue-600 ml-1.5" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M7 0L9.4687 3.60213L13.6574 4.83688L10.9944 8.29787L11.1145 12.6631L7 11.2L2.8855 12.6631L3.00556 8.29787L0.342604 4.83688L4.5313 3.60213L7 0Z" />
+                                    </svg>
+                                    <div class="bg-gray-300 rounded-md w-full h-2 ml-3">
+                                        <div class="w-1/3 h-full rounded-md bg-blue-600"></div>
+                                    </div>
+                                    <p class="text-sm text-gray-800 font-bold ml-3">33%</p>
+                                </div>
+        
+                                <div class="flex items-center">
+                                    <p class="text-sm text-gray-800 font-bold">3.0</p>
+                                    <svg class="w-5 fill-blue-600 ml-1.5" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M7 0L9.4687 3.60213L13.6574 4.83688L10.9944 8.29787L11.1145 12.6631L7 11.2L2.8855 12.6631L3.00556 8.29787L0.342604 4.83688L4.5313 3.60213L7 0Z" />
+                                    </svg>
+                                    <div class="bg-gray-300 rounded-md w-full h-2 ml-3">
+                                        <div class="w-1/6 h-full rounded-md bg-blue-600"></div>
+                                    </div>
+                                    <p class="text-sm text-gray-800 font-bold ml-3">16%</p>
+                                </div>
+        
+                                <div class="flex items-center">
+                                    <p class="text-sm text-gray-800 font-bold">2.0</p>
+                                    <svg class="w-5 fill-blue-600 ml-1.5" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M7 0L9.4687 3.60213L13.6574 4.83688L10.9944 8.29787L11.1145 12.6631L7 11.2L2.8855 12.6631L3.00556 8.29787L0.342604 4.83688L4.5313 3.60213L7 0Z" />
+                                    </svg>
+                                    <div class="bg-gray-300 rounded-md w-full h-2 ml-3">
+                                        <div class="w-1/12 h-full rounded-md bg-blue-600"></div>
+                                    </div>
+                                    <p class="text-sm text-gray-800 font-bold ml-3">8%</p>
+                                </div>
+        
+                                <div class="flex items-center">
+                                    <p class="text-sm text-gray-800 font-bold">1.0</p>
+                                    <svg class="w-5 fill-blue-600 ml-1.5" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M7 0L9.4687 3.60213L13.6574 4.83688L10.9944 8.29787L11.1145 12.6631L7 11.2L2.8855 12.6631L3.00556 8.29787L0.342604 4.83688L4.5313 3.60213L7 0Z" />
+                                    </svg>
+                                    <div class="bg-gray-300 rounded-md w-full h-2 ml-3">
+                                        <div class="w-[6%] h-full rounded-md bg-blue-600"></div>
+                                    </div>
+                                    <p class="text-sm text-gray-800 font-bold ml-3">6%</p>
+                                </div>
+                            </div>
+        
+                            <button type="button" class="w-full mt-8 px-6 py-2.5 border border-blue-600 bg-transparent text-gray-800 text-sm font-semibold rounded-md">Read all reviews</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="mb-6">
-                    <label for="image" class="block text-gray-700 text-sm font-bold mb-2">Upload Image</label>
-                    <input type="file" id="image" name="image" accept="image/*" required 
-                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                </div>
-                <div class="flex items-center justify-between">
-                    <button type="submit" 
-                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                        Add Category
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
-    </div>
-    <div class="font-sans overflow-x-auto flex items-center ml-64">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-100 whitespace-nowrap">
-          <tr>
-            <th class="px-4 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Image
-            </th>
-            <th class="px-4 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Name
-            </th>
-            <th class="px-4 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Actions
-            </th>
-          </tr>
-        </thead>
-
-        <tbody class="bg-white divide-y divide-gray-200 whitespace-nowrap">
-          <% categories.forEach(category => { %>
-          <tr>
-            <td class="px-4 py-4 text-sm text-gray-800">
- <img src="/categoryImages/<%= category.img %>" alt="<%= category.name %>" class="w-16 h-16 object-cover">
-            </td>
-            <td class="px-4 py-4 text-sm text-gray-800">
-             <%= category.name %>
-            </td>
-            <td class="px-4 py-4 text-sm text-gray-800">
-             <a href="/admin/categories/edit/<%= category._id %>" class="text-blue-500 hover:underline">Edit</a>
-                <form action="/admin/categories/block-unblock/<%=category._id%>" method="post" class="inline">
-                    <button type="submit" class="text-red-500 hover:underline ml-2">
-                        <%= category.isBlocked ? 'Unblock' : 'Block' %>
-                    </button>
-                </form>
-            </td>
-          </tr>
-          <% }); %>
-        </tbody>
-      </table>
-    </div>
+    </body>
+    </html>

@@ -1,0 +1,186 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= product.name %> - CoveHive</title>
+    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+</head>
+<body>
+    <nav class="bg-black text-white p-4">
+        <div class="container mx-auto">
+            <a href="/" class="text-2xl font-bold">CoveHive</a>
+            <a href="/products" class="ml-4">Products</a>
+        </div>
+    </nav>
+
+    <div class="container mx-auto my-8">
+        <h1 class="text-3xl font-bold mb-4"><%= product.name %></h1>
+        <div class="flex">
+            <div class="w-1/2">
+                <img src="/images/<%= product.image[0] %>" alt="<%= product.name %>" class="w-full h-auto">
+            </div>
+            <div class="w-1/2 pl-6">
+                <h2 class="text-xl font-semibold">Price: $<%= product.price.toFixed(2) %></h2>
+                <p class="mt-4"><%= product.description %></p>
+                <button class="bg-blue-500 text-white py-2 px-4 rounded mt-4">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-black text-white py-4">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2024 CoveHive. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= product.name %> - CoveHive</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+  .magnifier {
+    position: absolute;
+    border: 3px solid #ddd;
+    width: 100px;
+    height: 100px;
+    cursor: none; /* Hide the cursor when over the image */
+    display: none;
+    overflow: hidden;
+}
+
+.magnifier img {
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    object-fit: cover;
+}
+
+     </style>
+     
+</head>
+<body>
+    <div class="font-sans">
+        <div class="p-4 lg:max-w-5xl max-w-lg mx-auto">
+            <div class="grid items-start grid-cols-1 lg:grid-cols-2 gap-6 max-lg:gap-12">
+
+                <div class="w-full lg:sticky top-0 sm:flex gap-2">
+                    <div class="sm:space-y-3 w-16 max-sm:w-12 max-sm:flex max-sm:mb-4 max-sm:gap-4">
+                        <img src="/uploads/<%= product.image[2] %>" alt="<%= product.name %>" class="thumbnail w-full cursor-pointer rounded-md" />
+                        <img src="/uploads/<%= product.image[1] %>" alt="<%= product.name %>" class="thumbnail w-full cursor-pointer rounded-md" />
+                        <img src="/uploads/<%= product.image[0] %>" alt="<%= product.name %>" class="thumbnail w-full cursor-pointer rounded-md" />
+                    </div>
+                    <div class="relative w-4/5 rounded-md " id="image-container">
+                        <img id="largeImage" src="/uploads/<%= product.image[0] %>" alt="<%= product.name %>" class="w-full object-cover" />
+                        <div id="magnifier" class="magnifier" style="display: none;"></div>
+                    </div>
+                </div>
+                
+                
+
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800"><%= product.name %></h2>
+                    <div class="flex flex-wrap gap-4 mt-4">
+                        <p class="text-gray-800 text-xl font-bold"><%= product.price %></p>
+                        <p class="text-gray-400 text-xl"><strike>$16</strike> <span class="text-sm ml-1.5">Tax included</span></p>
+                    </div>
+                    <div class="flex items-center mb-4">
+                        <!-- Star rating SVGs -->
+                        <span class="ml-2 text-gray-600">4.5 (120 reviews)</span>
+                    </div>
+
+                    <div class="mt-8 flex space-x-4">
+                        <button type="button" class="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md">Add to Cart</button>
+                        <button type="button" class="w-full px-6 py-3 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-md">Buy Now</button>
+                    </div>
+
+                    <div class="mt-8">
+                        <h3 class="text-xl font-bold text-gray-800">About the item</h3>
+                        <ul class="space-y-3 list-disc mt-4 pl-4 text-sm text-gray-800">
+                            <%= product.description %>
+                        </ul>
+                    </div>
+
+                    <button type="button" class="w-full mt-8 px-6 py-2.5 border border-blue-600 bg-transparent text-gray-800 text-sm font-semibold rounded-md">Read all reviews</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+
+document.addEventListener('DOMContentLoaded', function () {
+    const largeImage = document.getElementById('largeImage');
+    const magnifier = document.getElementById('magnifier');
+    const imageContainer = document.getElementById('image-container');
+
+    // Mouse move event for magnifier zoom effect
+    imageContainer.addEventListener('mousemove', function (e) {
+        const { left, top, width, height } = imageContainer.getBoundingClientRect();
+        
+        // Calculate the x and y position of the mouse relative to the image
+        const x = e.pageX - left - window.pageXOffset;
+        const y = e.pageY - top - window.pageYOffset;
+
+        // Show magnifier
+        magnifier.style.display = 'block';
+        magnifier.style.left = x - magnifier.offsetWidth / 2 + 'px';
+        magnifier.style.top = y - magnifier.offsetHeight / 2 + 'px';
+
+        // Prevent the magnifier from going outside the image boundaries
+        if (x < 0 || y < 0 || x > width || y > height) {
+            magnifier.style.display = 'none';
+        } else {
+            // Calculate the zoomed image position
+            const zoomLevel = 2; // Adjust zoom level here
+            const offsetX = -(x * zoomLevel - magnifier.offsetWidth / 2);
+            const offsetY = -(y * zoomLevel - magnifier.offsetHeight / 2);
+
+            // Set the background image and its position in magnifier
+            magnifier.style.backgroundImage = `url(${largeImage.src})`;
+            magnifier.style.backgroundSize = `${largeImage.width * zoomLevel}px ${largeImage.height * zoomLevel}px`;
+            magnifier.style.backgroundPosition = `${offsetX}px ${offsetY}px`;
+        }
+    });
+
+    // Hide magnifier when mouse leaves the image
+    imageContainer.addEventListener('mouseleave', function () {
+        magnifier.style.display = 'none';
+    });
+
+    // Thumbnail click functionality to change the large image
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    thumbnails.forEach(thumbnail => {
+        thumbnail.addEventListener('click', function () {
+            largeImage.src = this.src; // Change the large image source
+
+            // Reset magnifier when the image is changed
+            magnifier.style.display = 'none';
+        });
+    });
+});
+
+        // Select all thumbnail images
+        const thumbnails = document.querySelectorAll('.thumbnail');
+    
+        // Select the large image container
+        const largeImage = document.getElementById('largeImage');
+    
+        // Add click event listeners to each thumbnail
+        thumbnails.forEach(thumbnail => {
+            thumbnail.addEventListener('click', function() {
+                // Set the large image's source to the clicked thumbnail's source
+                largeImage.src = this.src;
+            });
+        });
+
+    
+    </script>
+    
+    
+</body>
+</html>

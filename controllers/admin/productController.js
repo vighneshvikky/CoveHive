@@ -157,3 +157,18 @@ exports.deleteProduct = async (req,res) => {
     console.log(error.message)
   }
 }
+
+
+exports.loadProductDetails = async (req,res) => {
+  const productId = req.params.id; // Get the product ID from the URL parameters
+  try {
+      const product = await Product.findById(productId); // Fetch the product by ID directly
+      if (!product) {
+          return res.status(404).send('Product not found'); // Handle case where product doesn't exist
+      }
+      res.render('user/productDetails', { product }); // Render the product details EJS template
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Server Error'); // Handle server errors
+  }
+}

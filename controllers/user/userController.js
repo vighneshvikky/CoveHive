@@ -2,7 +2,9 @@ const session = require('express-session');
 const User = require('../../models/user/userSchema');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
+const Product = require('../../models/admin/productModel');
+const Category = require('../../models/admin/categoryModel');
 dotenv.config()
 //------------------------------------ Function to hash the password---------------------------------------
 const securePassword = async (password) => {
@@ -161,7 +163,12 @@ exports.verifyLogin = async (req, res) => {
 
 exports.loadHome = async (req, res) => {
     try {
-        res.render("user/userHome");
+        const products = await Product.find({isBlocked:false});
+        const categories = await Category.find({isBlocked:false});  
+        res.render("user/userHome",{
+            products,
+            categories
+        });
     } catch (error) {
         console.log(error);
     }
