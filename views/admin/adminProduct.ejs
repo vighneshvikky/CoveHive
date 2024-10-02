@@ -32,8 +32,16 @@
             <%= product.category ? product.category.name : 'No Category' %>
           </td>
           <td class="p-4 text-[15px] text-gray-800">
-            <i class="fa-solid fa-indian-rupee-sign"></i> <%= product.price %>
-          </td>
+            <i class="fa-solid fa-indian-rupee-sign"></i> 
+            <% if(product.discount > 0) { %>
+                <% const discountAmount = (product.price * product.discount) / 100; %>  
+                <% const discountedPrice = product.price - discountAmount; %>
+                <%= discountedPrice.toFixed(2) %> <!-- Output the discounted price -->
+            <% } else { %>
+                <%= product.price.toFixed(2) %> <!-- Output the original price if no discount -->
+            <% } %>
+        </td>
+        
           <td class="p-4 text-[15px] text-gray-800">
             <%= product.stock %>
           </td>

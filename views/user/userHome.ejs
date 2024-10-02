@@ -1,59 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CoveHive - Premium  Phone</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        black: '#000000',
-                        navy: '#14213d',
-                        lightGray: '#e5e5e5',
-                        white: '#ffffff',
-                    }
-                }
-            }
-        }
-    </script>
-</head>
-<body class="min-h-screen flex flex-col bg-white">
-    <nav class="bg-black text-white p-4 sticky top-0 z-10 shadow-md">
-        <div class="container mx-auto flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold">CoveHive</a>
-            <div class="hidden md:flex space-x-6">
-                <a href="#" class="hover:text-lightGray transition duration-300">Home</a>
-                <li class="relative group">
-                    <a href="#" class="hover:text-lightGray transition duration-300">Devices</a>
-                    <ul class="absolute left-0 mt-2 w-48 bg-white text-black border border-lightGray rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition duration-300 z-20">
-                        <% categories.forEach((category) => { %>
-                            <li>
-                                <a href="/devices/<%= category._id %>" class="block px-4 py-2 hover:bg-lightGray transition duration-300">
-                                    <%= category.name %>
-                                </a>
-                            </li>
-                        <% }); %>
-                    </ul>
-                </li> 
-               </select>
-                <a href="#" class="hover:text-lightGray transition duration-300">My Account</a>
-                <a href="#" class="hover:text-lightGray transition duration-300">My Orders</a>
-                <a href="#" class="hover:text-lightGray transition duration-300">Wishlist</a>
-                <a href="/login" class="hover:text-lightGray transition duration-300">Login</a>
-            </div>
-            <div class="md:hidden flex space-x-4">
-                <i class="fas fa-shopping-bag"></i>
-                <i class="fas fa-user"></i>
-                <i class="fas fa-heart"></i>
-                <i class="fas fa-sign-in-alt"></i>
-                <i class="fas fa-bars"></i>
-            </div>
-        </div>
-    </nav>
+<%- include('../layouts/userHeader.ejs') %>
 
     <main class="flex-grow">
         <!-- Banner Section -->
@@ -70,24 +15,14 @@
             <div class="container mx-auto px-4">
                 <h2 class="text-3xl font-bold mb-10 text-center text-navy">Our Collections</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="bg-white rounded-lg overflow-hidden shadow-lg transition duration-300 transform hover:scale-105">
-                        <img src="/photo-1699892131446-3aebcff41fb1.jpg" alt="iPhone Cases" class="w-full h-48 object-cover">
-                        <div class="p-6">
-                            <h3 class="text-xl font-semibold text-navy">iPhone </h3>
-                        </div>  
-                    </div>
-                    <div class="bg-white rounded-lg overflow-hidden shadow-lg transition duration-300 transform hover:scale-105">
-                        <img src="/goolelogo.jpg" alt="Pixel Cases" class="w-full h-48 object-cover">
-                        <div class="p-6">
-                            <h3 class="text-xl font-semibold text-navy">Pixel</h3>
+                    <% categories.forEach(category => { %>
+                        <div class="bg-white rounded-lg overflow-hidden shadow-lg transition duration-300 transform hover:scale-105">
+                            <a href="/category/<%=category._id %>"><img src="/categoryImages/<%= category.img %>" alt="category image" class="w-full h-48 object-cover"></a>
+                            <div class="p-6">
+                                <h3 class="text-xl font-semibold text-navy"><%= category.name %></h3>
+                            </div>  
                         </div>
-                    </div>
-                    <div class="bg-white rounded-lg overflow-hidden shadow-lg transition duration-300 transform hover:scale-105">
-                        <img src="/pexels-photo-20348034.webp" alt="Galaxy Cases" class="w-full h-48  object-cover">
-                        <div class="p-6">
-                            <h3 class="text-xl font-semibold text-navy">Galaxy</h3>
-                        </div>
-                    </div>
+                  <% })%>
                 </div>
             </div>
         </section>
@@ -101,7 +36,14 @@
                  <a href="/products/<%= product._id %>"><img src="/uploads/<%= product.image[0] %>  %>" alt="<%= product.name %>" class="w-full h-48 object-cover"></a> 
                   <div class="p-6">
                       <h3 class="text-lg font-semibold text-navy mb-2"><%= product.name %></h3>
-                      <p class="text-xl font-bold text-black"><%= product.price.toFixed(2) %></p> <!-- Assuming price is a number -->
+                      <p class="text-xl font-bold text-black"><i class="fa-solid fa-indian-rupee-sign"></i> 
+                        <% if(product.discount > 0) { %>
+                            <% const discountAmount = (product.price * product.discount) / 100; %>  
+                            <% const discountedPrice = product.price - discountAmount; %>
+                            <%= discountedPrice.toFixed(2) %> <!-- Output the discounted price -->
+                        <% } else { %>
+                            <%= product.price.toFixed(2) %> <!-- Output the original price if no discount -->
+                        <% } %></p> <!-- Assuming price is a number -->
                   </div>
               </div>
           <% }); %>
@@ -112,17 +54,6 @@
        
     </main>
 
-    <footer class="bg-navy text-white py-8">
-        <div class="container mx-auto px-4 text-center">
-            <h2 class="text-2xl font-bold mb-4">CoveHive</h2>
-            <p class="mb-4"> Premium  Phone for your beloved ones</p>
-            <div class="flex justify-center space-x-4 mb-4">
-                <a href="#" class="hover:text-lightGray transition duration-300">Privacy Policy</a>
-                <a href="#" class="hover:text-lightGray transition duration-300">Terms of Service</a>
-                <a href="#" class="hover:text-lightGray transition duration-300">Contact Us</a>
-            </div>
-            <p>&copy; 2024 CoveHive. All rights reserved.</p>
-        </div>
-    </footer>
-</body>
-</html>
+
+    <%- include('../layouts/userFooter.ejs') %>
+   

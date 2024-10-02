@@ -10,11 +10,11 @@ const User = require('../../models/user/userSchema');
 const ProductController = require('../../controllers/admin/productController');
 
 // user_route.get('/',userAuth.isLogout,userController.loadHome);
-user_route.get('/',userController.loadHome)
+user_route.get('/',userController.loadLanding)
 
 
 //--------------------------------for Sign Up----------------------------------------
-
+user_route.get('/home',userController.loadHome);
 user_route.get('/register',userController.loadSignup);
 user_route.post('/register',userController.insertUser);
 
@@ -45,6 +45,10 @@ user_route.get('/products/:id',ProductController.loadProductDetails)
 
 //----------------------------------google authentication ---------------------------
 user_route.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+//----------------------------------category page ---------------------------------
+
+user_route.get('/category/:id',userController.loadCategory)
 
 // Google OAuth callback route
 user_route.get('/auth/google/callback', 

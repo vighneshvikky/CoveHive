@@ -2,95 +2,73 @@
 
 <form action="/admin/products/edit/<%= product._id %>" method="POST" enctype="multipart/form-data" class="bg-white p-8 rounded-md shadow-md">
 
-    <div class="mb-4">
-        <label for="name" class="block text-gray-700">Product Name</label>
-        <input type="text" id="name" name="name" value="<%= product.name %>" class="w-full p-2 border border-gray-300 rounded-md" required>
-    </div>
+  <!-- Product Name -->
+  <div class="mb-4">
+      <label for="name" class="block text-gray-700">Product Name</label>
+      <input type="text" id="name" name="name" value="<%= product.name %>" class="w-full p-2 border border-gray-300 rounded-md" required>
+  </div>
 
-    <!-- Product Description -->
-    <div class="mb-4">
-        <label for="description" class="block text-gray-700">Description</label>
-        <textarea id="description" name="description" class="w-full p-2 border border-gray-300 rounded-md" rows="5" required><%= product.description %></textarea>
-    </div>
+  <!-- Product Description -->
+  <div class="mb-4">
+      <label for="description" class="block text-gray-700">Description</label>
+      <textarea id="description" name="description" class="w-full p-2 border border-gray-300 rounded-md" rows="5" required><%= product.description %></textarea>
+  </div>
 
-    <!-- Product Price -->
-    <div class="mb-4">
-        <label for="price" class="block text-gray-700">Price</label>
-        <input type="number" id="price" name="price" value="<%= product.price %>" class="w-full p-2 border border-gray-300 rounded-md" required>
-    </div>
+  <!-- Product Price -->
+  <div class="mb-4">
+      <label for="price" class="block text-gray-700">Price</label>
+      <input type="number" id="price" name="price" value="<%= product.price %>" class="w-full p-2 border border-gray-300 rounded-md" required>
+  </div>
+  <div class="mb-4">
+    <label class="block text-gray-700 text-sm font-bold mb-2" for="discount">
+      discount
+    </label>
+    <input 
+      class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+      type="text" 
+      id="discount" 
+      name="discount" 
+      value="50"
+      required>
+  </div>
+  <!-- Product Category -->
+  <div class="mb-4">
+      <label for="category" class="block text-gray-700">Category</label>
+      <select id="category" name="category" class="w-full p-2 border border-gray-300 rounded-md" required>
+          <% categories.forEach(function(category) { %>
+              <option value="<%= category._id %>" <%= category._id.equals(product.category._id) ? 'selected' : '' %> >
+                  <%= category.name %>
+              </option>
+          <% }); %>
+      </select>
+  </div>
 
-    <!-- Product Category -->   
-    <div class="mb-4">
-        <label for="category" class="block text-gray-700">Category</label>
-        <select id="category" name="category" class="w-full p-2 border border-gray-300 rounded-md" required>
-            <% categories.forEach(function(category) { %>
-                <option value="<%= category._id %>" <%= category._id.equals(product.category._id) ? 'selected' : '' %> >
-                    <%= category.name %>
-                </option>
-            <% }); %>
-        </select>
-    </div>
-    
-    
-    
-    <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="image">Product Images</label>
-        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-700 leading-tight focus:outline-none focus:shadow-outline" type="file" id="imageInput" name="images" accept="image/*" value="<%= product.image %>" multiple >
+  <!-- Product Images -->
+  <div class="mb-4">
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="image">Product Images</label>
+      <input class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-700 leading-tight focus:outline-none focus:shadow-outline" type="file" id="imageInput" name="images" accept="image/*" multiple value="<%= product.image[0] %>"> 
+  </div>
+
+  <!-- Image Preview and Crop Section -->
+  <div class="cropper-container max-w-lg mx-auto p-4 bg-gray-100 border rounded-lg">
+      <div id="imagePreviews" class="flex flex-wrap justify-center gap-4">
+          <!-- Dynamically insert image previews here -->
       </div>
-      
-      <!-- Image Preview for Cropping -->
-      <div class="cropper-container max-w-lg mx-auto p-4 bg-gray-100 border rounded-lg">
-        <div id="imagePreviews" class="flex flex-wrap justify-center gap-4">
-          <!-- Dynamically insert image previews as background images -->
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-      </div>
-      
-      
-      <!-- Crop Buttons -->
-      <div class="flex justify-between mt-4">
-        <button 
-          type="button" 
-          id="cropButton" 
-          style="display: none;" 
-          class="bg-purple-600 text-white font-semibold py-2 px-4 rounded hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition duration-300"
-        >
-          Add Product
-        </button>
-        
-        <button 
-          type="button" 
-          id="cancelButton" 
-          style="display: none;" 
-          class="bg-gray-400 text-white font-semibold py-2 px-4 rounded hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-50 transition duration-300"
-        >
-          Cancel
-        </button>
-      </div>
-      
-      
-      
-      
+  </div>
 
-          <!-- <button type="submit" id="addProductBtn" class="px-5 py-2.5 rounded-lg text-sm tracking-wider font-medium border border-blue-700 outline-none bg-transparent hover:bg-blue-700 text-blue-700 hover:text-white transition-all duration-300 hidden">Add Product</button>
-         -->
-          <button type="submit">Edit Product</button>
+  <!-- Crop and Cancel Buttons -->
+  <div class="flex justify-between mt-4">
+      <button type="button" id="cropButton" style="display: none;" class="bg-purple-600 text-white py-2 px-4 rounded">Add Product</button>
+      <button type="button" id="cancelButton" style="display: none;" class="bg-gray-400 text-white py-2 px-4 rounded">Cancel</button>
+  </div>
 
-        <a href="/admin/products">
-            <button 
-              class="bg-green-600 text-white font-semibold py-2 px-4 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition duration-300"
-            >
-              Back to Product
-            </button>
-          </a>
-          
-      
-      
-      
-          </form> <!-- Added ID here -->
+  <!-- Submit Button -->
+  <button type="submit" class="bg-purple-600 text-white py-2 px-4 rounded">Edit Product</button>
+
+  <!-- Back to Products Button -->
+  <a href="/admin/products" class="bg-green-600 text-white py-2 px-4 rounded">Back to Product</a>
+</form>
+<!-- Added ID here -->
         </div>
       
         <div id="productModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center hidden">

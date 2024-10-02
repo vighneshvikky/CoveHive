@@ -159,11 +159,22 @@ exports.verifyLogin = async (req, res) => {
 };
 
 //------------------------------------Load home page-------------------------------------------------------
-
+exports.loadLanding = async (req,res) => {
+    try {
+        const products = await Product.find({isBlocked:false}).limit(8);
+        const categories = await Category.find({isBlocked:false});  
+        res.render("user/landingPage",{
+            products,
+            categories
+        });
+    } catch (error) {
+        console.log(error.message)
+    }
+}
 
 exports.loadHome = async (req, res) => {
     try {
-        const products = await Product.find({isBlocked:false});
+        const products = (await Product.find({isBlocked:false}).limit(8));
         const categories = await Category.find({isBlocked:false});  
         res.render("user/userHome",{
             products,
@@ -201,3 +212,22 @@ exports.resendOtp = async (req, res) => {
         console.log(error.message);
     }
 };
+
+
+// -------------------------------------------load category------------------------------------------------
+
+
+exports.loadCategory = async (req,res) => {
+    const categoryId = req.params.id;
+    try {
+
+    const category = await Category.findById(categoryId);
+    const products = await Product.find({category:categoryId})
+       res.render('user/userCategory',{
+        category,
+        products
+       }) 
+    } catch (error) {
+       console.log(error.message) 
+    }
+}

@@ -69,7 +69,7 @@ module.exports = admin_routes;
 
 
 admin_routes.get('/products',productController.loadProduct);
-admin_routes.get('/addProducts',productController.addProduct)
+admin_routes.get('/addProducts',productController.addProduct);
 admin_routes.post('/product/add',load.array('images', 10),productController.postAddProduct);
 admin_routes.post('/toggle-block-product/:id',productController.blockUnblockProduct);
 admin_routes.get('/products/edit/:id',productController.loadEditProduct);

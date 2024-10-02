@@ -10,15 +10,20 @@ exports.loadProduct = async(req,res) => {
          const totalProduct = await Product.countDocuments();
         const productData = await Product.find({isAvailable:true}).populate('category')
         .skip((page-1)*limit)
-        .limit(limit);        
+        .limit(limit);  
+              
         const categories = await Category.find();
+        
+       
 
+   
         res.render('admin/adminProduct',{
           products:productData,
          categories,
          currentPage:page,
-         totalPages:Math.ceil(totalProduct / limit)
-        })
+         totalPages:Math.ceil(totalProduct / limit),
+      
+        });
     } catch (error) {
      console.log(error.message);
         
@@ -26,8 +31,11 @@ exports.loadProduct = async(req,res) => {
 }
 exports.addProduct = async(req,res) => {
     try {
+      
       const categories = await Category.find();
-       res.render('admin/addProduct',{categories}) 
+       res.render('admin/addProduct',{
+        categories
+      }) 
     } catch (error) {
       console.log(error.message)  
     }
@@ -36,7 +44,7 @@ exports.postAddProduct = async(req,res) => {
     try { 
       //console.log(JSON.stringify(req.files, null, 2)+'hai')
         const images = req.files.map(file => file.filename);
-        const { name, description, price, stock, category, subcategory, compatibleDevices } = req.body;
+        const { name, description, price, stock, category, subcategory, compatibleDevices, discount} = req.body;
     const newProduct = new Product({
       name,
       description,
@@ -45,7 +53,8 @@ exports.postAddProduct = async(req,res) => {
       category,
       subcategory,
       compatibleDevices,
-      image:images  
+      image:images,
+      discount
     });
 
     //console.log(newProduct)
@@ -123,13 +132,8 @@ exports.postEditProduct = async (req,res) => {
       product.price = req.body.price;
       product.category =req.body.category;
       product.image = imagePaths;
+      product.discount = req.body.discount;
 
-    //console.log(product.category.name)
-  
-    // if (req.files && req.files.length > 0) {
-    //     const imagePaths = req.files.map(file => file.filename); // Get filenames from uploaded images
-    //     product.image = imagePaths; // Overwrite the existing images with the new ones
-    // }
 
     await product.save();
 
@@ -163,10 +167,17 @@ exports.loadProductDetails = async (req,res) => {
   const productId = req.params.id; // Get the product ID from the URL parameters
   try {
       const product = await Product.findById(productId); // Fetch the product by ID directly
+      const relatedProducts = await Product.find({
+        category:product.category,
+        _id:{$ne:product._id}
+      }).limit(4)
       if (!product) {
           return res.status(404).send('Product not found'); // Handle case where product doesn't exist
       }
-      res.render('user/productDetails', { product }); // Render the product details EJS template
+      res.render('user/productDetails', {
+         product,
+         relatedProducts 
+        }); // Render the product details EJS template
   } catch (error) {
       console.error(error);
       res.status(500).send('Server Error'); // Handle server errors
