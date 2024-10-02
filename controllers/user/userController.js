@@ -102,7 +102,7 @@ exports.verifyOtp = async (req, res) => {
 
                 const userData = await user.save(); // Save user to the database
                 req.session.user_id = userData._id; // Set session user ID after registration
-                res.render("user/userHome");
+                res.redirect("/home");
             } else {
                 res.render("user/userSignup", { message: "Session expired, please try signing up again" });
             }
