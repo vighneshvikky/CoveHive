@@ -133,6 +133,7 @@ exports.postEditProduct = async (req,res) => {
       product.category =req.body.category;
       product.image = imagePaths;
       product.discount = req.body.discount;
+      product.stock = req.body.stock;
 
 
     await product.save();

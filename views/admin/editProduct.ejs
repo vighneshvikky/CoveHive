@@ -31,6 +31,18 @@
       value="50"
       required>
   </div>
+  <div class="mb-4">
+    <label class="block text-gray-700 text-sm font-bold mb-2" for="stock">
+      Stock
+    </label>
+    <input 
+      class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+      type="number" 
+      id="stock" 
+      name="stock"
+      value="5" 
+      required>
+  </div>
   <!-- Product Category -->
   <div class="mb-4">
       <label for="category" class="block text-gray-700">Category</label>
@@ -43,24 +55,23 @@
       </select>
   </div>
 
-  <!-- Product Images -->
   <div class="mb-4">
-      <label class="block text-gray-700 text-sm font-bold mb-2" for="image">Product Images</label>
-      <input class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-700 leading-tight focus:outline-none focus:shadow-outline" type="file" id="imageInput" name="images" accept="image/*" multiple value="<%= product.image[0] %>"> 
-  </div>
+    <label class="block text-gray-700 text-sm font-bold mb-2" for="image">Product Images</label>
+    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-700 leading-tight focus:outline-none focus:shadow-outline" type="file" id="imageInput" name="images" accept="image/*" multiple>
+</div>
 
-  <!-- Image Preview and Crop Section -->
-  <div class="cropper-container max-w-lg mx-auto p-4 bg-gray-100 border rounded-lg">
-      <div id="imagePreviews" class="flex flex-wrap justify-center gap-4">
-          <!-- Dynamically insert image previews here -->
-      </div>
-  </div>
+<!-- Image Preview and Crop Section -->
+<div class="cropper-container max-w-lg mx-auto p-4 bg-gray-100 border rounded-lg">
+    <div id="imagePreviews" class="flex flex-wrap justify-center gap-4">
+        <!-- Existing and new image previews will be inserted here -->
+    </div>
+</div>
 
-  <!-- Crop and Cancel Buttons -->
-  <div class="flex justify-between mt-4">
-      <button type="button" id="cropButton" style="display: none;" class="bg-purple-600 text-white py-2 px-4 rounded">Add Product</button>
-      <button type="button" id="cancelButton" style="display: none;" class="bg-gray-400 text-white py-2 px-4 rounded">Cancel</button>
-  </div>
+<!-- Crop and Cancel Buttons -->
+<div class="flex justify-between mt-4">
+    <button type="button" id="cropButton" style="display: none;" class="bg-purple-600 text-white py-2 px-4 rounded">Crop and Update</button>
+    <button type="button" id="cancelButton" style="display: none;" class="bg-gray-400 text-white py-2 px-4 rounded">Cancel</button>
+</div>
 
   <!-- Submit Button -->
   <button type="submit" class="bg-purple-600 text-white py-2 px-4 rounded">Edit Product</button>
@@ -98,123 +109,116 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
       <script>
         document.addEventListener('DOMContentLoaded', function() {
-        const addProductBtn = document.getElementById('addProductBtn');
-        const productModal = document.getElementById('productModal');
-        const closeModalBtn = document.getElementById('closeModal');
-      
-        function showModal() {
-          productModal.classList.remove('hidden');
-          document.body.style.overflow = 'hidden';
-        }
-      
-        function hideModal() {
-          productModal.classList.add('hidden');
-          document.body.style.overflow = '';
-        }
-      
-        //addProductBtn.addEventListener('click', showModal);
-      
-        // Close modal on click outside
-        window.onclick = function(event) {
-          if (event.target === productModal) {
-            hideModal();
-          }
-        };
-      
-        // Close modal on close button click
-        closeModalBtn.addEventListener('click', hideModal);
+  const imageInput = document.getElementById('imageInput');
+  const imagePreviewsContainer = document.getElementById('imagePreviews');
+  const cropButton = document.getElementById('cropButton');
+  const cancelButton = document.getElementById('cancelButton');
+  const productForm = document.querySelector('form');
+  let cropperInstances = [];
+
+  // Function to create image preview
+  function createImagePreview(src, isExisting = false) {
+    const previewContainer = document.createElement('div');
+    previewContainer.className = 'relative';
+
+    const imgElement = document.createElement('img');
+    imgElement.src = src;
+    imgElement.classList.add('preview-image', 'w-32', 'h-32', 'object-cover', 'rounded-lg');
+    previewContainer.appendChild(imgElement);
+
+    const removeButton = document.createElement('button');
+    removeButton.className = 'absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1';
+    removeButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+    removeButton.onclick = function() {
+      previewContainer.remove();
+      if (!isExisting) {
+        cropperInstances = cropperInstances.filter(instance => instance.image !== imgElement);
+      }
+    };
+    previewContainer.appendChild(removeButton);
+
+    imagePreviewsContainer.appendChild(previewContainer);
+
+    if (!isExisting) {
+      // Initialize Cropper.js for new images
+      const cropper = new Cropper(imgElement, {
+        aspectRatio: 1,
+        viewMode: 1,
+        autoCropArea: 1,
+        responsive: true,
+        scalable: true,
+        zoomable: true,
+        rotatable: true,
+        minCropBoxWidth: 50,
+        minCropBoxHeight: 50,
       });
-        let cropperInstances = [];
-      const imageInput = document.getElementById('imageInput');
-      const imagePreviewsContainer = document.getElementById('imagePreviews');
-      const cropButton = document.getElementById('cropButton');
-      const cancelButton = document.getElementById('cancelButton');
-      const productForm = document.getElementById('productForm');
-      cropButton.addEventListener('click', (req,res) => {
-        productModal.classList.remove('hidden');
-        
-      });                                   
-      imageInput.addEventListener('change', function (event) {
-          const files = event.target.files;
-          imagePreviewsContainer.innerHTML = ''; // Clear previous previews
-          cropperInstances = []; // Reset cropper instances
-      
-          for (let i = 0; i < files.length; i++) {
-              const reader = new FileReader();
-              reader.onload = function (e) {
-                  const imgElement = document.createElement('img');
-                  imgElement.src = e.target.result;
-                  imgElement.classList.add('preview-image'); // Add a class for styling
-                  imagePreviewsContainer.appendChild(imgElement);
-      
-                  // Initialize Cropper.js for each image
-                  const cropper = new Cropper(imgElement, {
-                      aspectRatio: 1,
-                      viewMode: 1,
-                      autoCropArea: 1,
-                      responsive: true,
-                      scalable: true,
-                      zoomable: true,
-                      rotatable: true,
-                      minCropBoxWidth: 50,
-                      minCropBoxHeight: 50,
-                  });
-      
-                  cropperInstances.push(cropper); // Store cropper instances for later use
-              };
-              reader.readAsDataURL(files[i]);
-          }
-      
-          cropButton.style.display = 'inline-block'; // Show crop button
-          cancelButton.style.display = 'inline-block'; // Show cancel button
+      cropperInstances.push({ cropper, image: imgElement });
+    }
+  }
+
+
+  imageInput.addEventListener('change', function (event) {
+    const files = event.target.files;
+
+    for (let i = 0; i < files.length; i++) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        createImagePreview(e.target.result);
+      };
+      reader.readAsDataURL(files[i]);
+    }
+
+    cropButton.style.display = 'inline-block';
+    cancelButton.style.display = 'inline-block';
+  });
+
+  cropButton.addEventListener('click', function () {
+    const croppedFiles = [];
+    const promises = cropperInstances.map((instance, index) => {
+      return new Promise((resolve) => {
+        const canvas = instance.cropper.getCroppedCanvas({
+          width: 200,
+          height: 200,
+          imageSmoothingEnabled: true,
+          imageSmoothingQuality: 'high'
+        });
+
+        canvas.toBlob(function (blob) {
+          const file = new File([blob], `croppedImage-${index}.png`, { type: 'image/png' });
+          croppedFiles.push(file);
+          resolve();
+        }, 'image/png');
       });
-      
-      cropButton.addEventListener('click', function () {
-          const croppedFiles = []; // Array to hold cropped images
-          const promises = cropperInstances.map((cropper, index) => {
-              return new Promise((resolve) => {
-                  const canvas = cropper.getCroppedCanvas({
-                      width: 200,
-                      height: 100,
-                      imageSmoothingEnabled: true,
-                      imageSmoothingQuality: 'high'
-                  });
-      
-                  canvas.toBlob(function (blob) {
-                      const file = new File([blob], `croppedImage-${index}.png`, { type: 'image/png' });
-                      croppedFiles.push(file); // Push cropped file into array
-                      resolve(); // Resolve promise
-                  }, 'image/png');
-              });
-          });
-      
-          Promise.all(promises).then(() => {
-              // Convert cropped files to DataTransfer object
-              const dataTransfer = new DataTransfer();
-              croppedFiles.forEach(file => {
-                  dataTransfer.items.add(file);
-              });
-      
-              // Set the file input with the cropped images
-              imageInput.files = dataTransfer.files;
-      
-              // Optionally trigger the form submit
-              cropButton.style.display = 'none';
-              cancelButton.style.display = 'none';
-              imagePreviewsContainer.innerHTML = ''; // Clear previews
-              productForm.submit(); // Submit the form with cropped images
-          });
+    });
+
+    Promise.all(promises).then(() => {
+      const dataTransfer = new DataTransfer();
+      croppedFiles.forEach(file => {
+        dataTransfer.items.add(file);
       });
-      
-      cancelButton.addEventListener('click', function () {
-          imageInput.value = ''; // Clear file input
-          imagePreviewsContainer.innerHTML = ''; // Reset image previews
-          cropButton.style.display = 'none'; // Hide crop button
-          cancelButton.style.display = 'none'; // Hide cancel button
-          cropperInstances.forEach(cropper => cropper.destroy()); // Destroy all cropper instances
-          cropperInstances = []; // Reset cropper instances
-      });
-       
+
+      imageInput.files = dataTransfer.files;
+
+      cropButton.style.display = 'none';
+      cancelButton.style.display = 'none';
+      productForm.submit();
+    });
+  });
+
+  cancelButton.addEventListener('click', function () {
+    imageInput.value = '';
+    imagePreviewsContainer.innerHTML = '';
+    cropButton.style.display = 'none';
+    cancelButton.style.display = 'none';
+    cropperInstances.forEach(instance => instance.cropper.destroy());
+    cropperInstances = [];
+
+    // Restore existing image previews
+    existingImages.forEach(imagePath => {
+      createImagePreview(imagePath, true);
+    });
+  });
+});
       </script>
 
 <%- include('../layouts/footer.ejs') %>
