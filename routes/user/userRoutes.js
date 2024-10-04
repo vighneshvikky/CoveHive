@@ -50,6 +50,11 @@ user_route.get('/auth/google', passport.authenticate('google', { scope: ['profil
 
 user_route.get('/category/:id',userController.loadCategory)
 
+//----------------------------------forget password -------------------------------
+
+user_route.get('/forgot-password',userController.loadForget)
+//user_route.post('/forgot-password',userController.postForget)
+
 // Google OAuth callback route
 user_route.get('/auth/google/callback', 
   passport.authenticate('google', { failureRedirect: '/' }),

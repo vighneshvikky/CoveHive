@@ -231,3 +231,13 @@ exports.loadCategory = async (req,res) => {
        console.log(error.message) 
     }
 }
+
+//-----------------------------------------load forget page ---------------------------
+
+exports.loadForget = async (req,res) => {
+    try {
+        res.render('user/forget')
+    } catch (error) {
+       console.log(error.message) 
+    }
+}
