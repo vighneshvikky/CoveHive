@@ -33,7 +33,11 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <% products.forEach(product => { %>
               <div class="bg-lightGray rounded-lg overflow-hidden shadow-lg transition duration-300 transform hover:scale-105">
-                 <a href="/products/<%= product._id %>"><img src="/uploads/<%= product.image[0] %>  %>" alt="<%= product.name %>" class="w-full h-48 object-cover"></a> 
+                
+                        
+
+                    <a href="/products/<%= product._id %>"><img src="/uploads/<%= product.image[0] %>  %>" alt="<%= product.name %>" class="w-full h-48 object-cover"></a> 
+
                   <div class="p-6">
                       <h3 class="text-lg font-semibold text-navy mb-2"><%= product.name %></h3>
                       <p class="text-xl font-bold text-black"><i class="fa-solid fa-indian-rupee-sign"></i> 

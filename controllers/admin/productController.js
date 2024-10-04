@@ -169,10 +169,11 @@ exports.loadProductDetails = async (req,res) => {
   try {
       const product = await Product.findById(productId); // Fetch the product by ID directly
       const relatedProducts = await Product.find({
+        isBlocked:false,
         category:product.category,
         _id:{$ne:product._id}
       }).limit(4)
-      if (!product) {
+      if (!product) { 
           return res.status(404).send('Product not found'); // Handle case where product doesn't exist
       }
       res.render('user/productDetails', {

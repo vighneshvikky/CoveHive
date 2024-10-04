@@ -222,7 +222,7 @@ exports.loadCategory = async (req,res) => {
     try {
 
     const category = await Category.findById(categoryId);
-    const products = await Product.find({category:categoryId})
+    const products = await Product.find({isBlocked:false,category:categoryId}).limit(4)
        res.render('user/userCategory',{
         category,
         products
