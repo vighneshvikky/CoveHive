@@ -161,12 +161,25 @@ exports.verifyLogin = async (req, res) => {
 //------------------------------------Load home page-------------------------------------------------------
 exports.loadLanding = async (req,res) => {
     try {
-        const products = await Product.find({isBlocked:false}).limit(8);
-        const categories = await Category.find({isBlocked:false});  
-        res.render("user/landingPage",{
+        const limit = 10; // Number of items per page
+        const page = parseInt(req.query.page) || 1; // Current page number
+        const skip = (page - 1) * limit; // Number of documents to skip
+        
+        const products = await Product.find({ isBlocked: false })
+            .sort({ createdAt: -1 }) // Sort by createdAt in descending order
+            .skip(skip) // Skip the previous pages
+            .limit(8); // Limit to 'limit' items
+        const totalProduct = await Product.countDocuments({ isBlocked: false }); // Get total count of products
+        const categories = await Category.find({ isBlocked: false });
+        
+        res.render("user/landingPage", {
             products,
-            categories
+            categories,
+            currentPage: page,
+            totalPages: Math.ceil(totalProduct / limit)
         });
+        
+
     } catch (error) {
         console.log(error.message)
     }
@@ -174,11 +187,21 @@ exports.loadLanding = async (req,res) => {
 
 exports.loadHome = async (req, res) => {
     try {
-        const products = (await Product.find({isBlocked:false}).limit(8));
+        const limit = 10; // Number of items per page
+        const page = parseInt(req.query.page) || 1; // Current page number
+        const skip = (page - 1) * limit; // Number of documents to skip
+
+        const products = await Product.find({isBlocked:false})  
+        .sort({ createdAt: -1 }) // Sort by createdAt in descending order
+        .skip(skip) // Skip the previous pages
+        .limit(8); // Limit to 'limit' items
+        const totalProduct = await Product.countDocuments({ isBlocked: false }); // Get total count of products
         const categories = await Category.find({isBlocked:false});  
         res.render("user/userHome",{
             products,
-            categories
+            categories,
+            currentPage: page,
+            totalPages: Math.ceil(totalProduct / limit)
         });
     } catch (error) {
         console.log(error);
@@ -216,21 +239,40 @@ exports.resendOtp = async (req, res) => {
 
 // -------------------------------------------load category------------------------------------------------
 
-
-exports.loadCategory = async (req,res) => {
+exports.loadCategory = async (req, res) => {
     const categoryId = req.params.id;
-    try {
+    const limit = 8; // Number of items per page
+    const page = parseInt(req.query.page) || 1; // Current page number
+    const skip = (page - 1) * limit; // Number of documents to skip
 
-    const category = await Category.findById(categoryId);
-    const products = await Product.find({isBlocked:false,category:categoryId}).limit(4)
-       res.render('user/userCategory',{
-        category,
-        products
-       }) 
+    try {
+        // Fetch the category by ID
+        const category = await Category.findById(categoryId);
+
+        // Get the total count of products in the category (excluding blocked ones)
+        const totalProducts = await Product.countDocuments({ isBlocked: false, category: categoryId });
+
+        // Fetch the products for the current page, with pagination
+        const products = await Product.find({ isBlocked: false, category: categoryId })
+            .skip(skip)  // Skip the first 'skip' number of products
+            .limit(limit);  // Limit the result to 'limit' number of products
+    
+        // Calculate the total number of pages
+        const totalPages = Math.ceil(totalProducts / limit);
+    
+        // Render the view with category, products, and pagination details
+        res.render('user/userCategory', {
+            category,
+            products,
+            currentPage: page,
+            totalPages, // total number of pages
+        });
     } catch (error) {
-       console.log(error.message) 
+        console.log(error.message);
+        res.status(500).send("An error occurred while fetching category products.");
     }
-}
+};
+
 
 //-----------------------------------------load forget page ---------------------------
 

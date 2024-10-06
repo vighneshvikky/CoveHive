@@ -75,6 +75,13 @@
           value="5" 
           required>
       </div>
+      
+  <!-- Color Selection -->
+
+
+  <!-- Other form fields (Stock, Category, Subcategory, etc.) -->
+
+  <!-- Submit Button -->
 
       <!-- Category -->
       <div class="mb-4">
@@ -108,7 +115,29 @@
           value="Apple 15 series" 
           required>
       </div>
-
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="colors">
+          Available Colors
+        </label>
+        <div id="colorInputs">
+          <!-- Color input fields will be dynamically added here -->
+          <div class="flex items-center mb-2">
+            <input 
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+              type="text" 
+              name="colors[0][colorName]" 
+              placeholder="Color Name (e.g., Black)" 
+              required>
+            <input 
+              class="ml-4 h-10 w-20 border rounded" 
+              type="color" 
+              name="colors[0][hexCode]" 
+              required>
+            <button type="button" class="ml-2 bg-red-600 text-white font-semibold py-1 px-2 rounded hover:bg-red-700 removeColorBtn">Remove</button>
+          </div>
+        </div>
+        <button type="button" id="addColorBtn" class="mt-2 bg-green-600 text-white font-semibold py-2 px-4 rounded hover:bg-green-700">Add Another Color</button>
+      </div>
       <!-- Compatible Devices -->
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="compatibleDevices">
@@ -196,135 +225,137 @@
 <!-- Modal -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 <script>
- document.addEventListener('DOMContentLoaded', function() {
-  const addProductBtn = document.getElementById('addProductBtn');
-  const productModal = document.getElementById('productModal');
-  const closeModalBtn = document.getElementById('closeModal');
-  const imageInput = document.getElementById('imageInput');
-  const imagePreviewsContainer = document.getElementById('imagePreviews');
-  const cropButton = document.getElementById('cropButton');
-  const cancelButton = document.getElementById('cancelButton');
-  const productForm = document.getElementById('productForm');
-  let cropperInstances = [];
+   document.addEventListener('DOMContentLoaded', function() {
+      const addProductBtn = document.getElementById('addProductBtn');
+      const productModal = document.getElementById('productModal');
+      const closeModalBtn = document.getElementById('closeModal');
+      const imageInput = document.getElementById('imageInput');
+      const imagePreviewsContainer = document.getElementById('imagePreviews');
+      const cropButton = document.getElementById('cropButton');
+      const cancelButton = document.getElementById('cancelButton');
+      const productForm = document.getElementById('productForm');
+      const colorInput = document.getElementById('colorInput');
+      const selectedColor = document.getElementById('selectedColor');
+      const colorValue = document.getElementById('colorValue');
+      let cropperInstances = [];
 
-  function showModal() {
-    productModal.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-  }
+      function showModal() {
+        productModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
 
-  function hideModal() {
-    productModal.classList.add('hidden');
-    document.body.style.overflow = '';
-  }
+      function hideModal() {
+        productModal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
 
-  addProductBtn.addEventListener('click', showModal);
+      addProductBtn.addEventListener('click', showModal);
 
-  // Close modal on click outside
-  window.onclick = function(event) {
-    if (event.target === productModal) {
-      hideModal();
-    }
-  };
-
-  // Close modal on close button click
-  closeModalBtn.addEventListener('click', hideModal);
-
-  imageInput.addEventListener('change', function (event) {
-    const files = event.target.files;
-    imagePreviewsContainer.innerHTML = ''; // Clear previous previews
-    cropperInstances = []; // Reset cropper instances
-
-    for (let i = 0; i < files.length; i++) {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        const previewContainer = document.createElement('div');
-        previewContainer.className = 'relative';
-
-        const imgElement = document.createElement('img');
-        imgElement.src = e.target.result;
-        imgElement.classList.add('preview-image', 'w-32', 'h-32', 'object-cover', 'rounded-lg');
-        previewContainer.appendChild(imgElement);
-
-        const removeButton = document.createElement('button');
-        removeButton.className = 'absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1';
-        removeButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
-        removeButton.onclick = function() {
-          previewContainer.remove();
-          cropperInstances = cropperInstances.filter(instance => instance.image !== imgElement);
-        };
-        previewContainer.appendChild(removeButton);
-
-        imagePreviewsContainer.appendChild(previewContainer);
-
-        // Initialize Cropper.js for each image
-        const cropper = new Cropper(imgElement, {
-          aspectRatio: 1,
-          viewMode: 1,
-          autoCropArea: 1,
-          responsive: true,
-          scalable: true,
-          zoomable: true,
-          rotatable: true,
-          minCropBoxWidth: 50,
-          minCropBoxHeight: 50,
-        });
-
-        cropperInstances.push({ cropper, image: imgElement });
+      window.onclick = function(event) {
+        if (event.target === productModal) {
+          hideModal();
+        }
       };
-      reader.readAsDataURL(files[i]);
-    }
 
-    cropButton.style.display = 'inline-block'; // Show crop button
-    cancelButton.style.display = 'inline-block'; // Show cancel button
-  });
+      closeModalBtn.addEventListener('click', hideModal);
 
-  cropButton.addEventListener('click', function () {
-    const croppedFiles = []; // Array to hold cropped images
-    const promises = cropperInstances.map((instance, index) => {
-      return new Promise((resolve) => {
-        const canvas = instance.cropper.getCroppedCanvas({
-          width: 200,
-          height: 200,
-          imageSmoothingEnabled: true,
-          imageSmoothingQuality: 'high'
+      imageInput.addEventListener('change', function (event) {
+        const files = event.target.files;
+        imagePreviewsContainer.innerHTML = ''; 
+        cropperInstances = []; 
+
+        for (let i = 0; i < files.length; i++) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const previewContainer = document.createElement('div');
+            previewContainer.className = 'relative';
+
+            const imgElement = document.createElement('img');
+            imgElement.src = e.target.result;
+            imgElement.classList.add('preview-image', 'w-32', 'h-32', 'object-cover', 'rounded-lg');
+            previewContainer.appendChild(imgElement);
+
+            const removeButton = document.createElement('button');
+            removeButton.className = 'absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1';
+            removeButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+            removeButton.onclick = function() {
+              previewContainer.remove();
+              cropperInstances = cropperInstances.filter(instance => instance.image !== imgElement);
+            };
+            previewContainer.appendChild(removeButton);
+
+            imagePreviewsContainer.appendChild(previewContainer);
+
+            const cropper = new Cropper(imgElement, {
+              aspectRatio: 1,
+              viewMode: 1,
+              autoCropArea: 1,
+              responsive: true,
+              scalable: true,
+              zoomable: true,
+              rotatable: true,
+              minCropBoxWidth: 50,
+              minCropBoxHeight: 50,
+            });
+
+            cropperInstances.push({ cropper, image: imgElement });
+          };
+          reader.readAsDataURL(files[i]);
+        }
+
+        cropButton.style.display = 'inline-block'; 
+        cancelButton.style.display = 'inline-block'; 
+      });
+
+      cropButton.addEventListener('click', function () {
+        const croppedFiles = []; 
+        const promises = cropperInstances.map((instance, index) => {
+          return new Promise((resolve) => {
+            const canvas = instance.cropper.getCroppedCanvas({
+              width: 200,
+              height: 200,
+              imageSmoothingEnabled: true,
+              imageSmoothingQuality: 'high'
+            });
+
+            canvas.toBlob(function (blob) {
+              const file = new File([blob], `croppedImage-${index}.png`, { type: 'image/png' });
+              croppedFiles.push(file); 
+              resolve();
+            }, 'image/png');
+          });
         });
 
-        canvas.toBlob(function (blob) {
-          const file = new File([blob], `croppedImage-${index}.png`, { type: 'image/png' });
-          croppedFiles.push(file); // Push cropped file into array
-          resolve();
-        }, 'image/png');
+        Promise.all(promises).then(() => {
+          const dataTransfer = new DataTransfer();
+          croppedFiles.forEach(file => {
+            dataTransfer.items.add(file);
+          });
+
+          imageInput.files = dataTransfer.files;
+
+          cropButton.style.display = 'none';
+          cancelButton.style.display = 'none';
+          imagePreviewsContainer.innerHTML = ''; 
+          productForm.submit(); 
+        });
+      });
+
+      cancelButton.addEventListener('click', function () {
+        imageInput.value = ''; 
+        imagePreviewsContainer.innerHTML = ''; 
+        cropButton.style.display = 'none'; 
+        cancelButton.style.display = 'none'; 
+        cropperInstances.forEach(instance => instance.cropper.destroy()); 
+        cropperInstances = []; 
+      });
+
+      // Color input change event
+      colorInput.addEventListener('input', function () {
+        selectedColor.textContent = colorInput.value; // Display selected color
+        colorValue.value = colorInput.value; // Assign value to hidden input
       });
     });
-
-    Promise.all(promises).then(() => {
-      // Convert cropped files to DataTransfer object
-      const dataTransfer = new DataTransfer();
-      croppedFiles.forEach(file => {
-        dataTransfer.items.add(file);
-      });
-
-      // Set the file input with the cropped images
-      imageInput.files = dataTransfer.files;
-
-      // Optionally trigger the form submit
-      cropButton.style.display = 'none';
-      cancelButton.style.display = 'none';
-      imagePreviewsContainer.innerHTML = ''; // Clear previews
-      productForm.submit(); // Submit the form with cropped images
-    });
-  });
-
-  cancelButton.addEventListener('click', function () {
-    imageInput.value = ''; // Clear file input
-    imagePreviewsContainer.innerHTML = ''; // Reset image previews
-    cropButton.style.display = 'none'; // Hide crop button
-    cancelButton.style.display = 'none'; // Hide cancel button
-    cropperInstances.forEach(instance => instance.cropper.destroy()); // Destroy all cropper instances
-    cropperInstances = []; // Reset cropper instances
-  });
-});
- 
 </script>
 
 <%- include('../layouts/footer.ejs') %>

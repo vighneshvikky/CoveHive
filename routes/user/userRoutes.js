@@ -9,8 +9,8 @@ const userAuth = require('../../middlewares/user/userAuth');
 const User = require('../../models/user/userSchema');
 const ProductController = require('../../controllers/admin/productController');
 
-// user_route.get('/',userAuth.isLogout,userController.loadHome);
-user_route.get('/',userController.loadLanding)
+ user_route.get('/',userAuth.isLogout,userController.loadHome);
+//user_route.get('/',userController.loadLanding)
 
 
 //--------------------------------for Sign Up----------------------------------------
@@ -20,12 +20,12 @@ user_route.post('/register',userController.insertUser);
 
 //--------------------------------for login user--------------------------------------
 
-//  user_route.get('/',userAuth.isLogout,userController.loginLoad);
-// user_route.get('/login',userAuth.isLogout,userController.loginLoad);
+user_route.get('/',userAuth.isLogout,userController.loginLoad);
+ user_route.get('/login',userAuth.isLogout,userController.loginLoad);
 user_route.post('/login',userController.verifyLogin)
 
-user_route.get('/',userController.loginLoad);
-user_route.get('/login',userController.loginLoad);
+// user_route.get('/',userController.loginLoad);
+// user_route.get('/login',userController.loginLoad);
 
 
 //--------------------------------for userOTP ---------------------------------------
@@ -35,9 +35,9 @@ user_route.post('/resend-otp',userController.resendOtp)
 
 //---------------------------------home of the user ----------------------------------
 
-// user_route.get('/home',userAuth.isLogin,userController.loadHome);
+user_route.get('/home',userAuth.isLogin,userController.loadHome);
 
-user_route.get('/home',userController.loadHome);
+//user_route.get('/home',userController.loadHome);
 
 //---------------------------------Product Details ----------------------------------
 
@@ -52,8 +52,7 @@ user_route.get('/category/:id',userController.loadCategory)
 
 //----------------------------------forget password -------------------------------
 
-user_route.get('/forgot-password',userController.loadForget)
-//user_route.post('/forgot-password',userController.postForget)
+
 
 // Google OAuth callback route
 user_route.get('/auth/google/callback', 

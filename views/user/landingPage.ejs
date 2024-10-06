@@ -69,10 +69,9 @@
         <div class="container mx-auto flex justify-between items-center">
             <a href="#" class="text-2xl font-bold">CoveHive</a>
             <div class="hidden md:flex space-x-6">
-                <a href="#" class="hover:text-lightGray transition duration-300">Home</a>
                 <a href="/login" class="hover:text-lightGray transition duration-300">Login</a>
-                <a href="#" class="hover:text-lightGray transition duration-300">My Orders</a>
-                <a href="#" class="hover:text-lightGray transition duration-300">Wishlist</a>
+                <!-- <a href="#" class="hover:text-lightGray transition duration-300">My Orders</a>
+                <a href="#" class="hover:text-lightGray transition duration-300">Wishlist</a> -->
             </div>
             <div class="md:hidden flex space-x-4">
                 <i class="fas fa-shopping-bag"></i>
@@ -85,39 +84,12 @@
     </nav>
 
     <main class="flex-grow">
-        <section>
-            <section class="py-16">
-                <div class="carousel-container">
-                    <div class="carousel">
-                        <div class="carousel-slide">
-                            <img src="/corosol-1.webp" alt="Slide 1">
-                        </div>
-                        <div class="carousel-slide">
-                            <img src="/corosol-2.jpeg" alt="Slide 2">
-                        </div>
-                        <div class="carousel-slide">
-                            <img src="/corosol-3.webp" alt="Slide 3">
-                        </div>
-                    </div>
-                    <button id="prev" class="carousel-button carousel-button-prev">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <button id="next" class="carousel-button carousel-button-next">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-            </section>
-                <!-- Navigation Arrows -->
-                <button id="prev" class="absolute top-1/2 left-0 -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                </button>
-                <button id="next" class="absolute top-1/2 right-0 -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </button>
+        <section class="relative bg-primary text-black py-24" style="background-image: url('/path/to/banner-image.jpg'); background-size: cover; background-position: center;">
+            <div class="container mx-auto text-center">
+                <h1 class="text-4xl font-bold mb-4">Experience Next-Gen Smartphones</h1>
+                <p class="text-lg mb-8">Discover the latest iPhone, Galaxy, and Pixel devices</p>
+                <a href="#shop" class="bg-accent text-white px-6 py-3 rounded-full font-semibold hover:bg-secondary transition duration-300">Shop Now</a>
+                
             </div>
         </section>
 
@@ -168,39 +140,23 @@
             </div>
         </section>
     </main>
-
+     
+  <div class="mt-4 flex justify-center space-x-4">
+    <% if (currentPage > 1) { %>
+      <a href="?page=<%= currentPage - 1 %>&limit=10" class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">Previous</a>
+    <% } %>
+    
+    <% for (let i = 1; i <= totalPages; i++) { %>
+      <a href="?page=<%= i %>&limit=10" class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300 <%= currentPage === i ? 'bg-gray-400' : '' %>">
+        <%= i %>
+      </a>
+    <% } %>
+    
+    <% if (currentPage < totalPages) { %>
+      <a href="?page=<%= currentPage + 1 %>&limit=10" class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">Next</a>
+    <% } %>
+  </div>
     <%- include('../layouts/userFooter.ejs') %>
 
-    <script>
-       const carousel = document.querySelector('.carousel');
-        const slides = document.querySelectorAll('.carousel-slide');
-        let currentIndex = 0;
-
-        function updateCarousel() {
-            carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
-        }
-
-        document.getElementById('prev').addEventListener('click', () => {
-            currentIndex = (currentIndex > 0) ? currentIndex - 1 : slides.length - 1;
-            updateCarousel();
-        });
-
-        document.getElementById('next').addEventListener('click', () => {
-            currentIndex = (currentIndex < slides.length - 1) ? currentIndex + 1 : 0;
-            updateCarousel();
-        });
-
-        // Auto-play functionality
-        function autoPlay() {
-            currentIndex = (currentIndex < slides.length - 1) ? currentIndex + 1 : 0;
-            updateCarousel();
-        }
-
-        const autoPlayInterval = setInterval(autoPlay, 5000); // Change slide every 5 seconds
-
-        // Pause auto-play on hover
-        carousel.addEventListener('mouseenter', () => clearInterval(autoPlayInterval));
-        carousel.addEventListener('mouseleave', () => setInterval(autoPlay, 5000));
-    </script>
 </body>
 </html>

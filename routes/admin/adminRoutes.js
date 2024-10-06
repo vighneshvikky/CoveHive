@@ -32,20 +32,20 @@ admin_routes.post('/login', adminController.loginAdmin);
 
 //-------------------------------------------customers management------------------------------------------------------------
 
-// admin_routes.get('/customers',adminAuth.auth,customerController.loadCustomers);
-// admin_routes.post('/toggle-block-user/:id',adminAuth.auth,customerController.blockUser);
+ admin_routes.get('/customers',adminAuth.auth,customerController.loadCustomers);
+admin_routes.post('/toggle-block-user/:id',adminAuth.auth,customerController.blockUser);
 
-admin_routes.get('/customers',customerController.loadCustomers);
-admin_routes.post('/toggle-block-user/:id',customerController.blockUser);
+// admin_routes.get('/customers',customerController.loadCustomers);
+// admin_routes.post('/toggle-block-user/:id',customerController.blockUser);
 
 
 
 //-------------------------------------------categories management------------------------------------------------------------
 
-// admin_routes.get('/categories',adminAuth.auth,categoryController.loadCategories);
-// admin_routes.post('/categories/add',upload.single('img'),categoryController.insertCategories)
-admin_routes.get('/categories',categoryController.loadCategories);
+ admin_routes.get('/categories',adminAuth.auth,categoryController.loadCategories);
 admin_routes.post('/categories/add',upload.single('img'),categoryController.insertCategories)
+// admin_routes.get('/categories',categoryController.loadCategories);
+// admin_routes.post('/categories/add',upload.single('img'),categoryController.insertCategories)
 
 //-------------------------------------------edit categories------------------------------------------------------------
 
@@ -59,22 +59,22 @@ module.exports = admin_routes;
 
 
 //------------------------------------------Product management ----------------------------------------------------------
-// admin_routes.get('/products',adminAuth.auth,productController.loadProduct);
-// admin_routes.get('/addProducts',adminAuth.auth,productController.addProduct)
-// admin_routes.post('/product/add',load.array('images', 10),productController.postAddProduct);
-// admin_routes.post('/toggle-block-product/:id',productController.blockUnblockProduct);
-// admin_routes.get('/products/edit/:id',productController.loadEditProduct);
-// admin_routes.post('/products/edit/:id',load.array('images', 10),productController.postEditProduct);
-// admin_routes.get('/products/delete/:id',productController.deleteProduct)
-
-
-admin_routes.get('/products',productController.loadProduct);
-admin_routes.get('/addProducts',productController.addProduct);
+admin_routes.get('/products',adminAuth.auth,productController.loadProduct);
+admin_routes.get('/addProducts',adminAuth.auth,productController.addProduct)
 admin_routes.post('/product/add',load.array('images', 10),productController.postAddProduct);
 admin_routes.post('/toggle-block-product/:id',productController.blockUnblockProduct);
 admin_routes.get('/products/edit/:id',productController.loadEditProduct);
 admin_routes.post('/products/edit/:id',load.array('images', 10),productController.postEditProduct);
 admin_routes.get('/products/delete/:id',productController.deleteProduct)
+
+
+// admin_routes.get('/products',productController.loadProduct);
+// admin_routes.get('/addProducts',productController.addProduct);
+// admin_routes.post('/product/add',load.array('images', 10),productController.postAddProduct);
+// admin_routes.post('/toggle-block-product/:id',productController.blockUnblockProduct);
+// admin_routes.get('/products/edit/:id',productController.loadEditProduct);
+// admin_routes.post('/products/edit/:id',load.array('images', 10),productController.postEditProduct);
+// admin_routes.get('/products/delete/:id',productController.deleteProduct)
 
 
 
