@@ -202,6 +202,7 @@ exports.loadHome = async (req, res) => {
             categories,
             currentPage: page,
             totalPages: Math.ceil(totalProduct / limit)
+            
         });
     } catch (error) {
         console.log(error);

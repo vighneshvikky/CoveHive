@@ -58,20 +58,20 @@
   <div class="mb-4">
     <label class="block text-gray-700 text-sm font-bold mb-2" for="image">Product Images</label>
     <input class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-700 leading-tight focus:outline-none focus:shadow-outline" type="file" id="imageInput" name="images" accept="image/*" multiple>
-</div>
+  </div>
 
-<!-- Image Preview and Crop Section -->
-<div class="cropper-container max-w-lg mx-auto p-4 bg-gray-100 border rounded-lg">
-    <div id="imagePreviews" class="flex flex-wrap justify-center gap-4">
-        <!-- Existing and new image previews will be inserted here -->
+  <!-- Image Preview and Crop Section -->
+  <div class="cropper-container max-w-lg mx-auto p-4 bg-gray-100 border rounded-lg">
+    <div id="imagePreviews" class="flex flex-wrap justify-center gap-4" data-existing-images='<%= JSON.stringify(product.images || []) %>'>
+      <!-- Existing image previews will be inserted here by JavaScript -->
     </div>
-</div>
+  </div>
 
-<!-- Crop and Cancel Buttons -->
-<div class="flex justify-between mt-4">
+  <!-- Crop and Cancel Buttons -->
+  <div class="flex justify-between mt-4">
     <button type="button" id="cropButton" style="display: none;" class="bg-purple-600 text-white py-2 px-4 rounded">Crop and Update</button>
     <button type="button" id="cancelButton" style="display: none;" class="bg-gray-400 text-white py-2 px-4 rounded">Cancel</button>
-</div>
+  </div>
 
   <!-- Submit Button -->
   <button type="submit" class="bg-purple-600 text-white py-2 px-4 rounded">Edit Product</button>
@@ -104,11 +104,11 @@
               </div>
           </div>
       </div>
-      
+   
       <!-- Modal -->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-      <script>
-        document.addEventListener('DOMContentLoaded', function() {
+<script>
+document.addEventListener('DOMContentLoaded', function() {
   const imageInput = document.getElementById('imageInput');
   const imagePreviewsContainer = document.getElementById('imagePreviews');
   const cropButton = document.getElementById('cropButton');
@@ -116,15 +116,31 @@
   const productForm = document.querySelector('form');
   let cropperInstances = [];
 
-  // Function to create image preview
+  // Retrieve existing images from data attribute
+  let existingImages = [];
+  try {
+    existingImages = JSON.parse(imagePreviewsContainer.dataset.existingImages);
+    if (!Array.isArray(existingImages)) {
+      existingImages = [];
+    } 
+    console.log('Existing images:', existingImages); 
+  } catch (error) {
+    console.error('Error parsing existing images:', error);
+  }
+
   function createImagePreview(src, isExisting = false) {
     const previewContainer = document.createElement('div');
     previewContainer.className = 'relative';
 
     const imgElement = document.createElement('img');
     imgElement.src = src;
-    imgElement.classList.add('preview-image', 'w-32', 'h-32', 'object-cover', 'rounded-lg');
+    imgElement.classList.add('preview-image', 'w-32', 'h-32', 'object-cover', 'rounded-lg');  
     previewContainer.appendChild(imgElement);
+
+    imgElement.onerror = function() {
+    console.error('Failed to load image:', src);
+    previewContainer.innerHTML = '<p class="text-red-500">Failed to load image</p>';
+  };
 
     const removeButton = document.createElement('button');
     removeButton.className = 'absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1';
@@ -138,9 +154,12 @@
     previewContainer.appendChild(removeButton);
 
     imagePreviewsContainer.appendChild(previewContainer);
+    previewContainer.appendChild(imgElement);
 
+// ... rest of the function ...
+
+   imagePreviewsContainer.appendChild(previewContainer);
     if (!isExisting) {
-      // Initialize Cropper.js for new images
       const cropper = new Cropper(imgElement, {
         aspectRatio: 1,
         viewMode: 1,
@@ -156,6 +175,10 @@
     }
   }
 
+  // Display existing images
+  existingImages.forEach(imagePath => {
+    createImagePreview(imagePath, true);
+  });
 
   imageInput.addEventListener('change', function (event) {
     const files = event.target.files;
@@ -219,6 +242,5 @@
     });
   });
 });
-      </script>
-
+</script>
 <%- include('../layouts/footer.ejs') %>

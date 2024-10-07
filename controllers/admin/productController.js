@@ -178,7 +178,8 @@ exports.loadProductDetails = async (req,res) => {
       }
       res.render('user/productDetails', {
          product,
-         relatedProducts 
+         relatedProducts,
+         currentRoute:'/home' 
         }); // Render the product details EJS template
   } catch (error) {
       console.error(error);

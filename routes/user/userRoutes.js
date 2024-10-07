@@ -9,18 +9,18 @@ const userAuth = require('../../middlewares/user/userAuth');
 const User = require('../../models/user/userSchema');
 const ProductController = require('../../controllers/admin/productController');
 
- user_route.get('/',userAuth.isLogout,userController.loadHome);
-//user_route.get('/',userController.loadLanding)
+ //user_route.get('/',userAuth.isLogout,userController.loadHome);
+user_route.get('/',userAuth.isLogout,userController.loadLanding)
 
 
 //--------------------------------for Sign Up----------------------------------------
-user_route.get('/home',userController.loadHome);
+user_route.get('/home',userAuth.isLogin,userController.loadHome);
 user_route.get('/register',userController.loadSignup);
 user_route.post('/register',userController.insertUser);
 
 //--------------------------------for login user--------------------------------------
 
-user_route.get('/',userAuth.isLogout,userController.loginLoad);
+//user_route.get('/',userAuth.isLogout,userController.loginLoad);
  user_route.get('/login',userAuth.isLogout,userController.loginLoad);
 user_route.post('/login',userController.verifyLogin)
 
@@ -62,8 +62,10 @@ user_route.get('/auth/google/callback',
       const user =await User.findOne({email:req.user.email});
       console.log(user)
      if(user.is_blocked){
+   
       res.render('user/userSignup',{message:'Your Account has Been blocked'})
      }else{
+      req.session.user_id =user._id;
       res.redirect('/home')
      }
 
