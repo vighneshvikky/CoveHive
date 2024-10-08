@@ -176,10 +176,12 @@ exports.loadProductDetails = async (req,res) => {
       if (!product) { 
           return res.status(404).send('Product not found'); // Handle case where product doesn't exist
       }
+      const userName =  req.session.user_id
       res.render('user/productDetails', {
          product,
          relatedProducts,
-         currentRoute:'/home' 
+         currentRoute:'/home',
+         userName 
         }); // Render the product details EJS template
   } catch (error) {
       console.error(error);

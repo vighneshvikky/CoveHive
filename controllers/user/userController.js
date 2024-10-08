@@ -144,6 +144,9 @@ exports.verifyLogin = async (req, res) => {
                  }
          else if(isPasswordMatch) {
                 req.session.user_id = userData._id;
+                req.session.fullName = userData.fullName;
+                
+                
                 res.redirect("/home");
             } else {
                 res.render('user/userLogin', { message: 'Password or email is incorrect' });
@@ -190,19 +193,20 @@ exports.loadHome = async (req, res) => {
         const limit = 10; // Number of items per page
         const page = parseInt(req.query.page) || 1; // Current page number
         const skip = (page - 1) * limit; // Number of documents to skip
-
         const products = await Product.find({isBlocked:false})  
         .sort({ createdAt: -1 }) // Sort by createdAt in descending order
         .skip(skip) // Skip the previous pages
         .limit(8); // Limit to 'limit' items
         const totalProduct = await Product.countDocuments({ isBlocked: false }); // Get total count of products
-        const categories = await Category.find({isBlocked:false});  
+        const categories = await Category.find({isBlocked:false}); 
+        console.log(req.session)
+        const userName = req.session.userName;
         res.render("user/userHome",{
             products,
             categories,
             currentPage: page,
-            totalPages: Math.ceil(totalProduct / limit)
-            
+            totalPages: Math.ceil(totalProduct / limit),
+            userName
         });
     } catch (error) {
         console.log(error);
@@ -252,7 +256,7 @@ exports.loadCategory = async (req, res) => {
 
         // Get the total count of products in the category (excluding blocked ones)
         const totalProducts = await Product.countDocuments({ isBlocked: false, category: categoryId });
-
+         const userName =  req.session.user_id
         // Fetch the products for the current page, with pagination
         const products = await Product.find({ isBlocked: false, category: categoryId })
             .skip(skip)  // Skip the first 'skip' number of products
@@ -260,13 +264,13 @@ exports.loadCategory = async (req, res) => {
     
         // Calculate the total number of pages
         const totalPages = Math.ceil(totalProducts / limit);
-    
         // Render the view with category, products, and pagination details
         res.render('user/userCategory', {
             category,
             products,
             currentPage: page,
-            totalPages, // total number of pages
+            totalPages,
+            userName // total number of pages
         });
     } catch (error) {
         console.log(error.message);
@@ -275,12 +279,30 @@ exports.loadCategory = async (req, res) => {
 };
 
 
-//-----------------------------------------load forget page ---------------------------
+//-----------------------------------------user google ----------------------------------------------
 
-exports.loadForget = async (req,res) => {
+
+exports.googleAuthCallback = async (req, res) => {
     try {
-        res.render('user/forget')
+      const user = await User.findOne({ email: req.user.email });
+  
+      if (user.is_blocked) {
+        return res.render('user/userSignup', { message: 'Your Account has Been blocked' });
+      }
+  
+      // Set session data
+      req.session.user_id = user._id;
+      req.session.userName = user.fullName;
+  
+      // Pass session data to the view
+      const userName = req.session.userName;
+      console.log(req.session.userName + " hai");
+  
+      // Render home page with the userName
+       res.redirect('/home');
+      
     } catch (error) {
-       console.log(error.message) 
+      console.error(error.message);
+      res.status(500).send('Internal Server Error');
     }
-}
+  };

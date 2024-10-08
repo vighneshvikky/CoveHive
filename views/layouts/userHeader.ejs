@@ -30,10 +30,12 @@
             <div class="hidden md:flex space-x-6">
                 <a href="/home" class="hover:text-lightGray transition duration-300">Home</a>    
                </select>
-                <a href="#" class="hover:text-lightGray transition duration-300">My Account</a>
+                <a href="/profile" class="hover:text-lightGray transition duration-300">My Account</a>
                 <a href="#" class="hover:text-lightGray transition duration-300">My Orders</a>
                 <a href="#" class="hover:text-lightGray transition duration-300">Wishlist</a>
-                <a href="/login" class="hover:text-lightGray transition duration-300">Login</a>
+                <a href="#" class="hover:text-lightGray transition duration-300"><% if(userName){ %>
+                    <%= userName.fullName %>
+               <% } %></a>
             </div>
             <div class="md:hidden flex space-x-4">
                 <i class="fas fa-shopping-bag"></i>

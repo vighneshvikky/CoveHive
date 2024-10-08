@@ -1,4 +1,9 @@
-<%- include('../layouts/userHeader.ejs') %>
+<% if(userName){ %>
+  <%- include('../layouts/userHeader.ejs') %>
+<%}else{%>
+  <%- include('../layouts/landingNav.ejs') %>
+<%} %>
+
 <ul class="flex items-center font-[sans-serif] space-x-4 mt-4">
     <li>
       <a href="/home" class="text-gray-500 text-base cursor-pointer">
@@ -65,4 +70,5 @@
       <a href="?page=<%= currentPage + 1 %>&limit=10" class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">Next</a>
     <% } %>
   </div>
+  
 <%- include('../layouts/userFooter.ejs') %>

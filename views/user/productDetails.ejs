@@ -1,6 +1,11 @@
 
 
-<%-include('../layouts/userHeader.ejs') %>
+<% if(userName){ %>
+  <%- include('../layouts/userHeader.ejs') %>
+<%}else{%>
+  <%- include('../layouts/landingNav.ejs') %>
+<%} %>
+
 <ul class="flex items-center font-[sans-serif] space-x-4 mt-4">
   <% if (currentRoute == '/home') { %>
     <a href="/home">
@@ -149,6 +154,9 @@
             </div>
         </div>
       </section>
+      <% if(true){ %>
+        
+      <%} %>
       <%- include('../layouts/userFooter.ejs') %>
     <script>
 

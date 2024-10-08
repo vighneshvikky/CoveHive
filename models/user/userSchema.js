@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
     fullName:{type:String,required:true},
-    email:{type:String},
+    email:{type:String,unique:true},
     password:{type:String},
     phone:{type:Number},
     is_blocked:{type:Boolean,default:false},

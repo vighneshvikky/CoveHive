@@ -1,7 +1,3 @@
-
-const Admin = require('../../models/admin/adminModel');
-const bcrypt = require('bcryptjs');
-
 // ------------------------------Render login page--------------------------------------------------------
 exports.getLoginPage = (req, res) => {
     

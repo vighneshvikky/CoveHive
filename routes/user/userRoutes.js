@@ -10,7 +10,7 @@ const User = require('../../models/user/userSchema');
 const ProductController = require('../../controllers/admin/productController');
 
  //user_route.get('/',userAuth.isLogout,userController.loadHome);
-user_route.get('/',userAuth.isLogout,userController.loadLanding)
+user_route.get('/',userAuth.isLogout,userController.loadHome)
 
 
 //--------------------------------for Sign Up----------------------------------------
@@ -37,7 +37,7 @@ user_route.post('/resend-otp',userController.resendOtp)
 
 user_route.get('/home',userAuth.isLogin,userController.loadHome);
 
-//user_route.get('/home',userController.loadHome);
+
 
 //---------------------------------Product Details ----------------------------------
 
@@ -50,31 +50,39 @@ user_route.get('/auth/google', passport.authenticate('google', { scope: ['profil
 
 user_route.get('/category/:id',userController.loadCategory)
 
-//----------------------------------forget password -------------------------------
+//----------------------------------user profile -----------------------------------
 
 
 
-// Google OAuth callback route
 user_route.get('/auth/google/callback', 
   passport.authenticate('google', { failureRedirect: '/' }),
-  async(req,res) => {
-    try {
-      const user =await User.findOne({email:req.user.email});
-      console.log(user)
-     if(user.is_blocked){
-   
-      res.render('user/userSignup',{message:'Your Account has Been blocked'})
-     }else{
-      req.session.user_id =user._id;
-      res.redirect('/home')
-     }
-
-    } catch (error) {
-      console.log(error.message);
-      
-    } 
-  }
+  userController.googleAuthCallback // Controller function handles the logic
 );
+
+// Google OAuth callback route
+// user_route.get('/auth/google/callback', 
+//   passport.authenticate('google', { failureRedirect: '/' }),
+//   async(req,res) => {
+//     try {
+//       const user =await User.findOne({email:req.user.email});
+//      // console.log(user)
+//      if(user.is_blocked){
+   
+//       res.render('user/userSignup',{message:'Your Account has Been blocked'})
+//      }else{
+//       req.session.user_id =user._id;
+//       req.session.userName = user.fullName;
+//       const userName = req.session.userName
+//       console.log(req.session.userName+"hai")
+//       res.render('user/userHome',{userName})
+//      }
+
+//     } catch (error) {
+//       console.log(error.message);
+      
+//     } 
+//   }
+// );
 
 module.exports = user_route;
 
