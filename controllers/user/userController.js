@@ -160,7 +160,6 @@ exports.verifyLogin = async (req, res) => {
         console.log(error);
     }
 };
-
 //------------------------------------Load home page-------------------------------------------------------
 exports.loadLanding = async (req,res) => {
     try {
@@ -199,8 +198,10 @@ exports.loadHome = async (req, res) => {
         .limit(8); // Limit to 'limit' items
         const totalProduct = await Product.countDocuments({ isBlocked: false }); // Get total count of products
         const categories = await Category.find({isBlocked:false}); 
-        console.log(req.session)
-        const userName = req.session.userName;
+        // console.log(req.session)
+        const userName =   req.session.fullName;
+        
+        console.log(userName)
         res.render("user/userHome",{
             products,
             categories,
@@ -256,7 +257,7 @@ exports.loadCategory = async (req, res) => {
 
         // Get the total count of products in the category (excluding blocked ones)
         const totalProducts = await Product.countDocuments({ isBlocked: false, category: categoryId });
-         const userName =  req.session.user_id
+         const userName =  req.session.fullName
         // Fetch the products for the current page, with pagination
         const products = await Product.find({ isBlocked: false, category: categoryId })
             .skip(skip)  // Skip the first 'skip' number of products
@@ -292,11 +293,11 @@ exports.googleAuthCallback = async (req, res) => {
   
       // Set session data
       req.session.user_id = user._id;
-      req.session.userName = user.fullName;
+      req.session.fullName = user.fullName;
   
       // Pass session data to the view
-      const userName = req.session.userName;
-      console.log(req.session.userName + " hai");
+      
+      console.log(req.session.fullName+"hai");
   
       // Render home page with the userName
        res.redirect('/home');
@@ -306,3 +307,27 @@ exports.googleAuthCallback = async (req, res) => {
       res.status(500).send('Internal Server Error');
     }
   };
+
+  exports.loadProductDetails = async (req,res) => {
+    const productId = req.params.id; // Get the product ID from the URL parameters
+    try {
+        const product = await Product.findById(productId); // Fetch the product by ID directly
+        const relatedProducts = await Product.find({
+          isBlocked:false,
+          category:product.category,
+          _id:{$ne:product._id}
+        }).limit(4)
+        if (!product) { 
+            return res.status(404).send('Product not found'); // Handle case where product doesn't exist
+        }
+        const userName = req.session.fullName
+        res.render('user/productDetails', {
+           product,
+           relatedProducts,
+           currentRoute:'/home',
+           userName 
+          }); // Render the product details EJS template
+    } catch (error) {
+        console.log(error.message)
+    }
+  }

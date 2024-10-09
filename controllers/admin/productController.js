@@ -176,7 +176,7 @@ exports.loadProductDetails = async (req,res) => {
       if (!product) { 
           return res.status(404).send('Product not found'); // Handle case where product doesn't exist
       }
-      const userName =  req.session.user_id
+      const userName =  req.session.userName
       res.render('user/productDetails', {
          product,
          relatedProducts,

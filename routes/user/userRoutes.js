@@ -41,7 +41,7 @@ user_route.get('/home',userAuth.isLogin,userController.loadHome);
 
 //---------------------------------Product Details ----------------------------------
 
-user_route.get('/products/:id',ProductController.loadProductDetails)
+user_route.get('/products/:id',userController.loadProductDetails)
 
 //----------------------------------google authentication ---------------------------
 user_route.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));

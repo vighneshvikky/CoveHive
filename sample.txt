@@ -135,7 +135,7 @@
         <input class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-700 leading-tight focus:outline-none focus:shadow-outline" type="file" id="imageInput" name="images" accept="image/*" multiple>
       </div>
     
-      
+      Image Preview and Crop Section 
        <div class="cropper-container max-w-lg mx-auto p-4 bg-gray-100 border rounded-lg">
         <div id="imagePreviews" class="flex flex-wrap justify-center gap-4"> 
            <!-- Existing image previews will be inserted here by JavaScript  -->
@@ -205,7 +205,7 @@
     
       function createImagePreview(src, isExisting = false) {
         const previewContainer = document.createElement('div');
-        previewContainer.className = 'relative'
+        previewContainer.className = 'relative';
     
         const imgElement = document.createElement('img');
         imgElement.src = src;
@@ -222,9 +222,7 @@
 
 
  const removeButton = document.createElement('button');
- removeButton.className = 'relative top-2 right-1 bg-red-500 text-white rounded-full p-1';
-
-           // removeButton.className = 'absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1';
+            removeButton.className = 'absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1';
             removeButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
             removeButton.onclick = function() {
               previewContainer.remove();
