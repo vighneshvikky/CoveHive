@@ -14,7 +14,7 @@ user_route.get('/',userAuth.isLogout,userController.loadHome)
 
 
 //--------------------------------for Sign Up----------------------------------------
-user_route.get('/home',userAuth.isLogin,userController.loadHome);
+user_route.get('/home',userAuth.isblocked,userAuth.isLogin,userController.loadHome);
 user_route.get('/register',userController.loadSignup);
 user_route.post('/register',userController.insertUser);
 
@@ -35,7 +35,7 @@ user_route.post('/resend-otp',userController.resendOtp)
 
 //---------------------------------home of the user ----------------------------------
 
-user_route.get('/home',userAuth.isLogin,userController.loadHome);
+user_route.get('/home',userAuth.isblocked,userAuth.isLogin,userController.loadHome);
 
 
 

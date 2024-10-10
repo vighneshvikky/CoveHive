@@ -201,7 +201,6 @@ exports.loadHome = async (req, res) => {
         const categories = await Category.find({isBlocked:false}); 
         // console.log(req.session)
         const userName =   req.session.fullName;
-        const isBlocked = req.session.isBlocked
         console.log(userName)
         res.render("user/userHome",{
             products,
@@ -209,7 +208,6 @@ exports.loadHome = async (req, res) => {
             currentPage: page,
             totalPages: Math.ceil(totalProduct / limit),
             userName,
-            isBlocked
         });
     } catch (error) {
         console.log(error);

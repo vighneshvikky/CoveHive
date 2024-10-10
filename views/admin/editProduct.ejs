@@ -66,18 +66,22 @@
       <!-- Existing image previews will be inserted here by JavaScript -->
     </div>
   </div>
+<!-- Crop and Cancel Buttons -->
+<div class="flex justify-between mt-4 space-x-4">
+  <button type="button" id="cropButton" style="display: none;" class="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded shadow transition duration-300 ease-in-out">Crop and Update</button>
+  <button type="button" id="cancelButton" style="display: none;" class="bg-gray-400 hover:bg-gray-500 text-white py-2 px-4 rounded shadow transition duration-300 ease-in-out">Cancel</button>
+</div>
 
-  <!-- Crop and Cancel Buttons -->
-  <div class="flex justify-between mt-4">
-    <button type="button" id="cropButton" style="display: none;" class="bg-purple-600 text-white py-2 px-4 rounded">Crop and Update</button>
-    <button type="button" id="cancelButton" style="display: none;" class="bg-gray-400 text-white py-2 px-4 rounded">Cancel</button>
-  </div>
+<!-- Submit Button -->
+<div class="mt-6">
+  <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white py-2 px-6 rounded shadow-lg transition duration-300 ease-in-out">Edit Product</button>
+</div>
 
-  <!-- Submit Button -->
-  <button type="submit" class="bg-purple-600 text-white py-2 px-4 rounded">Edit Product</button>
+<!-- Back to Products Button -->
+<div class="mt-6">
+  <a href="/admin/products" class="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded shadow-lg transition duration-300 ease-in-out">Back to Products</a>
+</div>
 
-  <!-- Back to Products Button -->
-  <a href="/admin/products" class="bg-green-600 text-white py-2 px-4 rounded">Back to Product</a>
 </form>
 <!-- Added ID here -->
         </div>

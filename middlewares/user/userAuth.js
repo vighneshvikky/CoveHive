@@ -1,3 +1,5 @@
+const User = require('../../models/user/userSchema')
+
 exports.isLogin = async (req,res,next) => {
     try {
         
@@ -27,3 +29,34 @@ exports.isLogout = async (req,res,next) => {
         
     }
 }
+
+exports.isblocked = async (req,res,next) => {
+    try {
+        
+        console.log(req.session)
+        const user = await User.findById(req.session.user_id);
+       if(user){
+        if(user.is_blocked){
+            req.session.destroy((err) => {
+                if(err){
+                    console.log(err)
+                }
+                return res.render('block',{message:"Your Account has been Blocked"})
+            })
+           
+        }
+       }
+        
+            next()
+         
+       
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+
+
+
+
+
