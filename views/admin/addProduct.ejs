@@ -16,7 +16,8 @@
           id="name" 
           name="name"
           value="Apple" 
-          required  >
+          >
+          <span id="name-error" class="text-red-500 text-sm mt-1 hidden"></span>
       </div>
 
       <!-- Description -->
@@ -29,7 +30,8 @@
           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
           id="description" 
           name="description"
-          rows="3" required></textarea>
+          rows="3"></textarea>
+          <span id="description-error" class="text-red-500 text-sm mt-1 hidden"></span>
       </div>
 
       <!-- Price -->
@@ -43,7 +45,8 @@
           id="price" 
           name="price" 
           value="2000"
-          required>
+          >
+          <span id="price-error" class="text-red-500 text-sm mt-1 hidden"></span>
       </div>
 
       
@@ -60,7 +63,8 @@
           id="discount" 
           name="discount" 
           value="50"
-          required>
+          >
+          <span id="discount-error" class="text-red-500 text-sm mt-1 hidden"></span>
       </div>
       <!-- Stock -->
       <div class="mb-4">
@@ -73,17 +77,10 @@
           id="stock" 
           name="stock"
           value="5" 
-          required>
+          >
+          <span id="stock-error" class="text-red-500 text-sm mt-1 hidden"></span>
       </div>
-      
-  <!-- Color Selection -->
 
-
-  <!-- Other form fields (Stock, Category, Subcategory, etc.) -->
-
-  <!-- Submit Button -->
-
-      <!-- Category -->
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="category">
             Category  
@@ -92,7 +89,7 @@
             id="category" 
             name="category" 
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-             required >
+              >
             <option value="">Select a Category</option>
             <% categories.forEach(category => { %>
                 <option value="<%= category._id %>">
@@ -100,6 +97,7 @@
                 </option>
             <% }); %>
         </select>
+        <span id="category-error" class="text-red-500 text-sm mt-1 hidden"></span>
       </div>
     
       <!-- Subcategory -->
@@ -113,7 +111,8 @@
           id="subcategory" 
           name="subcategory"
           value="Apple 15 series" 
-          required>
+          >
+          <span id="subcategory-error" class="text-red-500 text-sm mt-1 hidden"></span>
       </div>
       <!-- Compatible Devices -->
       <div class="mb-4">
@@ -127,12 +126,14 @@
           value="iphone 15 Pro"
           name="compatibleDevices" 
           placeholder="iPhone 15 Pro, iPhone 15 Pro Max"
-          required>
+          >
+          <span id="compatibleDevices-error" class="text-red-500 text-sm mt-1 hidden"></span>
       </div>
 
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="image">Product Images</label>
         <input class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-700 leading-tight focus:outline-none focus:shadow-outline" type="file" id="imageInput" name="images" accept="image/*" multiple>
+        <span id="image-error" class="text-red-500 text-sm mt-1 hidden"></span>
       </div>
     
       
@@ -144,12 +145,12 @@
     
       <!-- Crop and Cancel Buttons -->
       <div class="flex justify-between mt-4">
-        <button type="submit" id="cropButton" style="display: none;" class="bg-purple-600 text-white py-2 px-4 rounded">Crop and Update</button>
+        <button type="button" id="cropButton" style="display: none;" class="bg-purple-600 text-white py-2 px-4 rounded">Crop and Update</button>
         <button type="button" id="cancelButton" style="display: none;" class="bg-gray-400 text-white py-2 px-4 rounded">Cancel</button>
       </div>
     
       <!-- Submit Button -->
-      <button type="submit" class="bg-purple-600 text-white py-2 px-4 rounded">Add Product</button>
+      <button type="submit" id="submitButton" class="bg-purple-600 text-white py-2 px-4 rounded mt-4">Add Product</button>
     
       <!-- Back to Products Button -->
      
@@ -190,8 +191,130 @@
       const cancelButton = document.getElementById('cancelButton');
       const productForm = document.querySelector('form');
       let cropperInstances = [];
+      const nameInput = document.getElementById('name');
+  const descriptionInput = document.getElementById('description');
+  const priceInput = document.getElementById('price');
+  const discountInput = document.getElementById('discount');
+  const stockInput = document.getElementById('stock');
+  const categorySelect = document.getElementById('category');
+  const subcategoryInput = document.getElementById('subcategory');
+  const compatibleDevicesInput = document.getElementById('compatibleDevices');
+  const submitButton = document.querySelector('button[type="submit"]');
+
+  // Form fields
+  const fields = [
+    { id: 'name', validate: (value) => value.trim().length > 0, errorMsg: 'Product name is required.' },
+    { id: 'description', validate: (value) => value.trim().length > 10, errorMsg: 'Description must be longer than 10 characters.' },
+    { id: 'price', validate: (value) => !isNaN(value) && parseFloat(value) > 0, errorMsg: 'Please enter a valid price.' },
+    { id: 'discount', validate: (value) => {
+        const discount = parseFloat(value);
+        return !isNaN(discount) && discount >= 0 && discount <= 100;
+      }, errorMsg: 'Please enter a discount between 0 and 100.' },
+    { id: 'stock', validate: (value) => !isNaN(value) && parseInt(value) >= 0, errorMsg: 'Stock must be a non-negative number.' },
+    { id: 'category', validate: (value) => value !== "", errorMsg: 'Please select a category.' },
+    { id: 'subcategory', validate: (value) => value.trim().length > 0, errorMsg: 'Subcategory is required.' },
+    { id: 'compatibleDevices', validate: (value) => value.trim().length > 0, errorMsg: 'Please enter compatible devices.' }
+  ];
+
+  // Create error message spans
+  fields.forEach(field => {
+    const input = document.getElementById(field.id);
+    const errorSpan = document.createElement('span');
+    errorSpan.id = `${field.id}-error`;
+    errorSpan.className = 'text-red-500 text-sm mt-1 hidden';
+    input.parentNode.insertBefore(errorSpan, input.nextSibling);
+  });
+
+  // Validation function
+  function validateField(field) {
+    const input = document.getElementById(field.id);
+    const errorSpan = document.getElementById(`${field.id}-error`);
+    const isValid = field.validate(input.value);
     
-      // Retrieve existing images from data attribute
+    if (isValid) {
+      errorSpan.textContent = '';
+      errorSpan.classList.add('hidden');
+    } else {
+      errorSpan.textContent = field.errorMsg;
+      errorSpan.classList.remove('hidden');
+    }
+    
+    return isValid;
+  }
+
+  // Apply validation to form fields
+  fields.forEach(field => {
+    const input = document.getElementById(field.id);
+    input.addEventListener('input', () => {
+      validateField(field);
+      checkFormValidity();
+    });
+  });
+
+  // Image validation
+  function validateImages() {
+    const imageCount = imageInput.files.length + document.querySelectorAll('.preview-image').length;
+    const errorSpan = document.getElementById('image-error') || document.createElement('span');
+    errorSpan.id = 'image-error';
+    errorSpan.className = 'text-red-500 text-sm mt-1';
+    imageInput.parentNode.appendChild(errorSpan);
+
+    if (imageCount < 3) {
+      errorSpan.textContent = 'Please upload at least 3 images.';
+      errorSpan.classList.remove('hidden');
+      return false;
+    } else {
+      errorSpan.textContent = '';
+      errorSpan.classList.add('hidden');
+      return true;
+    }
+  }
+
+  // Check overall form validity
+  function checkFormValidity() {
+    const isValid = fields.every(field => validateField(field)) && validateImages();
+    submitButton.disabled = !isValid;
+  }
+  function addProduct() {
+      
+
+   
+        // Show SweetAlert success popup
+        Swal.fire({
+          title: 'Success!',
+          text: 'Product has been added.',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
+
+      
+    }
+
+// Crop and update button
+
+
+  // Modify the form submission
+  productForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+    if (fields.every(field => validateField(field)) && validateImages()) {
+      this.submit();
+    } else {
+      alert('Please fill out all required fields correctly and upload at least 3 images.');
+    }
+   
+  });
+
+  // Initial form validity check
+  checkFormValidity();
+
+  // Image input change event
+  imageInput.addEventListener('change', function() {
+    validateImages();
+    checkFormValidity();
+  });
+
+  
+  
       let existingImages = [];
       try {
         existingImages = JSON.parse(imagePreviewsContainer.dataset.existingImages);
@@ -284,7 +407,14 @@
         cropButton.style.display = 'inline-block';
         cancelButton.style.display = 'inline-block';
       });
-    
+     function sucessproduct (){
+   Swal.fire({
+          title: 'Success!',
+          text: 'Product has been added.',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
+     }
       cropButton.addEventListener('click', function () {
         const croppedFiles = [];
         const promises = cropperInstances.map((instance, index) => {
@@ -294,6 +424,7 @@
               height: 200,
               imageSmoothingEnabled: true,
               imageSmoothingQuality: 'high'
+             
             });
     
             canvas.toBlob(function (blob) {
@@ -315,9 +446,14 @@
           cropButton.style.display = 'none';
           cancelButton.style.display = 'none';
          productForm.submit();
+         sucessproduct()
         });
       });
-    
+       document.getElementById('productForm').addEventListener('submit',function(event){
+        event.preventDefault();
+        addProduct()
+        document.getElementById('productForm').reset();
+       })
       cancelButton.addEventListener('click', function () {
         imageInput.value = '';
         imagePreviewsContainer.innerHTML = '';

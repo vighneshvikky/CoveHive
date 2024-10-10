@@ -15,7 +15,7 @@ const securePassword = async (password) => {
         console.log(error);
     }
 };
-//------------------------------------ Load signup page---------------------------------------
+//----------------------------------- Load signup page---------------------------------------
 
 exports.loadSignup = async (req, res) => {
     try {
@@ -92,7 +92,7 @@ exports.verifyOtp = async (req, res) => {
             const tempUserData = req.session.tempUserData;
             if (tempUserData) {
                 const spassword = await securePassword(tempUserData.password); // Hash the password
-
+                req.session.fullName = tempUserData.fullName;
                 const user = new User({
                     fullName: tempUserData.fullName,
                     email: tempUserData.email,
@@ -145,6 +145,7 @@ exports.verifyLogin = async (req, res) => {
          else if(isPasswordMatch) {
                 req.session.user_id = userData._id;
                 req.session.fullName = userData.fullName;
+                req.session.isBlocked = userData.is_blocked
                 
                 
                 res.redirect("/home");
@@ -161,31 +162,31 @@ exports.verifyLogin = async (req, res) => {
     }
 };
 //------------------------------------Load home page-------------------------------------------------------
-exports.loadLanding = async (req,res) => {
-    try {
-        const limit = 10; // Number of items per page
-        const page = parseInt(req.query.page) || 1; // Current page number
-        const skip = (page - 1) * limit; // Number of documents to skip
+// exports.loadLanding = async (req,res) => {
+//     try {
+//         const limit = 10; // Number of items per page
+//         const page = parseInt(req.query.page) || 1; // Current page number
+//         const skip = (page - 1) * limit; // Number of documents to skip
         
-        const products = await Product.find({ isBlocked: false })
-            .sort({ createdAt: -1 }) // Sort by createdAt in descending order
-            .skip(skip) // Skip the previous pages
-            .limit(8); // Limit to 'limit' items
-        const totalProduct = await Product.countDocuments({ isBlocked: false }); // Get total count of products
-        const categories = await Category.find({ isBlocked: false });
+//         const products = await Product.find({ isBlocked: false })
+//             .sort({ createdAt: -1 }) // Sort by createdAt in descending order
+//             .skip(skip) // Skip the previous pages
+//             .limit(8); // Limit to 'limit' items
+//         const totalProduct = await Product.countDocuments({ isBlocked: false }); // Get total count of products
+//         const categories = await Category.find({ isBlocked: false });
         
-        res.render("user/landingPage", {
-            products,
-            categories,
-            currentPage: page,
-            totalPages: Math.ceil(totalProduct / limit)
-        });
+//         res.render("user/landingPage", {
+//             products,
+//             categories,
+//             currentPage: page,
+//             totalPages: Math.ceil(totalProduct / limit)
+//         });
         
 
-    } catch (error) {
-        console.log(error.message)
-    }
-}
+//     } catch (error) {
+//         console.log(error.message)
+//     }
+// }
 
 exports.loadHome = async (req, res) => {
     try {
@@ -200,14 +201,15 @@ exports.loadHome = async (req, res) => {
         const categories = await Category.find({isBlocked:false}); 
         // console.log(req.session)
         const userName =   req.session.fullName;
-        
+        const isBlocked = req.session.isBlocked
         console.log(userName)
         res.render("user/userHome",{
             products,
             categories,
             currentPage: page,
             totalPages: Math.ceil(totalProduct / limit),
-            userName
+            userName,
+            isBlocked
         });
     } catch (error) {
         console.log(error);
@@ -327,6 +329,23 @@ exports.googleAuthCallback = async (req, res) => {
            currentRoute:'/home',
            userName 
           }); // Render the product details EJS template
+    } catch (error) {
+        console.log(error.message)
+    }
+  }
+
+
+  //-----------------------------------------------user Logout---------------------------
+
+
+  exports.userLogout = async (req,res) => {
+    try {
+       req.session.destroy((err) => {
+        if(err){
+            console.log(err.message)
+        }
+        res.redirect('/login')
+       })
     } catch (error) {
         console.log(error.message)
     }

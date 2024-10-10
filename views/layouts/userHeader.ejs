@@ -26,23 +26,34 @@
 <body class="min-h-screen flex flex-col bg-white">
     <nav class="bg-black text-white p-4 sticky top-0 z-10 shadow-md">
         <div class="container mx-auto flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold">CoveHive</a>
-            <div class="hidden md:flex space-x-6">
-                <a href="/home" class="hover:text-lightGray transition duration-300">Home</a>    
-               </select>
-                <a href="/profile" class="hover:text-lightGray transition duration-300">My Account</a>
-                <a href="#" class="hover:text-lightGray transition duration-300">My Orders</a>
-                <a href="#" class="hover:text-lightGray transition duration-300">Wishlist</a>
-                <a href="#" class="hover:text-lightGray transition duration-300"><% if(userName){ %>
-                    <%= userName %>
-               <% } %></a>
+            <!-- Logo and Brand Name -->
+            <div class="flex items-center space-x-2">
+                <img src="/CoveHive logo.png" alt="CoveHive Logo" class="w-auto h-12 rounded-full"> 
+                <a href="#" class="text-2xl font-bold">CoveHive</a>
             </div>
-            <div class="md:hidden flex space-x-4">
-                <i class="fas fa-shopping-bag"></i>
-                <i class="fas fa-user"></i>
-                <i class="fas fa-heart"></i>
-                <i class="fas fa-sign-in-alt"></i>
-                <i class="fas fa-bars"></i>
+    
+            <!-- Links for Larger Screens -->
+            <div class="hidden md:flex space-x-6">
+                <a href="/home" class="hover:text-gray-300 transition duration-300">Home</a>
+                <a href="/profile" class="hover:text-gray-300 transition duration-300">My Account</a>
+                <a href="#" class="hover:text-gray-300 transition duration-300">My Orders</a>
+                <a href="#" class="hover:text-gray-300 transition duration-300">Wishlist</a>
+                <a href="#" class="hover:text-gray-300 transition duration-300">
+                    <% if(userName){ %>
+                        <%= userName %>
+                    <% } %>
+                </a>
+                <a href="/logout" class="hover:text-gray-300 transition duration-300">Logout</a>
+            </div>
+    
+            <!-- Icons for Mobile Screens -->
+            <div class="md:hidden flex items-center space-x-4">
+                <a href="#" class="hover:text-gray-300 transition duration-300"><i class="fas fa-shopping-bag"></i></a>
+                <a href="#" class="hover:text-gray-300 transition duration-300"><i class="fas fa-user"></i></a>
+                <a href="#" class="hover:text-gray-300 transition duration-300"><i class="fas fa-heart"></i></a>
+                <a href="#" class="hover:text-gray-300 transition duration-300"><i class="fas fa-sign-in-alt"></i></a>
+                <button class="focus:outline-none"><i class="fas fa-bars"></i></button>
             </div>
         </div>
     </nav>
+    

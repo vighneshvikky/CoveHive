@@ -83,11 +83,15 @@
           <a href="?page=<%= currentPage + 1 %>&limit=10" class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">Next</a>
         <% } %>
       </div>
-      <% if(userName){ %>
+      <% if (typeof blockedMessage !== 'undefined') { %>
+        <p style="color: red;"><%= blockedMessage %></p>
+    <% } %>
+    
+    
         <%- include('../layouts/userFooter.ejs') %>
-      <%}else{%>
-        <%- include('../layouts/userFooter.ejs') %>
-      <%} %>
-      
+
+        
+    
+  
    
    

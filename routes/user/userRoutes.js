@@ -59,30 +59,8 @@ user_route.get('/auth/google/callback',
   userController.googleAuthCallback // Controller function handles the logic
 );
 
-// Google OAuth callback route
-// user_route.get('/auth/google/callback', 
-//   passport.authenticate('google', { failureRedirect: '/' }),
-//   async(req,res) => {
-//     try {
-//       const user =await User.findOne({email:req.user.email});
-//      // console.log(user)
-//      if(user.is_blocked){
-   
-//       res.render('user/userSignup',{message:'Your Account has Been blocked'})
-//      }else{
-//       req.session.user_id =user._id;
-//       req.session.userName = user.fullName;
-//       const userName = req.session.userName
-//       console.log(req.session.userName+"hai")
-//       res.render('user/userHome',{userName})
-//      }
+//--------------------------------------user logout ----------------------------------
 
-//     } catch (error) {
-//       console.log(error.message);
-      
-//     } 
-//   }
-// );
-
+user_route.get('/logout',userController.userLogout)
 module.exports = user_route;
 

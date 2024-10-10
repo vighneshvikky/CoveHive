@@ -60,8 +60,6 @@ exports.postAddProduct = async(req,res) => {
     //console.log(newProduct)
 
     await newProduct.save();
-    
-    //console.log(newProduct) 
     } catch (error) {
       console.log(error.message);
         
