@@ -1,0 +1,13 @@
+<a href="/add-address">Add address</a>
+
+<% user.addresses.forEach(function(address) { %>
+    <div>
+        <p><%= address.fullName %></p>
+        <p><%= address.street %></p>
+        <p><%= address.city %>, <%= address.state %>, <%= address.pincode %></p>
+        <p><%= address.country %></p>
+    </div>
+    <div class="flex">
+        <a href="/user-address-edit/<%= address._id %>">Edit</a>
+    </div>
+<% }); %>

@@ -175,14 +175,15 @@ exports.loadHome = async (req, res) => {
         const totalProduct = await Product.countDocuments({ isBlocked: false }); // Get total count of products
         const categories = await Category.find({isBlocked:false}); 
         // console.log(req.session)
-        const userName =   req.session.fullName;
-        console.log(userName)
+        // const userName =   req.session.fullName;
+        // console.log(userName)
+        const user = await User.findById(req.session.user_id)
         res.render("user/userHome",{
             products,
             categories,
             currentPage: page,
             totalPages: Math.ceil(totalProduct / limit),
-            userName,
+            user,
         });
     } catch (error) {
         console.log(error);
@@ -232,7 +233,7 @@ exports.loadCategory = async (req, res) => {
 
         // Get the total count of products in the category (excluding blocked ones)
         const totalProducts = await Product.countDocuments({ isBlocked: false, category: categoryId });
-         const userName =  req.session.fullName
+        const user = await User.findById(req.session.user_id)
         // Fetch the products for the current page, with pagination
         const products = await Product.find({ isBlocked: false, category: categoryId })
             .skip(skip)  // Skip the first 'skip' number of products
@@ -246,7 +247,7 @@ exports.loadCategory = async (req, res) => {
             products,
             currentPage: page,
             totalPages,
-            userName // total number of pages
+            user // total number of pages
         });
     } catch (error) {
         console.log(error.message);
@@ -295,12 +296,12 @@ exports.googleAuthCallback = async (req, res) => {
         if (!product) { 
             return res.status(404).send('Product not found'); // Handle case where product doesn't exist
         }
-        const userName = req.session.fullName
+        const user = await User.findById(req.session.user_id)
         res.render('user/productDetails', {
            product,
            relatedProducts,
            currentRoute:'/home',
-           userName 
+           user 
           }); // Render the product details EJS template
     } catch (error) {
         console.log(error.message)

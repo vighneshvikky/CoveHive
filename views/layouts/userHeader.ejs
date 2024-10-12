@@ -15,10 +15,12 @@
                         navy: '#14213d',
                         lightGray: '#e5e5e5',
                         white: '#ffffff',
+                        premium: '#14213d',
                     }
                 }
             }
         }
+       
     </script>
      <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -35,12 +37,11 @@
             <!-- Links for Larger Screens -->
             <div class="hidden md:flex space-x-6">
                 <a href="/home" class="hover:text-gray-300 transition duration-300">Home</a>
-                <a href="/profile" class="hover:text-gray-300 transition duration-300">My Account</a>
                 <a href="#" class="hover:text-gray-300 transition duration-300">My Orders</a>
                 <a href="#" class="hover:text-gray-300 transition duration-300">Wishlist</a>
-                <a href="#" class="hover:text-gray-300 transition duration-300">
-                    <% if(userName){ %>
-                        <%= userName %>
+                <a href="/profile" class="hover:text-gray-300 transition duration-300">
+                    <% if(user.fullName){ %>
+                        <%= user.fullName %>
                     <% } %>
                 </a>
                 <a href="/logout" class="hover:text-gray-300 transition duration-300">Logout</a>

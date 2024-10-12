@@ -16,6 +16,7 @@
     "body-parser": "^1.20.3",
     "connect-flash": "^0.1.1",
     "cropperjs": "^1.6.2",
+    "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
