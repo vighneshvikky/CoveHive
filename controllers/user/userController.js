@@ -161,32 +161,7 @@ exports.verifyLogin = async (req, res) => {
         console.log(error);
     }
 };
-//------------------------------------Load home page-------------------------------------------------------
-// exports.loadLanding = async (req,res) => {
-//     try {
-//         const limit = 10; // Number of items per page
-//         const page = parseInt(req.query.page) || 1; // Current page number
-//         const skip = (page - 1) * limit; // Number of documents to skip
-        
-//         const products = await Product.find({ isBlocked: false })
-//             .sort({ createdAt: -1 }) // Sort by createdAt in descending order
-//             .skip(skip) // Skip the previous pages
-//             .limit(8); // Limit to 'limit' items
-//         const totalProduct = await Product.countDocuments({ isBlocked: false }); // Get total count of products
-//         const categories = await Category.find({ isBlocked: false });
-        
-//         res.render("user/landingPage", {
-//             products,
-//             categories,
-//             currentPage: page,
-//             totalPages: Math.ceil(totalProduct / limit)
-//         });
-        
 
-//     } catch (error) {
-//         console.log(error.message)
-//     }
-// }
 
 exports.loadHome = async (req, res) => {
     try {
