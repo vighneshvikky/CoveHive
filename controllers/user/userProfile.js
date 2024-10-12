@@ -34,7 +34,8 @@ exports.loadAddress = async (req,res) => {
 
 exports.loadAddAddress = async (req,res) => {
     try {
-        res.render('user/addAddress')
+        const user = await User.findById(req.session.user_id)
+        res.render('user/addAddress',{user})
     } catch (error) {
        console.log(error.message) 
     }
@@ -68,7 +69,7 @@ exports.editAddress = async (req,res) => {
     const address =  user.addresses.id(addressId)
     console.log(`user is ${user}`)
     try {
-        res.render('user/editAddress',{address})
+        res.render('user/editAddress',{address,user})
 
     } catch (error) {
        console.log(error.message) 

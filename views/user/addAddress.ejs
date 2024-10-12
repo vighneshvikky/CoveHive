@@ -1,35 +1,65 @@
-<form action="/add-address" method="POST">
-    <div>
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="fullName"  value="Vighnesh SL"required>
-      </div>
+<% if(user.fullName !="undefined") { %>
+  <%- include('../layouts/userHeader.ejs') %>
+<% } else { %>
+  <%- include('../layouts/landingNav.ejs') %>
+<% } %>
+<div class="flex min-h-screen bg-gray-100">
+  <%- include('../layouts/profileSideBar') %>
+  <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md flex-auto">
+    <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Add New Address</h2>
+    <form id="addressForm" action="/add-address" method="POST" class="space-y-4">
+        <div>
+            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name:</label>
+            <input type="text" id="name" name="fullName" value="Vighnesh SL" required
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+            <label for="street" class="block text-sm font-medium text-gray-700 mb-1">Building/Address line:</label>
+            <input type="text" id="street" name="street" value="Garden Street"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+            <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City:</label>
+            <input type="text" id="city" name="city" value="Trivandrum" required
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+            <label for="pincode" class="block text-sm font-medium text-gray-700 mb-1">Pincode:</label>
+            <input type="text" id="pincode" name="pincode" value="686576" required
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+            <label for="state" class="block text-sm font-medium text-gray-700 mb-1">State:</label>
+            <input type="text" id="state" name="state" value="Kerala" required
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+            <label for="country" class="block text-sm font-medium text-gray-700 mb-1">Country:</label>
+            <input type="text" id="country" name="country" value="India" required
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">
+            Add Address
+        </button>
+    </form>
+  </div>
+  
+</div>
 
-    <div>
-      <label for="street">Building/Address line:</label>
-      <input type="text" id="street" name="street" value="Garden Street">
-    </div>
-  
-    <div>
-      <label for="city">City:</label>
-      <input type="text" id="city" name="city" value="Trivandrum" required>
-    </div>
-  
-    <div>
-      <label for="pincode">pincode:</label>
-      <input type="text" id="zip" name="pincode"  value="686576"required>
-    </div>
-  
-    <div>
-      <label for="state">State:</label>
-      <input type="text" id="state" name="state" value="Kerala" required>
-    </div>
-  
-    <div>
-      <label for="country">Country:</label>
-      <input type="text" id="country" name="country"  value="India"required>
-    </div>
-  
-  
-    <button type="submit">Add Address</button>
-  </form>
-  
+<script>
+  document.getElementById('addressForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      Swal.fire({
+          title: 'Address Added!',
+          text: 'Your new address has been successfully added.',
+          icon: 'success',
+          confirmButtonText: 'OK'
+      }).then((result) => {
+          if (result.isConfirmed) {
+              this.submit();
+          }
+      });
+  });
+</script>
+<%- include('../layouts/userFooter.ejs') %>

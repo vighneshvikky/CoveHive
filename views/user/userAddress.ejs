@@ -1,13 +1,31 @@
-<a href="/add-address">Add address</a>
+<% if(user.fullName !="undefined") { %>
+    <%- include('../layouts/userHeader.ejs') %>
+<% } else { %>
+    <%- include('../layouts/landingNav.ejs') %>
+<% } %>
 
-<% user.addresses.forEach(function(address) { %>
-    <div>
-        <p><%= address.fullName %></p>
-        <p><%= address.street %></p>
-        <p><%= address.city %>, <%= address.state %>, <%= address.pincode %></p>
-        <p><%= address.country %></p>
-    </div>
-    <div class="flex">
-        <a href="/user-address-edit/<%= address._id %>">Edit</a>
-    </div>
-<% }); %>
+<!-- Main content with sidebar -->  
+<div class="flex min-h-screen bg-gray-100">
+    <!-- Sidebar -->
+    <%- include('../layouts/profileSideBar') %>
+
+    <!-- Main content -->
+    <main class="flex-1 p-8">
+        <h1 class="text-3xl font-bold mb-8">Your Addresses</h1>
+        
+        <a href="/add-address" class="inline-block mb-8 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200">Add New Address</a>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <% user.addresses.forEach(function(address) { %>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4"><%= address.fullName %></h2>
+                    <p class="mb-2"><%= address.street %></p>
+                    <p class="mb-2"><%= address.city %>, <%= address.state %>, <%= address.pincode %></p>
+                    <p class="mb-4"><%= address.country %></p>
+                    <a href="/user-address-edit/<%= address._id %>" class="inline-block px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-200">Edit</a>
+                </div>
+            <% }); %>
+        </div>
+    </main>
+</div>
+<%- include('../layouts/userFooter') %>
