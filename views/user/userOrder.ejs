@@ -1,0 +1,19 @@
+<h2>My Orders</h2>
+<div>
+    <% user.orders.forEach(function(order) { %>
+        <div>
+            <p><strong>Order ID:</strong> <%= order._id %></p>
+            <p><strong>Date:</strong> <%= order.createdAt.toDateString() %></p>
+            <p><strong>Total Amount:</strong> ₹<%= order.totalAmount %></p>
+            <p><strong>Status:</strong> <%= order.status %></p>
+
+            <h4>Items:</h4>
+            <ul>
+                <% order.items.forEach(function(item) { %>
+                    <li><%= item.productName %> - ₹<%= item.price %> x <%= item.quantity %></li>
+                <% }); %>
+            </ul>
+        </div>
+        <hr>
+    <% }); %>
+</div>

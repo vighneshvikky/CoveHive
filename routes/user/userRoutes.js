@@ -74,14 +74,13 @@ user_route.post('/user-address-edit/:id',userProfile.postEditAddress)
 
 //----------------------------------user Forget pass ---------------------------------------
 user_route.get('/forget-password', forgetPass.loadForgotPassword);
-// Route to handle forgot password
 user_route.post('/forgot-password', forgetPass.forgotPassword);
-
-// Route to serve the reset password form
 user_route.get('/reset-password/:token', forgetPass.getResetPassword);
-
-// Route to handle password reset
 user_route.post('/reset-password/:token', forgetPass.postResetPassword);
+
+//----------------------------------user orders ---------------------------------------
+
+user_route.get('/user-orders',userProfile.loadOrders)
 
 //----------------------------------Google Authentication---------------------------------------
 

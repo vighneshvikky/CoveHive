@@ -46,10 +46,7 @@ exports.isblocked = async (req,res,next) => {
            
         }
        }
-        
-            next()
-         
-       
+         next()   
     } catch (error) {
         console.log(error.message)
     }

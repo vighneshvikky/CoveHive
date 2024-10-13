@@ -96,3 +96,12 @@ exports.postEditAddress =  async (req,res) => {
        console.log(error.message) 
     }
 }
+
+exports.loadOrders = async (req,res) => {
+    try {
+        const user = await User.findById(req.session.user_id).populate('orders')
+        res.render('user/userOrder',{user})
+    } catch (error) {
+        console.log(error.message)
+    }
+}
