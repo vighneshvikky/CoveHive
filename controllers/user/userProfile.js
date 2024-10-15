@@ -105,3 +105,47 @@ exports.loadOrders = async (req,res) => {
         console.log(error.message)
     }
 }
+
+// exports.removeAddress = async (req,res) => {
+//     try {
+//         const addressId = req.params.id;
+//         const user = await User.findById(req.session.user_id);
+//         if (!user) {
+//             return res.status(404).send('User not found');
+//         }
+//         const address = user.
+        
+//     } catch (error) {
+//       console.log(error.message)  
+//     }
+// }
+
+exports.removeAddress = async (req,res) => {
+    const addressId = req.params.id; // Get the address ID from the request parameters
+    const user = await User.findById(req.session.user_id); // Find the user by session ID
+    
+    if (!user) {
+        return res.status(404).send('User not found');
+    }
+    
+    // Find the index of the address by its ID
+    const addressIndex = user.addresses.findIndex(address => address._id.toString() === addressId);
+    
+    if (addressIndex === -1) {
+        return res.status(404).send('Address not found');
+    }
+    
+    // Remove the address from the addresses array
+    user.addresses.splice(addressIndex, 1);
+    
+    // Save the user and handle any errors
+    try {
+        await user.save();
+        res.redirect('/user-address'); // Redirect after successful deletion
+    }
+
+    catch (error) {
+      console.log(error.message)  
+    }
+}
+

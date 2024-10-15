@@ -324,3 +324,32 @@ exports.googleAuthCallback = async (req, res) => {
         console.log(error.message)
     }
   }
+
+  exports.allProducts = async (req, res) => {
+    try {
+        const user = await User.findById(req.session.user_id);
+        console.log(`user is ${user}`);
+
+        const searchQuery = req.query.q || ''; // Get search query from request
+        const selectedSort = req.query.sort || ''; // Get the sort option from the query, default to empty string
+
+        // Fetch products from the database, sorted based on the selected sort option
+        let products = await Product.find({ isBlocked: false });
+
+        // Sort products based on selectedSort
+        if (selectedSort === 'price_asc') {
+            products = products.sort((a, b) => a.price - b.price); // Price: Low to High
+        } else if (selectedSort === 'price_desc') {
+            products = products.sort((a, b) => b.price - a.price); // Price: High to Low
+        } else if (selectedSort === 'rating_desc') {
+            products = products.sort((a, b) => b.rating - a.rating); // Top Rated
+        } else if (selectedSort === 'name_asc') {
+            products = products.sort((a, b) => a.name.localeCompare(b.name)); // Alphabetical: A-Z
+        }
+
+        // Pass the products, user, searchQuery, and selectedSort to the view
+        res.render('user/allProducts', { products, user, searchQuery, selectedSort });
+    } catch (error) {
+        console.log(error.message);
+    }
+};

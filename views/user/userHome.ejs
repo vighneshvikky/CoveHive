@@ -1,13 +1,10 @@
+
 <% if(user){ %>
   <%- include('../layouts/userHeader.ejs') %>
 <%}else{%>
   <%- include('../layouts/landingNav.ejs') %>
 <%} %>
-
-
-
-
-    <main class="flex-grow">
+<main class="flex-grow">
 <!-- Banner Section -->
 <!-- Banner Section -->
 <section class="relative bg-primary text-black py-24" style="background-image: url('/path/to/banner-image.jpg'); background-size: cover; background-position: center;">
@@ -18,10 +15,7 @@
         
     </div>
 </section>
-
-
-
-        <!-- Categories Section -->
+<!-- Categories Section -->
         <section class="py-16 bg-lightGray border-t border-navy">
             <div class="container mx-auto px-4">
                 <h2 class="text-3xl font-bold mb-10 text-center text-navy">Our Collections</h2>
@@ -44,21 +38,23 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <% products.forEach(product => { %>
               <div class="bg-lightGray rounded-lg overflow-hidden shadow-lg transition duration-300 transform hover:scale-105">
-                
-                        
-
-                    <a href="/products/<%= product._id %>"><img src="/uploads/<%= product.image[0] %>  %>" alt="<%= product.name %>" class="w-full h-48 object-cover"></a> 
-
+                 <a href="/products/<%= product._id %>"><img src="/uploads/<%= product.image[0] %>  %>" alt="<%= product.name %>" class="w-full h-48 object-cover"></a> 
                   <div class="p-6">
                       <h3 class="text-lg font-semibold text-navy mb-2"><%= product.name %></h3>
                       <p class="text-xl font-bold text-black"><i class="fa-solid fa-indian-rupee-sign"></i> 
+              
                         <% if(product.discount > 0) { %>
                             <% const discountAmount = (product.price * product.discount) / 100; %>  
                             <% const discountedPrice = product.price - discountAmount; %>
                             <%= discountedPrice.toFixed(2) %> <!-- Output the discounted price -->
                         <% } else { %>
                             <%= product.price.toFixed(2) %> <!-- Output the original price if no discount -->
-                        <% } %></p> <!-- Assuming price is a number -->
+                        <% } %><form action="/cart/add/<%= product._id %>" class="ml-64" method="POST" id="addToCartForm<%= product._id %>">
+                          <input type="hidden" name="productId" value="<%= product._id %>">
+                          <button type="submit" id="add-to-cart"><i class="fa-solid fa-cart-shopping"></i></button>
+                      </form></p> 
+                        <!-- Assuming price is a number -->
+                        
                   </div>
               </div>
           <% }); %>
@@ -86,7 +82,47 @@
       <% if (typeof blockedMessage !== 'undefined') { %>
         <p style="color: red;"><%= blockedMessage %></p>
     <% } %>
+    <!-- Include Toastify JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
+    <script>
+  document.getElementById('add-to-cart').addEventListener('click', function() {
+        const productId = this.getAttribute('data-product-id');
+        
+        // Perform an AJAX request to add the product to the cart
+        fetch('/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ productId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Trigger SweetAlert notification if successful
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Added to Cart!',
+                    text: 'The product has been added to your cart.',
+                    confirmButtonColor: '#3085d6'
+                });
+            } else {
+                // Show error message if something goes wrong
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: data.message,
+                    confirmButtonColor: '#d33'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+    </script>
     
         <%- include('../layouts/userFooter.ejs') %>
 

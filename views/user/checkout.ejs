@@ -1,0 +1,43 @@
+<!-- checkout.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="/path/to/your/css/styles.css">
+</head>
+<body>
+    <h1>Checkout</h1>
+    
+    <form id="checkout-form" method="POST" action="/checkout/place-order">
+        <h2>Select Address</h2>
+        <div id="address-selection">
+            <% addresses.forEach(function(address) { %>
+                <div>
+                    <input type="radio" id="<%= address._id %>" name="selectedAddress" value="<%= address._id %>">
+                    <label for="<%= address._id %>"><%= address.street %>, <%= address.city %>, <%= address.state %>, <%= address.zip %></label>
+                </div>
+            <% }) %>
+        </div>
+
+        <h2>Add New Address</h2>
+        <div>
+            <input type="text" name="street" placeholder="Street" required>
+            <input type="text" name="city" placeholder="City" required>
+            <input type="text" name="state" placeholder="State" required>
+            <input type="text" name="pincode" placeholder="Pin Code" required>
+            <button type="button" id="add-address">Add Address</button>
+        </div>
+
+        <button type="submit">Place Order (COD)</button>
+    </form>
+
+    <script>
+        document.getElementById('add-address').addEventListener('click', function() {
+            // Implement functionality to add a new address dynamically
+            // You may want to add a new address form in the DOM or a modal
+        });
+    </script>
+</body>
+</html>

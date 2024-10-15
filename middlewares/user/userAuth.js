@@ -30,6 +30,19 @@ exports.isLogout = async (req,res,next) => {
     }
 }
 
+exports.isload = async (req,res,next)=>{
+    try {
+        if(req.session.user_id){
+            next();
+        }else{
+            res.redirect('/login')
+        }
+       
+    } catch (error) {
+      console.log(error.message)  
+    }
+}
+
 exports.isblocked = async (req,res,next) => {
     try {
         

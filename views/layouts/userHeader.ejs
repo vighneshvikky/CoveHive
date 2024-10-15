@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CoveHive - Premium  Phone</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script>
         tailwind.config = {
@@ -16,13 +20,15 @@
                         lightGray: '#e5e5e5',
                         white: '#ffffff',
                         premium: '#14213d',
+                        
                     }
                 }
             }
         }
        
     </script>
-     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Include Toastify CSS -->
+
      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body class="min-h-screen flex flex-col bg-white">
@@ -32,18 +38,19 @@
             <div class="flex items-center space-x-2">
                 <img src="/CoveHive logo.png" alt="CoveHive Logo" class="w-auto h-12 rounded-full"> 
                 <a href="#" class="text-2xl font-bold">CoveHive</a>
-            </div>
-    
+            </div> 
             <!-- Links for Larger Screens -->
             <div class="hidden md:flex space-x-6">
                 <a href="/home" class="hover:text-gray-300 transition duration-300">Home</a>
-                <a href="#" class="hover:text-gray-300 transition duration-300">My Orders</a>
+                <a href="/allProducts" class="hover:text-gray-300 transition duration-300">All Products</a>
+                <!-- <a href="#" class="hover:text-gray-300 transition duration-300">My Orders</a> -->
                 <a href="#" class="hover:text-gray-300 transition duration-300">Wishlist</a>
                 <a href="/profile" class="hover:text-gray-300 transition duration-300">
                     <% if(user.fullName){ %>
                         <%= user.fullName %>
                     <% } %>
                 </a>
+                <a href="/cart" class="hover:text-gray-300 transition duration-300"><i class="fa-solid fa-cart-shopping"></i></a>
                 <a href="/logout" class="hover:text-gray-300 transition duration-300">Logout</a>
             </div>
     

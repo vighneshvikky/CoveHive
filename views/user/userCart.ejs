@@ -1,0 +1,86 @@
+<% if(user){ %>
+    <%- include('../layouts/userHeader.ejs') %>
+  <%}else{%>
+    <%- include('../layouts/landingNav.ejs') %>
+  <%} %>
+  <h2 class="text-3xl font-bold text-navy-800 my-4">Your Shopping Cart</h2>
+
+  <% if (cart && cart.items.length > 0) { %>
+      <ul class="space-y-4">
+          <% cart.items.forEach(function(item) { %>
+              <li class="flex items-center p-4 border border-gray-300 bg-white shadow-md rounded-lg">
+                  <!-- Product Image -->
+                  <div class="flex-shrink-0">
+                      <img src="/uploads/<%= item.productId.image[0] %>" alt="<%= item.productId.name %>" class="w-24 h-24 object-cover rounded-md">
+                  </div>
+                  <!-- Product Details -->
+                  <div class="ml-4 flex-grow">
+                      <p class="text-xl font-semibold text-navy-800"><%= item.productId.name %></p>
+                      <p class="text-lg text-gray-600">Price: ₹<%= item.price %></p>
+                  </div>
+                  <!-- Quantity Update Form -->
+                  <form action="/cart/update/<%= item.productId._id %>" method="POST" class="flex items-center">
+                      <input type="number" name="quantity" value="<%= item.quantity %>" min="1" class="border border-gray-300 rounded-md w-16 p-2 text-center">
+                      <button type="submit" onclick="updateCart('<%= item.productId._id %>')" class="ml-2 bg-indigo-600 text-white hover:bg-indigo-700 font-medium py-1 px-3 rounded-md">Update</button>
+                  </form>
+                  <!-- Remove from Cart Link -->
+                  <div class="ml-4">
+                      <a href="/cart/remove/<%= item.productId._id %>" class="text-red-600 hover:text-red-700 font-medium">Remove</a>
+                  </div>
+              </li>
+          <% }); %>
+      </ul>
+      <div class="mt-4 p-4 bg-gray-100 rounded-md">
+          <p class="text-lg font-bold">Total Items: <span class="text-navy-800"><%= cart.totalQuantity %></span></p>
+          <p class="text-lg font-bold">Total Price: ₹<span class="text-navy-800"><%= cart.totalPrice %></span></p>
+          <a href="/checkout" class="mt-4 inline-block bg-green-600 text-white hover:bg-green-700 font-medium py-2 px-6 rounded-md">Proceed to Checkout</a>
+      </div>
+  <% } else { %>
+      <p class="text-center text-xl text-navy-800 p-6">Your cart is empty!</p>
+  <% } %>
+  <script>function updateCart(productId) {
+    // Example of AJAX function to update the cart
+    function updateCart(productId) {
+        const quantity = document.querySelector(`input[name="quantity-${productId}"]`).value; // Get the quantity from input
+
+        fetch(`/cart/update/${productId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ quantity }), // Send the new quantity
+        })
+        .then(response => response.json()) // Parse the JSON response
+        .then(data => {
+            if (data.success) {
+                // If the update was successful
+                swal({
+                    title: "Success!",
+                    text: "Cart updated successfully.", // "Cart updated successfully."
+                    icon: "success",
+                    button: "Okay",
+                });
+            } else {
+                // If the update failed (e.g., item not found in cart)
+                swal({
+                    title: "Error!",
+                    text: "Item not found in cart.", // e.g., "Item not found in cart."
+                    icon: "error",
+                    button: "Try Again",
+                });
+            }
+        })
+        .catch(error => {
+            // Handle any network or server errors
+            swal({
+                title: "Oops!",
+                text: "Something went wrong. Please try again later.",
+                icon: "error",
+                button: "Okay",
+            });
+            console.error('Error updating cart:', error);
+        });
+    }
+}</script>
+  
+<%- include('../layouts/userFooter.ejs') %>

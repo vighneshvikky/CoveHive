@@ -7,7 +7,7 @@
   <%- include('../layouts/profileSideBar') %>
   <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md flex-auto">
     <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Add New Address</h2>
-    <form id="addressForm" action="/add-address" method="POST" class="space-y-4">
+    <form id="addressForm" action="/add-address" method="post" class="space-y-4">
         <div>
             <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name:</label>
             <input type="text" id="name" name="fullName" value="Vighnesh SL" required
@@ -46,20 +46,5 @@
   
 </div>
 
-<script>
-  document.getElementById('addressForm').addEventListener('submit', function(event) {
-      event.preventDefault();
-      
-      Swal.fire({
-          title: 'Address Added!',
-          text: 'Your new address has been successfully added.',
-          icon: 'success',
-          confirmButtonText: 'OK'
-      }).then((result) => {
-          if (result.isConfirmed) {
-              this.submit();
-          }
-      });
-  });
-</script>
+
 <%- include('../layouts/userFooter.ejs') %>

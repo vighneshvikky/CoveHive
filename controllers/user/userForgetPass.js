@@ -17,7 +17,8 @@ let transporter = nodemailer.createTransport({
 
 exports.loadForgotPassword = async (req,res) => {
     try {
-        res.render('user/forgetPassword')
+        const user = await User.findById(req.session.user_id)
+        res.render('user/forgetPassword',user)
     } catch (error) {
       console.log(error.message)  
     }

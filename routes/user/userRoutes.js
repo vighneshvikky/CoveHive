@@ -10,6 +10,9 @@ const User = require('../../models/user/userSchema');
 const ProductController = require('../../controllers/admin/productController');
 const userProfile = require('../../controllers/user/userProfile');
 const forgetPass = require('../../controllers/user/userForgetPass')
+const userCart = require('../../controllers/user/cartController');
+const searchController = require('../../controllers/user/searchController')
+
 
  //user_route.get('/',userAuth.isLogout,userController.loadHome);
 user_route.get('/',userAuth.isLogout,userController.loadHome)
@@ -71,7 +74,10 @@ user_route.get('/add-address',userProfile.loadAddAddress)
 user_route.post('/add-address',userProfile.postAddAddress)
 user_route.get('/user-address-edit/:id',userProfile.editAddress)
 user_route.post('/user-address-edit/:id',userProfile.postEditAddress)
+user_route.get('/user-address-remove/:id',userProfile.removeAddress)
 
+//----------------------------------All Products---------------------------------------
+ user_route.get('/allProducts',userController.allProducts)
 //----------------------------------user Forget pass ---------------------------------------
 user_route.get('/forget-password', forgetPass.loadForgotPassword);
 user_route.post('/forgot-password', forgetPass.forgotPassword);
@@ -88,6 +94,15 @@ user_route.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   userController.googleAuthCallback // Controller function handles the logic
 );
+//--------------------------------------user cart ----------------------------------
+user_route.post('/cart/add/:productId',userAuth.isload,userCart.addToCart);
+user_route.get('/cart', userCart.getCart);
+user_route.post('/cart/update/:productId',userCart.updateCart);
+user_route.get('/cart/remove/:productId',userCart.removeFromCart);
+
+//--------------------------------------user search ----------------------------------
+
+user_route.get('/search',searchController.searchProducts)
 
 //--------------------------------------user logout ----------------------------------
 

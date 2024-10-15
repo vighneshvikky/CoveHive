@@ -1,29 +1,15 @@
-admin side 
-
-#E5CEF6
-
-#E9D8E1
-
-#E5CEF6
-
-#B655C8
-
-const storage = multer.diskStorage({
-    destination:function(req,file,cb){
-        cb(null,path.join(__dirname,'../../public/categoryImages'))
-    },
-    filename:function(req,file,cb){
-     const name = Date.now()+'-'+file.originalname;
-     cb(null,name);
-    }
-})
-
-const upload = multer({storage:storage})
-
-
-    const newCategory = new Category({
-        name: req.body.name,
-        img: req.file.filename,
-    });
-
-    <i class="fa-solid fa-indian-rupee-sign">
+<form action="/search" method="GET" class="relative">
+                    <input 
+                        type="text" 
+                        name="q" 
+                        placeholder="Search for products..." 
+                        value="<%= searchQuery || '' %>" 
+                        class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14213d] bg-white text-black"
+                    >
+                    <button 
+                    type="submit" 
+                    class="absolute right-2 top-2 bg-[#14213d] text-white rounded-lg hover:bg-black transition duration-300 px-3 py-0.5 ">
+                    Search
+                </button>
+                
+                </form>

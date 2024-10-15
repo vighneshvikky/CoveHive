@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoveHive - Premium  Phone</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        black: '#000000',
+                        navy: '#14213d',
+                        lightGray: '#e5e5e5',
+                        white: '#ffffff',
+                        premium: '#14213d',
+                        
+                    }
+                }
+            }
+        }
+       
+    </script>
+    <!-- Include Toastify CSS -->
+
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="min-h-screen flex flex-col bg-white">
+  <nav class="bg-black text-white p-4 sticky top-0 z-10 shadow-md">
+    <div class="container mx-auto flex justify-between items-center">
+        <!-- Logo and Brand Name -->
+        <div class="flex items-center space-x-2">
+            <img src="/CoveHive logo.png" alt="CoveHive Logo" class="w-auto h-12 rounded-full"> 
+            <a href="#" class="text-2xl font-bold">CoveHive</a>
+        </div> 
+
+        <div class="flex items-center justify-between bg-black p-2 rounded-lg shadow-md w-full max-w-lg">
+            <!-- Center section of the navbar (Search) -->
+            <div class="flex-grow">
+                <form action="/search" method="GET" class="relative">
+                    <input 
+                        type="text" 
+                        name="q" 
+                        placeholder="Search for products..." 
+                        value="<%= searchQuery || '' %>" 
+                        class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14213d] bg-white text-black"
+                    >
+                    <button 
+                    type="submit" 
+                    class="absolute right-2 top-2 bg-[#14213d] text-white rounded-lg hover:bg-black transition duration-300 px-3 py-0.5 ">
+                    Search
+                </button>
+                
+                </form>
+            </div>
+            
+            <!-- Right section of the navbar (Sorting dropdown) -->
+            <div class="ml-4">
+                <form id="sortingForm" action="/search" method="GET" class="flex items-center">
+                    <input type="hidden" name="q" value="<%= searchQuery || '' %>"> 
+                    <select 
+                        name="sort" 
+                        onchange="document.getElementById('sortingForm').submit();" 
+                        class="border border-gray-300 p-2 rounded-lg bg-white text-black shadow-md focus:outline-none focus:ring-2 focus:ring-[#14213d]">
+                        <option value="">Sort By</option>
+                        <option value="price_asc" <%= selectedSort === 'price_asc' ? 'selected' : '' %>>Price: Low to High</option>
+                        <option value="price_desc" <%= selectedSort === 'price_desc' ? 'selected' : '' %>>Price: High to Low</option>
+                        <option value="rating_desc" <%= selectedSort === 'rating_desc' ? 'selected' : '' %>>Top Rated</option>
+                        <option value="name_asc" <%= selectedSort === 'name_asc' ? 'selected' : '' %>>Alphabetical: A-Z</option>
+                        <option value="name_desc" <%= selectedSort === 'name_desc' ? 'selected' : '' %>>Alphabetical: Z-A</option>
+                    </select>
+                </form>
+            </div>
+        </div>
+
+        <!-- Links for Larger Screens -->
+        <div class="hidden md:flex space-x-6">
+            <a href="/home" class="hover:text-gray-300 transition duration-300">Home</a>
+            <a href="/allProducts" class="hover:text-gray-300 transition duration-300">All Products</a>
+            <a href="#" class="hover:text-gray-300 transition duration-300">Wishlist</a>
+            <a href="/profile" class="hover:text-gray-300 transition duration-300">
+                <% if(user.fullName){ %>
+                    <%= user.fullName %>
+                <% } %>
+            </a>
+            <a href="/cart" class="hover:text-gray-300 transition duration-300">
+                <i class="fa-solid fa-cart-shopping"></i>
+            </a>
+            <a href="/logout" class="hover:text-gray-300 transition duration-300">Logout</a>
+        </div>
+
+        <!-- Icons for Mobile Screens -->
+        <div class="md:hidden flex items-center space-x-4">
+            <a href="#" class="hover:text-gray-300 transition duration-300"><i class="fas fa-shopping-bag"></i></a>
+            <a href="#" class="hover:text-gray-300 transition duration-300"><i class="fas fa-user"></i></a>
+            <a href="#" class="hover:text-gray-300 transition duration-300"><i class="fas fa-heart"></i></a>
+            <a href="#" class="hover:text-gray-300 transition duration-300"><i class="fas fa-sign-in-alt"></i></a>
+            <button class="focus:outline-none"><i class="fas fa-bars"></i></button>
+        </div>
+    </div>
+</nav>
+
+    
+  <h2 class="text-3xl font-bold mb-10 text-center text-navy mt-8">Our Products</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+    <% products.forEach(product => { %>
+        <div class="bg-lightGray rounded-lg overflow-hidden shadow-lg transition duration-300 transform hover:scale-105">
+           <a href="/products/<%= product._id %>"><img src="/uploads/<%= product.image[0] %>  %>" alt="<%= product.name %>" class="w-full h-48 object-cover"></a> 
+            <div class="p-6">
+                <h3 class="text-lg font-semibold text-navy mb-2"><%= product.name %></h3>
+                <p class="text-xl font-bold text-black"><i class="fa-solid fa-indian-rupee-sign"></i> 
+        
+                  <% if(product.discount > 0) { %>
+                      <% const discountAmount = (product.price * product.discount) / 100; %>  
+                      <% const discountedPrice = product.price - discountAmount; %>
+                      <%= discountedPrice.toFixed(2) %> <!-- Output the discounted price -->
+                  <% } else { %>
+                      <%= product.price.toFixed(2) %> <!-- Output the original price if no discount -->
+                  <% } %><form action="/cart/add/<%= product._id %>" class="ml-64" method="POST" id="addToCartForm_<%= product._id %>">
+                    <input type="hidden" name="productId" value="<%= product._id %>">
+                    <button type="submit"><i class="fa-solid fa-cart-shopping"></i></button>
+                </form></p> 
+                  <!-- Assuming price is a number -->
+                  
+            </div>
+        </div>
+    <% }); %>
+</div>
+<%- include('../layouts/userFooter.ejs') %>
