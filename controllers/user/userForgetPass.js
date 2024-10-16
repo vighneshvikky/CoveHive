@@ -18,7 +18,7 @@ let transporter = nodemailer.createTransport({
 exports.loadForgotPassword = async (req,res) => {
     try {
         const user = await User.findById(req.session.user_id)
-        res.render('user/forgetPassword',user)
+        res.render('user/forgetPassword')
     } catch (error) {
       console.log(error.message)  
     }
@@ -30,7 +30,10 @@ exports.forgotPassword = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (!user) {
-            return res.status(400).send('User with this email does not exist.');
+            res.render('user/forgetPassword', { message: 'User with this email does not exist.' });
+            // res.render('user/forgetPassword', { message: 'User with this email does not exist.' });
+
+            // return res.status(400).send('User with this email does not exist.');
         }
 
         // Generate a reset token
@@ -51,11 +54,14 @@ exports.forgotPassword = async (req, res) => {
         };
 
         await transporter.sendMail(mailOptions);
-
-        res.status(200).send('Password reset link sent to your email.');
+         
+        res.render('user/forgetPassword',{message:"'Password reset link sent to your email.'"})
+       // res.status(200).send('Password reset link sent to your email.');
     } catch (error) {
+        
         console.log(error);
-        res.status(500).send('Error sending reset link.');
+        // res.status(500).send('Error sending reset link.');
+        res.render('user/forgetPassword',{message:'Error sending reset link.'})
     }
 };
 

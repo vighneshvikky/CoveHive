@@ -20,6 +20,10 @@ app.use(session({
   saveUninitialized: false,
 
 }));
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null; // Modify as per how you store the user session
+  next();
+});
 app.use(nocache());
 app.use(flash())  
 app.use(express.static(path.join(__dirname, 'public')));

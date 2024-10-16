@@ -33,6 +33,7 @@
     "passport-google-oauth2": "^0.2.0",
     "passport-google-oauth20": "^2.0.0",
     "sharp": "^0.33.5",
+    "sweetalert2": "^11.14.3",
     "toastify-js": "^1.12.0"
   },
   "devDependencies": {

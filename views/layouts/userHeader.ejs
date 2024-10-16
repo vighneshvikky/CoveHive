@@ -46,10 +46,12 @@
                 <!-- <a href="#" class="hover:text-gray-300 transition duration-300">My Orders</a> -->
                 <a href="#" class="hover:text-gray-300 transition duration-300">Wishlist</a>
                 <a href="/profile" class="hover:text-gray-300 transition duration-300">
-                    <% if(user.fullName){ %>
-                        <%= user.fullName %>
+                    <% if (user && user.fullName) { %>
+                      <%= user.fullName %>
+                    <% } else { %>
+                      Guest
                     <% } %>
-                </a>
+                  </a>
                 <a href="/cart" class="hover:text-gray-300 transition duration-300"><i class="fa-solid fa-cart-shopping"></i></a>
                 <a href="/logout" class="hover:text-gray-300 transition duration-300">Logout</a>
             </div>

@@ -1,8 +1,7 @@
-<% if(user){ %>
+
     <%- include('../layouts/userHeader.ejs') %>
-  <%}else{%>
-    <%- include('../layouts/landingNav.ejs') %>
-  <%} %>
+
+
   <h2 class="text-3xl font-bold text-navy-800 my-4">Your Shopping Cart</h2>
 
   <% if (cart && cart.items.length > 0) { %>

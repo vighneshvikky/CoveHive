@@ -1,17 +1,22 @@
 const Product = require('../../models/admin/productModel');
 const Cart = require('../../models/user/cartSchema');
 const User = require('../../models/user/userSchema')
-
-exports.addToCart = async (req,res) => {
+exports.addToCart = async (req, res) => {
     try {
-        
+        const { quantity } = req.body; // Get the quantity from request body
         const productId = req.params.productId;
-        const userId = req.session.user_id;  // Assuming the user is logged in and their ID is stored in the session
-       console.log(`user id is ${userId}`)
+        const userId = req.session.user_id; // Assuming the user is logged in and their ID is stored in the session
+        console.log(`User ID is ${userId}`);
+
         // Fetch product details
         const product = await Product.findById(productId);
         if (!product) {
             return res.status(404).json({ message: 'Product not found' });
+        }
+
+        // Check if the product is in stock
+        if (product.stock <= 0) {
+            return res.status(400).json({ message: 'Product is out of stock.' });
         }
 
         // Check if the cart exists for the user
@@ -30,34 +35,65 @@ exports.addToCart = async (req,res) => {
         // Check if the product is already in the cart
         const cartItem = cart.items.find(item => item.productId.equals(productId));
 
+        // Determine the quantity to add
+        const qtyToAdd = quantity || 1;
+
+        // If the item already exists in the cart, update the quantity
         if (cartItem) {
-            // If the item exists in the cart, increase the quantity
-            cartItem.quantity += 1;
-            cartItem.price += product.price;
+            const newQuantity = cartItem.quantity + qtyToAdd; // Increment by requested quantity
+
+            // Check available stock
+            const availableStock = product.stock + cartItem.quantity; // Total stock available including cart items
+            if (newQuantity > availableStock) {
+                return res.status(400).json({ message: 'Not enough stock available for this product.' });
+            }
+
+            // Update cart item quantity and price
+            cartItem.quantity = newQuantity;
+            cartItem.price = newQuantity * product.price;
+
+            // Update totals for the cart
+            cart.totalQuantity += qtyToAdd; // Increment total quantity
+            cart.totalPrice += product.price * qtyToAdd; // Increment total price based on the new quantity
         } else {
-            // If not in the cart, add the item
+            // If not in the cart, check if we can add it
+            if (product.stock < qtyToAdd) {
+                return res.status(400).json({ message: 'Not enough stock available for this product.' });
+            }
+
+            // Add the item to the cart
             cart.items.push({
                 productId: product._id,
-                quantity: 1,
-                price: product.price
+                quantity: qtyToAdd,
+                price: product.price * qtyToAdd // Price for the item based on quantity
             });
+
+            // Update totals
+            cart.totalQuantity += qtyToAdd;
+            cart.totalPrice += product.price * qtyToAdd;
         }
 
-        // Update cart totals
-        cart.totalQuantity += 1;
-        cart.totalPrice += product.price;
+        // Decrease stock in the product collection after confirming the addition
+        product.stock -= qtyToAdd;
+        await product.save(); // Save the updated product stock
 
         // Save the cart
         await cart.save();
         res.status(200).json({
-            message: 'Product added to cart successfully!',
-            cartItemCount: 5 // Example: Pass cart count if needed
+            success:true,
+            message: 'Product added to cart Sucessfully!',
+            cartItemCount: cart.totalQuantity // Return the total quantity in the cart
         });
     } catch (error) {
-      console.log(error.message);
-      res.json({ success: false, message: "Failed to add to cart!" });  
+        console.log(error.message);
+        res.status(500).json({ success: false, message: "Failed to add to cart!" });
     }
-}
+};
+
+
+
+
+
 
 exports.getCart = async (req,res) => {
     try {
@@ -69,14 +105,13 @@ exports.getCart = async (req,res) => {
       console.log(error.message)  
     }
 }
+
+
 exports.updateCart = async (req, res) => {
     try {
         const { quantity } = req.body; // Get quantity from request body
         const productId = req.params.productId; // Get productId from route params
         const userId = req.session.user_id; // Get userId from session
-
-        // Define the maximum limit for adding to cart
-        const MAX_QUANTITY = 5;
 
         // Find the user's cart
         const cart = await Cart.findOne({ userId });
@@ -96,32 +131,33 @@ exports.updateCart = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Product not found' });
         }
 
-        // Check if the new quantity is valid (must be greater than 0 and not exceed the limit)
+        // Check if the new quantity is valid (must be greater than 0)
         const newQuantity = parseInt(quantity, 10);
         if (newQuantity < 1) {
             return res.status(400).json({ success: false, message: 'Invalid quantity' });
         }
-        if (newQuantity > MAX_QUANTITY) {
-            return res.status(400).json({ success: false, message: `You can only add up to ${MAX_QUANTITY} items of this product.` });
-        }
+
+        // Calculate the change in quantity
+        const quantityChange = newQuantity - cartItem.quantity;
 
         // Check if stock is sufficient
-        if (newQuantity > product.stock) {
+        if (quantityChange > product.stock) {
             return res.status(400).json({ success: false, message: 'Insufficient stock available' });
         }
 
-        // Calculate the change in quantity and price
-        const quantityChange = newQuantity - cartItem.quantity;
+        // Update the cart item
         cartItem.quantity = newQuantity;
-        cartItem.price = newQuantity * product.price;
+        cartItem.price = newQuantity * product.price; // Update price based on new quantity
 
         // Update the total quantity and price for the cart
-        cart.totalQuantity += quantityChange;
-        cart.totalPrice += quantityChange * product.price;
+        cart.totalQuantity += quantityChange; // Update total quantity in cart
+        cart.totalPrice += quantityChange * product.price; // Update total price in cart
 
         // Update product stock
         product.stock -= quantityChange; // Reduce stock based on the change in quantity
-        if (product.stock < 0) product.stock = 0; // Prevent negative stock
+
+        // Prevent negative stock
+        if (product.stock < 0) product.stock = 0; 
 
         // Save the updated product and cart
         await product.save();
@@ -131,7 +167,7 @@ exports.updateCart = async (req, res) => {
 
     } catch (error) {
         console.error('Error updating cart:', error.message);
-        res.status(500).json({ success: false });
+        res.status(500).json({ success: false, message: "An error occurred while updating the cart." });
     }
 };
 

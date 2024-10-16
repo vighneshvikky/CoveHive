@@ -5,6 +5,7 @@
 <%}else{%>
   <%- include('../layouts/landingNav.ejs') %>
 <%} %>
+<div id="toast-container" style="position: fixed; top: 10px; right: 10px; z-index: 1000;"></div>
 
 <ul class="flex items-center font-[sans-serif] space-x-4 mt-4">
   <% if (currentRoute == '/home') { %>
@@ -113,22 +114,26 @@
                     </div>
                   
                     <div class="mt-8 flex space-x-4 justify-center">
-                      <form action="/cart/add/<%= product._id %>" method="POST" id="addToCartForm<%= product._id %>">
+                      <form id="addToCartForm<%= product._id %>" action="/cart/add/<%= product._id %>" method="POST" onsubmit="addToCart( event,'123')">
                         <input type="hidden" name="productId" value="<%= product._id %>">
                         <button type="submit" id="add-to-cart" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-blue-500">
-                          Add to Cart
+                            Add to Cart
                         </button>
-                      </form>
+                    </form>
+                    
+                      <!-- <a href="/cart/add/<%= product._id %>"> <button type="submit" id="add-to-cart" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-blue-500">
+                        Add to Cart
+                      </button> </a> -->
                       <button type="button" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-green-500">
                         Buy Now
                       </button>
                     </div>
                           
-                    <div class="mb-6">
+                    <!-- <div class="mb-6">
                         <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">Quantity:</label>
                         <input type="number" id="quantity" name="quantity" min="1" value="1"
                                       class="w-12 text-center rounded-md border-gray-300  shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                      </div>
+                      </div> -->
               
                     <div class="mt-8">
                         <h3 class="text-xl font-bold text-gray-800">About the item</h3>
@@ -163,80 +168,108 @@
       <% if(true){ %>
         
       <%} %>
-      <%- include('../layouts/userFooter.ejs') %>
-    <script>
-
-document.addEventListener('DOMContentLoaded', function () {
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify-js.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Image magnifier functionality
     const largeImage = document.getElementById('largeImage');
     const magnifier = document.getElementById('magnifier');
     const imageContainer = document.getElementById('image-container');
 
-    // Mouse move event for magnifier zoom effect
-    imageContainer.addEventListener('mousemove', function (e) {
-        const { left, top, width, height } = imageContainer.getBoundingClientRect();
-        
-        // Calculate the x and y position of the mouse relative to the image
-        const x = e.pageX - left - window.pageXOffset;
-        const y = e.pageY - top - window.pageYOffset;
+    if (imageContainer) {
+        imageContainer.addEventListener('mousemove', function(e) {
+            const { left, top, width, height } = imageContainer.getBoundingClientRect();
+            const x = e.pageX - left - window.pageXOffset;
+            const y = e.pageY - top - window.pageYOffset;
 
-        // Show magnifier
-        magnifier.style.display = 'block';
-        magnifier.style.left = x - magnifier.offsetWidth / 2 + 'px';
-        magnifier.style.top = y - magnifier.offsetHeight / 2 + 'px';
+            magnifier.style.display = 'block';
+            magnifier.style.left = x - magnifier.offsetWidth / 2 + 'px';
+            magnifier.style.top = y - magnifier.offsetHeight / 2 + 'px';
 
-        // Prevent the magnifier from going outside the image boundaries
-        if (x < 0 || y < 0 || x > width || y > height) {
+            if (x < 0 || y < 0 || x > width || y > height) {
+                magnifier.style.display = 'none';
+            } else {
+                const zoomLevel = 2;
+                const offsetX = -(x * zoomLevel - magnifier.offsetWidth / 2);
+                const offsetY = -(y * zoomLevel - magnifier.offsetHeight / 2);
+
+                magnifier.style.backgroundImage = `url(${largeImage.src})`;
+                magnifier.style.backgroundSize = `${largeImage.width * zoomLevel}px ${largeImage.height * zoomLevel}px`;
+                magnifier.style.backgroundPosition = `${offsetX}px ${offsetY}px`;
+            }
+        });
+
+        imageContainer.addEventListener('mouseleave', function() {
             magnifier.style.display = 'none';
-        } else {
-            // Calculate the zoomed image position
-            const zoomLevel = 2; // Adjust zoom level here
-            const offsetX = -(x * zoomLevel - magnifier.offsetWidth / 2);
-            const offsetY = -(y * zoomLevel - magnifier.offsetHeight / 2);
+        });
+    }
 
-            // Set the background image and its position in magnifier
-            magnifier.style.backgroundImage = `url(${largeImage.src})`;
-            magnifier.style.backgroundSize = `${largeImage.width * zoomLevel}px ${largeImage.height * zoomLevel}px`;
-            magnifier.style.backgroundPosition = `${offsetX}px ${offsetY}px`;
-        }
-    });
-
-    // Hide magnifier when mouse leaves the image
-    imageContainer.addEventListener('mouseleave', function () {
-        magnifier.style.display = 'none';
-    });
-
-    // Thumbnail click functionality to change the large image
+    // Thumbnail click functionality
     const thumbnails = document.querySelectorAll('.thumbnail');
     thumbnails.forEach(thumbnail => {
-        thumbnail.addEventListener('click', function () {
-            largeImage.src = this.src; // Change the large image source
-
-            // Reset magnifier when the image is changed
+        thumbnail.addEventListener('click', function() {
+            largeImage.src = this.src;
             magnifier.style.display = 'none';
         });
     });
-});
+//sweet alert
+    async function addToCart(event, productId) {
+        event.preventDefault(); // Prevent default form submission
 
-        // Select all thumbnail images
-        const thumbnails = document.querySelectorAll('.thumbnail');
-    
-        // Select the large image container
-        const largeImage = document.getElementById('largeImage');
-    
-        // Add click event listeners to each thumbnail
-        thumbnails.forEach(thumbnail => {
-            thumbnail.addEventListener('click', function() {
-                // Set the large image's source to the clicked thumbnail's source
-                largeImage.src = this.src;
-            });
+        // Get the form data
+        const form = document.getElementById(`addToCartForm${productId}`);
+        const formData = new FormData(form);
+       
+        // Show confirmation dialog
+        Swal.fire({
+            title: "Do you want to save the changes?",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Save",
+            denyButtonText: "Don't save"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                // If confirmed, proceed with the add to cart action
+                try {
+                    const response = await fetch(`/cart/add/${productId}`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        Swal.fire("Saved!", "", "success");
+                        updateCartCount(result.cartItemCount); // Function to update the cart count display
+                    } else {
+                        Swal.fire(result.message || 'Something went wrong. Please try again.', '', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error adding to cart:', error);
+                    Swal.fire('Failed to add to cart. Please try again.', '', 'error');
+                }
+            } else if (result.isDenied) {
+                Swal.fire("Changes are not saved", "", "info");
+            }
         });
+    }
 
+    function updateCartCount(count) {
+        // Update the cart item count in the UI as needed
+        document.getElementById('cartCount').innerText = count; // Example: update an element with id 'cartCount'
+    }
+});
+  
+  
+      </script>
+      <div>
+        <span>Cart Items: <span id="cartCount">0</span></span>
+    </div>
+      <%- include('../layouts/userFooter.ejs') %>
+ 
     
-    </script>
-    
-    
-</body>
-</html>
+
 <style>
     .magnifier {
   position: absolute;
@@ -248,5 +281,20 @@ document.addEventListener('DOMContentLoaded', function () {
   background-repeat: no-repeat;
   background-size: contain;
   z-index: 10; /* Ensure it appears above the image */
-}   
+} 
+.toast {
+    min-width: 200px;
+    margin: 10px;
+    padding: 15px;
+    color: #fff;
+    border-radius: 5px;
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+}
+.toast-success {
+    background-color: #4CAF50; /* Green */
+}
+.toast-error {
+    background-color: #F44336; /* Red */
+}  
 </style>

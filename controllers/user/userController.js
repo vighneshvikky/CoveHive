@@ -99,9 +99,10 @@ exports.verifyOtp = async (req, res) => {
                     phone: tempUserData.phone,
                     password: spassword,
                 });
-
+               
                 const userData = await user.save(); // Save user to the database
                 req.session.user_id = userData._id; // Set session user ID after registration
+                req.session.user = userData;
                 res.redirect("/home");
             } else {
                 res.render("user/userSignup", { message: "Session expired, please try signing up again" });
@@ -143,6 +144,7 @@ exports.verifyLogin = async (req, res) => {
                     res.render('user/userLogin',{msg:"Your account has been blocked"})
                  }
          else if(isPasswordMatch) {
+                req.session.user = userData;
                 req.session.user_id = userData._id;
                 req.session.fullName = userData.fullName;
                 req.session.isBlocked = userData.is_blocked
