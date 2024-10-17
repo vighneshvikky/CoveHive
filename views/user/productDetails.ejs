@@ -114,14 +114,19 @@
                     </div>
                   
                     <div class="mt-8 flex space-x-4 justify-center">
-                      <form id="addToCartForm<%= product._id %>" action="/cart/add/<%= product._id %>" method="POST" onsubmit="addToCart( event,'123')">
+                      <!-- <form id="addToCartForm<%= //product._id %>" action="/cart/add" method="POST">
                         <input type="hidden" name="productId" value="<%= product._id %>">
+                        <input type="number" name="quantity" value="1" min="1">
                         <button type="submit" id="add-to-cart" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-blue-500">
-                            Add to Cart
+                          Add to Cart
                         </button>
-                    </form>
+                      </form>
+ -->
+                         <form action="/cart/add/<%=product._id%>/<%= product.price %>" method="POST" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-blue-500">
+                            <button type="submit" class="btn btn-success">Add to Cart</button>
+                        </form>
                     
-                      <!-- <a href="/cart/add/<%= product._id %>"> <button type="submit" id="add-to-cart" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-blue-500">
+                      <!-- <a href="/cart/add/<%= //product._id %>"> <button type="submit" id="add-to-cart" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-blue-500">
                         Add to Cart
                       </button> </a> -->
                       <button type="button" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-green-500">
@@ -171,6 +176,7 @@
       <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify-js.js"></script>
 <script>
+
 document.addEventListener('DOMContentLoaded', function() {
     // Image magnifier functionality
     const largeImage = document.getElementById('largeImage');
@@ -213,59 +219,12 @@ document.addEventListener('DOMContentLoaded', function() {
             magnifier.style.display = 'none';
         });
     });
-//sweet alert
-    async function addToCart(event, productId) {
-        event.preventDefault(); // Prevent default form submission
 
-        // Get the form data
-        const form = document.getElementById(`addToCartForm${productId}`);
-        const formData = new FormData(form);
-       
-        // Show confirmation dialog
-        Swal.fire({
-            title: "Do you want to save the changes?",
-            showDenyButton: true,
-            showCancelButton: true,
-            confirmButtonText: "Save",
-            denyButtonText: "Don't save"
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                // If confirmed, proceed with the add to cart action
-                try {
-                    const response = await fetch(`/cart/add/${productId}`, {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        Swal.fire("Saved!", "", "success");
-                        updateCartCount(result.cartItemCount); // Function to update the cart count display
-                    } else {
-                        Swal.fire(result.message || 'Something went wrong. Please try again.', '', 'error');
-                    }
-                } catch (error) {
-                    console.error('Error adding to cart:', error);
-                    Swal.fire('Failed to add to cart. Please try again.', '', 'error');
-                }
-            } else if (result.isDenied) {
-                Swal.fire("Changes are not saved", "", "info");
-            }
-        });
-    }
-
-    function updateCartCount(count) {
-        // Update the cart item count in the UI as needed
-        document.getElementById('cartCount').innerText = count; // Example: update an element with id 'cartCount'
-    }
 });
-  
-  
+
+
       </script>
-      <div>
-        <span>Cart Items: <span id="cartCount">0</span></span>
-    </div>
+    
       <%- include('../layouts/userFooter.ejs') %>
  
     

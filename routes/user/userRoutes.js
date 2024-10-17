@@ -95,11 +95,11 @@ user_route.get('/auth/google/callback',
   userController.googleAuthCallback // Controller function handles the logic
 );
 //--------------------------------------user cart ----------------------------------
-user_route.post('/cart/add/:productId',userAuth.isload,userCart.addToCart);
-user_route.get('/cart', userCart.getCart);
-user_route.post('/cart/update/:productId',userCart.updateCart);
-user_route.get('/cart/remove/:productId',userCart.removeFromCart);
-
+user_route.post('/cart/add/:id/:productPrice',userCart.addToCart)
+user_route.get('/cart',userCart.getCart);
+user_route.post('/cart/increment',userCart.increment);
+user_route.post('/cart/decrement',userCart.decrement);
+user_route.get('/cart/remove/:id',userCart.removeFromCart);
 //--------------------------------------user search ----------------------------------
 
 user_route.get('/search',searchController.searchProducts)
