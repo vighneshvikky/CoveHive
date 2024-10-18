@@ -140,7 +140,7 @@ exports.verifyLogin = async (req, res) => {
          if (userData) {
             const isPasswordMatch = await bcrypt.compare(password, userData.password);
             if(userData.is_blocked){
-
+                
                     res.render('user/userLogin',{msg:"Your account has been blocked"})
                  }
          else if(isPasswordMatch) {

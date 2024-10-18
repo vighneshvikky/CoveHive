@@ -1,39 +1,45 @@
+<%- include('../layouts/userHeader.ejs') %>
 
+<!-- Navbar -->
 
+<!-- Main content with sidebar -->
+<div class="flex min-h-screen bg-gray-100">
+  <!-- Sidebar -->
+  <%- include('../layouts/profileSideBar') %>
 
-        <%- include('../layouts/userHeader.ejs') %>
+  <!-- Main Content -->
+  <main class="flex-1 p-8">
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+      <!-- Breadcrumbs -->
+    
 
-    <!-- Navbar -->
+      <!-- Page Title -->
+      <h2 class="text-3xl font-bold mb-8 text-premium">User Profile</h2>
 
- <!-- Main content with sidebar -->
- <div class="flex min-h-screen bg-gray-100">
-    <!-- Sidebar -->
-    <%- include('../layouts/profileSideBar') %>
-
-    <!-- Main Content -->
-    <main class="flex-1 p-8">
-        <div class="max-w-2xl mx-auto">
-            <h2 class="text-3xl font-bold mb-8 text-premium">User Profile</h2>
-            
-            <form action="/edit-profile" method="POST" class="bg-white p-8 shadow-lg rounded-lg">
-                <div class="mb-6">
-                    <label for="fullName" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                    <input type="text" id="fullName" name="fullName" value="<%= user.fullName %>" 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-premium focus:border-transparent transition duration-300" />
-                </div>
-                
-                <div class="mb-6">
-                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                    <input type="text" id="phone" name="phone" value="<%= user.phone %>" 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-premium focus:border-transparent transition duration-300" />
-                </div>
-                
-                <button type="submit" 
-                        class="w-full bg-premium text-white px-6 py-3 rounded-md hover:bg-opacity-90 transition duration-300 font-medium">
-                    Save Changes
-                </button>
-            </form>
+      <!-- Profile Form -->
+      <form action="/edit-profile" method="POST" class="bg-white p-8 shadow-lg rounded-lg">
+        <!-- Full Name Field -->
+        <div class="mb-6">
+          <label for="fullName" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+          <input type="text" id="fullName" name="fullName" value="<%= user.fullName %>"
+            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-premium focus:border-transparent transition duration-300" />
         </div>
-    </main>
+
+        <!-- Phone Field -->
+        <div class="mb-6">
+          <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+          <input type="text" id="phone" name="phone" value="<%= user.phone %>"
+            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-premium focus:border-transparent transition duration-300" />
+        </div>
+
+        <!-- Save Button -->
+        <button type="submit"
+          class="w-full bg-premium text-white px-6 py-3 rounded-md hover:bg-opacity-90 transition duration-300 font-medium">
+          Save Changes
+        </button>
+      </form>
+    </div>
+  </main>
 </div>
- <%- include('../layouts/userFooter') %>
+
+<%- include('../layouts/userFooter') %>

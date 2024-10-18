@@ -17,33 +17,30 @@ const path = require('path');
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
 
 }));
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null; // Modify as per how you store the user session
   next();
 });
-app.use(nocache());
 app.use(flash())  
+app.use(nocache());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static('uploads'));
-
 
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg');
   res.locals.error_msg = req.flash('error_msg');
   next();
 });
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log('MongoDB connected'))
 .catch((err) => console.error('MongoDB connection error:', err));
 
 // Set up session management
-
-
-
 
 //intializing passport
 app.use(passport.initialize());

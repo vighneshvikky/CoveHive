@@ -46,7 +46,6 @@ exports.isload = async (req,res,next)=>{
 exports.isblocked = async (req,res,next) => {
     try {
         
-        console.log(req.session)
         const user = await User.findById(req.session.user_id);
        if(user){
         if(user.is_blocked){

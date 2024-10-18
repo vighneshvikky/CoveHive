@@ -6,7 +6,7 @@ dotenv.config();
 exports.loadUserProfile = async (req,res) => {
     try {
         const user = await User.findById(req.session.user_id).populate('orders');
-        res.render('user/userProfile',{user});
+        res.render('user/userProfile',{user,currentRoute:'/home'});
 
     } catch (error) {
         console.log(error.message);
@@ -26,7 +26,7 @@ exports.editProfile = async (req,res) => {
 exports.loadAddress = async (req,res) => {
     const user = await User.findById(req.session.user_id)
     try {
-        res.render('user/userAddress',{user})
+        res.render('user/userAddress',{user,currentRoute:'/home'})
     } catch (error) {
        console.log(error.message) 
     }
@@ -35,7 +35,7 @@ exports.loadAddress = async (req,res) => {
 exports.loadAddAddress = async (req,res) => {
     try {
         const user = await User.findById(req.session.user_id)
-        res.render('user/addAddress',{user})
+        res.render('user/addAddress',{user,currentRoute:'/home'})
     } catch (error) {
        console.log(error.message) 
     }
@@ -69,7 +69,7 @@ exports.editAddress = async (req,res) => {
     const address =  user.addresses.id(addressId)
     console.log(`user is ${user}`)
     try {
-        res.render('user/editAddress',{address,user})
+        res.render('user/editAddress',{address,user,currentRoute:'/home'})
 
     } catch (error) {
        console.log(error.message) 
@@ -100,7 +100,7 @@ exports.postEditAddress =  async (req,res) => {
 exports.loadOrders = async (req,res) => {
     try {
         const user = await User.findById(req.session.user_id).populate('orders')
-        res.render('user/userOrder',{user})
+        res.render('user/userOrder',{user,currentRoute:'/home'})
     } catch (error) {
         console.log(error.message)
     }

@@ -1,7 +1,8 @@
 <%- include('../layouts/header.ejs') %>
 
 <%- include('../layouts/sidebar.ejs') %>
-  
+<%- console.log(`this is a scc ${success_msg}`) %>
+<%- console.log(`this is a err ${error_msg}`) %>
     <div class="flex items-center justify-start h-full ml-64">
         <div class="w-full max-w-md ml-4"> <!-- Added ml-4 for margin-left -->
             <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" action="/admin/categories/add" method="post" enctype="multipart/form-data">
@@ -23,6 +24,13 @@
                     </button>
                 </div>
             </form>
+            <% if (success_msg) { %>
+              <p class="text-green-600"><%= success_msg %></p>
+            <% } %>
+            
+            <% if (error_msg) { %>
+              <p class="text-rose-800"><%= error_msg %></p>
+            <% } %>
         </div>
     </div>
     <div class="font-sans overflow-x-auto flex items-center ml-64">
@@ -69,6 +77,7 @@
           <% }); %>
         </tbody>
       </table>
+
     </div>
 
 

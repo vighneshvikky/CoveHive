@@ -109,7 +109,8 @@ exports.postResetPassword = async (req, res) => {
 
         await user.save();
 
-        res.status(200).send('Password has been reset. You can now log in.');
+        // res.status(200).send('Password has been reset. You can now log in.');
+        res.render('user/resetPassword',{message:"Password has been reset. You can now log in."})
     } catch (error) {
         console.log(error);
         res.status(500).send('Error resetting password.');

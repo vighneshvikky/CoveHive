@@ -121,11 +121,18 @@
                           Add to Cart
                         </button>
                       </form>
- -->
-                         <form action="/cart/add/<%=product._id%>/<%= product.price %>" method="POST" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-blue-500">
-                            <button type="submit" class="btn btn-success">Add to Cart</button>
-                        </form>
-                    
+
+ -->        
+                     
+ <% if(user){ %>
+  <form action="/cart/add/<%=product._id%>/<%= product.price %>" method="POST" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-blue-500">
+                          <button type="submit" class="btn btn-success">Add to Cart</button>
+                      </form>
+<%}else{%>
+  <form action="/cart" method="get" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-blue-500">
+    <button type="submit" class="btn btn-success">Add to Cart</button>
+</form>
+<%} %>                
                       <!-- <a href="/cart/add/<%= //product._id %>"> <button type="submit" id="add-to-cart" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-blue-500">
                         Add to Cart
                       </button> </a> -->

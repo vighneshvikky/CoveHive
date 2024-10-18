@@ -11,8 +11,22 @@ if(!userId){
   return res.render('user/UserLogin',{alertMessage:'User not logged in'});
 }
 try {
+ 
   const cart = await Cart.findOne({userId}).populate('items.productId');
-  res.render('user/userCart',{cart})
+
+  const price = cart.items.map((item) => {
+    const productPrice = item.productId.price;
+    const discount = item.productId.discount || 0; // Fallback to 0 if no discount
+
+    // Calculate the discount price if a discount is applied
+    const discountAmount = (productPrice * discount) / 100;
+    const discountedPrice = productPrice - discountAmount;
+
+    // Return the discounted price if applicable, otherwise return the original price
+    return discount > 0 ? discountedPrice : productPrice;
+  });
+  
+  res.render('user/userCart',{cart,price,currentRoute:'/home'})
 } catch (error) {
   console.error('Error fetching cart:', error.message);
   req.flash('error', 'Error fetching cart');
@@ -33,6 +47,7 @@ exports.addToCart = async (req, res) => {
   try {
       // Fetch the product by ID
       const product = await Product.findById(productId);
+      req.session.user_price = product.price;
       if (!product) {
           return res.send('Product not found');
       }

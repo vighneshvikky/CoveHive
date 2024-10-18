@@ -49,10 +49,7 @@
                           <% } else { %>
                               <%= product.price.toFixed(2) %> <!-- Output the original price if no discount -->
                           <% } %></p>
-                          <form action="/cart/add/<%= product._id %>" class="ml-64" method="POST">
-                            <input type="hidden" name="productId" value="<%= product._id %>">
-                            <button type="submit"><i class="fa-solid fa-cart-shopping"></i></button>
-                        </form>
+                
                         </p> <!-- Assuming price is a number -->
                     </div>
                 </div>

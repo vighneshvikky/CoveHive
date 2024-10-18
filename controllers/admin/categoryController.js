@@ -44,7 +44,12 @@ exports.insertCategories = async (req, res) => {
     if (!req.file) {
       throw new Error('Image file is required.');
     }
-
+    const exist = await Category.findOne({name:req.body.name});
+    if (exist) {
+      console.log(`exist = ${exist}`);
+      req.flash('error_msg', 'Category name should be unique.');
+      return res.redirect('/admin/categories');
+    }
     const newCategory = new Category({
       name: req.body.name,
       img: req.file.filename,
@@ -52,7 +57,9 @@ exports.insertCategories = async (req, res) => {
     
     
     await newCategory.save();
+    req.flash('success_msg', 'Category added successfully.');
     res.redirect('/admin/categories');
+  
   } catch (error) {
     console.log(error.message);
     res.status(500).send(error.message); // Handle error response

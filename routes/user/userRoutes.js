@@ -96,7 +96,7 @@ user_route.get('/auth/google/callback',
 );
 //--------------------------------------user cart ----------------------------------
 user_route.post('/cart/add/:id/:productPrice',userCart.addToCart)
-user_route.get('/cart',userCart.getCart);
+user_route.get('/cart',userAuth.isload,userCart.getCart);
 user_route.post('/cart/increment',userCart.increment);
 user_route.post('/cart/decrement',userCart.decrement);
 user_route.get('/cart/remove/:id',userCart.removeFromCart);
