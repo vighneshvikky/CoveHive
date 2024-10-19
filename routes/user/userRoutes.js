@@ -61,7 +61,7 @@ user_route.get('/category/:id',userController.loadCategory)
 
 //----------------------------------user profile -----------------------------------
 
-user_route.get('/profile',userProfile.loadUserProfile)
+user_route.get('/profile',userAuth.isLogin,userProfile.loadUserProfile)
 
 //----------------------------------edit profile ------------------------------------
 
@@ -69,24 +69,24 @@ user_route.post('/edit-profile',userProfile.editProfile)
 
 //----------------------------------user address ---------------------------------------
 
-user_route.get('/user-address',userProfile.loadAddress)
-user_route.get('/add-address',userProfile.loadAddAddress)
+user_route.get('/user-address',userAuth.isLogin,userProfile.loadAddress)
+user_route.get('/add-address',userAuth.isLogin,userProfile.loadAddAddress)
 user_route.post('/add-address',userProfile.postAddAddress)
-user_route.get('/user-address-edit/:id',userProfile.editAddress)
+user_route.get('/user-address-edit/:id',userAuth.isLogin,userProfile.editAddress)
 user_route.post('/user-address-edit/:id',userProfile.postEditAddress)
-user_route.get('/user-address-remove/:id',userProfile.removeAddress)
+user_route.get('/user-address-remove/:id',userAuth.isLogin,userProfile.removeAddress)
 
 //----------------------------------All Products---------------------------------------
- user_route.get('/allProducts',userController.allProducts)
+ user_route.get('/allProducts',userAuth.isLogin,userController.allProducts)
 //----------------------------------user Forget pass ---------------------------------------
-user_route.get('/forget-password', forgetPass.loadForgotPassword);
+user_route.get('/forget-password',userAuth.isLogin,forgetPass.loadForgotPassword);
 user_route.post('/forgot-password', forgetPass.forgotPassword);
-user_route.get('/reset-password/:token', forgetPass.getResetPassword);
+user_route.get('/reset-password/:token',userAuth.isLogin, forgetPass.getResetPassword);
 user_route.post('/reset-password/:token', forgetPass.postResetPassword);
 
 //----------------------------------user orders ---------------------------------------
 
-user_route.get('/user-orders',userProfile.loadOrders)
+user_route.get('/user-orders',userAuth.isLogin,userProfile.loadOrders)
 
 //----------------------------------Google Authentication---------------------------------------
 
@@ -102,7 +102,7 @@ user_route.post('/cart/decrement',userCart.decrement);
 user_route.get('/cart/remove/:id',userCart.removeFromCart);
 //--------------------------------------user search ----------------------------------
 
-user_route.get('/search',searchController.searchProducts)
+user_route.get('/search',userAuth.isLogin,searchController.searchProducts)
 
 //--------------------------------------user logout ----------------------------------
 

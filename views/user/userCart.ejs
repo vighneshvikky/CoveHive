@@ -37,7 +37,7 @@
                             <img src="/uploads/<%= item.productImage %>" alt="Product Image" class="w-20 h-20 object-cover" />
                         </td>
                         <td class="border border-gray-300 p-2"><%= item.productId.name %></td> <!-- Product name -->
-                        <td class="border border-gray-300 p-2">$<%= item.productPrice.toFixed(2) %></td> <!-- Product price -->
+                        <td class="border border-gray-300 p-2"><i class="fa-solid fa-indian-rupee-sign"></i><%= item.productPrice.toFixed(2) %></td> <!-- Product price -->
                         <td class="border border-gray-300 p-2">
                             <!-- Buttons to update quantity -->
                             <form class="update-quantity-form" data-product-id="<%= item.productId._id %>">
@@ -89,7 +89,7 @@
                             
 
                         </td>
-                        <td class="border border-gray-300 p-2">$<span class="item-total" data-price="<%= item.productPrice %>"><%= (item.productPrice * item.productCount).toFixed(2) %></span></td> <!-- Total for this product -->
+                        <td class="border border-gray-300 p-2"><i class="fa-solid fa-indian-rupee-sign"></i><span class="item-total" data-price="<%= item.productPrice %>"><%= (item.productPrice * item.productCount).toFixed(2) %></span></td> <!-- Total for this product -->
                         <td class="border border-gray-300 p-2">
                             <!-- Button to remove item from cart -->
                             <!-- <a href="/cart/remove/<%= item.productId._id %>" class="btn bg-red-500 text-white hover:bg-red-600 rounded p-2">Remove</a> -->
@@ -115,7 +115,8 @@
         </table>
 
         <!-- Calculate and display the total cart price -->
-        <h4 id="cart-total" class="text-xl font-semibold mt-4">Total Amount: $<%= cart.items.reduce((total, item) => total + (item.productPrice * item.productCount), 0).toFixed(2) %></h4>
+        <h4 id="cart-total" class="text-xl font-semibold mt-4">Total Amount: <i class="fa-solid fa-indian-rupee-sign"></i><%= cart.items.reduce((total, item) => total + (item.productPrice * item.productCount), 0).toFixed(2) %></h4>
+        <!-- <h4 id="cart-total" class="text-xl font-semibold mt-4">Total Items: <i class="fa-solid fa-indian-rupee-sign"></i><%=cart.item%></h4>  -->
 
         <!-- Button to proceed to checkout -->
         <a href="/checkout" class="btn bg-green-500 text-white hover:bg-green-600 rounded p-2 mt-4 inline-block">Proceed to Checkout</a>

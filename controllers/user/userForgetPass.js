@@ -55,8 +55,9 @@ exports.forgotPassword = async (req, res) => {
 
         await transporter.sendMail(mailOptions);
          
-        res.render('user/forgetPassword',{message:"'Password reset link sent to your email.'"})
+        res.render('user/forgetPassword',{message:"Password reset link sent to your email."})
        // res.status(200).send('Password reset link sent to your email.');
+    
     } catch (error) {
         
         console.log(error);
@@ -73,7 +74,7 @@ exports.getResetPassword = async (req, res) => {
             resetPasswordToken: token,
             resetPasswordExpires: { $gt: Date.now() } // Token should not be expired
         });
-
+     
         if (!user) {
             return res.status(400).send('Password reset token is invalid or has expired.');
         }
@@ -109,8 +110,10 @@ exports.postResetPassword = async (req, res) => {
 
         await user.save();
 
-        // res.status(200).send('Password has been reset. You can now log in.');
-        res.render('user/resetPassword',{message:"Password has been reset. You can now log in."})
+        //  res.status(200).send('Password has been reset. You can now log in.');
+        req.flash('success_msg', 'Password has been reset. You can now log in.');
+        return res.redirect('/login');
+        
     } catch (error) {
         console.log(error);
         res.status(500).send('Error resetting password.');

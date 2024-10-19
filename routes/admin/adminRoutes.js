@@ -38,9 +38,6 @@ admin_routes.get('/adminDashboard',adminAuth.auth,adminController.loadDashboard)
  admin_routes.get('/customers',adminAuth.auth,customerController.loadCustomers);
 admin_routes.post('/toggle-block-user/:id',adminAuth.auth,customerController.blockUser);
 
-
-
-
 //-------------------------------------------categories management------------------------------------------------------------
 
  admin_routes.get('/categories',adminAuth.auth,categoryController.loadCategories);
@@ -71,15 +68,6 @@ admin_routes.get('/products/delete/:id',productController.deleteProduct)
 
 
 admin_routes.get('/logout',adminController.adminLogout);
-
-
-
-
-
-
-
-
-
 
 
 module.exports = admin_routes   ;
