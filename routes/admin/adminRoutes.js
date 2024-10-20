@@ -63,7 +63,7 @@ admin_routes.post('/toggle-block-product/:id',productController.blockUnblockProd
 admin_routes.get('/products/edit/:id',productController.loadEditProduct);
 admin_routes.post('/products/edit/:id',load.array('images', 10),productController.postEditProduct);
 admin_routes.get('/products/delete/:id',productController.deleteProduct)
-
+admin_routes.post('/product/remove-image/:id',productController.removeImage)
 //----------------------------------------Logout ------------------------------------------------------------------------
 
 

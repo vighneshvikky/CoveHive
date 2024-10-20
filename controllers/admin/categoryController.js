@@ -3,7 +3,7 @@ const Category = require('../../models/admin/categoryModel');
 
 exports.loadCategories = async (req,res) => {
  const page = parseInt(req.query.page)||1;
- const limit = parseInt(req.query.limit)||10
+ const limit = 3
   try {
     const totalCategories = await Category.countDocuments();
     const categories = await Category.find()
@@ -41,30 +41,37 @@ exports.loadCategories = async (req,res) => {
 exports.insertCategories = async (req, res) => { 
   try {
     // Ensure a file is uploaded
+    
     if (!req.file) {
-      throw new Error('Image file is required.');
+      return res.status(400).json({ error: 'Image file is required.' }); // Return error as JSON
     }
-    const exist = await Category.findOne({name:req.body.name});
+
+    // Check if category already exists
+    const exist = await Category.findOne({ name: req.body.name });
     if (exist) {
       console.log(`exist = ${exist}`);
       req.flash('error_msg', 'Category name should be unique.');
-      return res.redirect('/admin/categories');
+      return res.redirect('/admin/categories'); // Redirect if exists
     }
+
+    // Create and save the new category
     const newCategory = new Category({
       name: req.body.name,
       img: req.file.filename,
     });
-    
-    
+    console.log(`categoryName = ${req.body.name}, image = ${req.file.filename}`)
     await newCategory.save();
+
+    // Flash message and redirect on success
     req.flash('success_msg', 'Category added successfully.');
     res.redirect('/admin/categories');
   
   } catch (error) {
-    console.log(error.message);
-    res.status(500).send(error.message); // Handle error response
+    console.error('Error adding category:', error); // More detailed logging
+    res.status(500).json({ error: error.message }); // Return error message as JSON
   }
 }
+
 
 //--------------edit category
 

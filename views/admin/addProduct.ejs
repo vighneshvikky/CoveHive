@@ -17,7 +17,7 @@
           name="name"
           value="Apple" 
           >
-          <span id="name-error" class="text-red-500 text-sm mt-1 hidden"></span>
+          <span id="name-error" class="text-red-500 text-sm mt-1 "></span>
       </div>
 
       <!-- Description -->
@@ -31,7 +31,7 @@
           id="description" 
           name="description"
           rows="3"></textarea>
-          <span id="description-error" class="text-red-500 text-sm mt-1 hidden"></span>
+          <span id="description-error" class="text-red-500 text-sm mt-1 "></span>
       </div>
 
       <!-- Price -->
@@ -46,7 +46,7 @@
           name="price" 
           value="2000"
           >
-          <span id="price-error" class="text-red-500 text-sm mt-1 hidden"></span>
+          <span id="price-error" class="text-red-500 text-sm mt-1 "></span>
       </div>
 
       
@@ -64,7 +64,7 @@
           name="discount" 
           value="50"
           >
-          <span id="discount-error" class="text-red-500 text-sm mt-1 hidden"></span>
+          <span id="discount-error" class="text-red-500 text-sm mt-1 "></span>
       </div>
       <!-- Stock -->
       <div class="mb-4">
@@ -78,7 +78,7 @@
           name="stock"
           value="5" 
           >
-          <span id="stock-error" class="text-red-500 text-sm mt-1 hidden"></span>
+          <span id="stock-error" class="text-red-500 text-sm mt-1 "></span>
       </div>
 
       <div class="mb-4">
@@ -97,7 +97,7 @@
                 </option>
             <% }); %>
         </select>
-        <span id="category-error" class="text-red-500 text-sm mt-1 hidden"></span>
+        <span id="category-error" class="text-red-500 text-sm mt-1 "></span>
       </div>
     
       <!-- Subcategory -->
@@ -112,7 +112,7 @@
           name="subcategory"
           value="Apple 15 series" 
           >
-          <span id="subcategory-error" class="text-red-500 text-sm mt-1 hidden"></span>
+          <span id="subcategory-error" class="text-red-500 text-sm mt-1 "></span>
       </div>
       <!-- Compatible Devices -->
       <div class="mb-4">
@@ -127,13 +127,13 @@
           name="compatibleDevices" 
           placeholder="iPhone 15 Pro, iPhone 15 Pro Max"
           >
-          <span id="compatibleDevices-error" class="text-red-500 text-sm mt-1 hidden"></span>
+          <span id="compatibleDevices-error" class="text-red-500 text-sm mt-1 "></span>
       </div>
 
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="image">Product Images</label>
         <input class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-700 leading-tight focus:outline-none focus:shadow-outline" type="file" id="imageInput" name="images" accept="image/*" multiple>
-        <span id="image-error" class="text-red-500 text-sm mt-1 hidden"></span>
+        <span id="image-error" class="text-red-500 text-sm mt-1 "></span>
       </div>
     
       
@@ -191,94 +191,92 @@
       const cancelButton = document.getElementById('cancelButton');
       const productForm = document.querySelector('form');
       let cropperInstances = [];
-      const nameInput = document.getElementById('name');
-  const descriptionInput = document.getElementById('description');
-  const priceInput = document.getElementById('price');
-  const discountInput = document.getElementById('discount');
-  const stockInput = document.getElementById('stock');
-  const categorySelect = document.getElementById('category');
-  const subcategoryInput = document.getElementById('subcategory');
-  const compatibleDevicesInput = document.getElementById('compatibleDevices');
   const submitButton = document.querySelector('button[type="submit"]');
 
-  // Form fields
-  const fields = [
-    { id: 'name', validate: (value) => value.trim().length > 0, errorMsg: 'Product name is required.' },
-    { id: 'description', validate: (value) => value.trim().length > 10, errorMsg: 'Description must be longer than 10 characters.' },
-    { id: 'price', validate: (value) => !isNaN(value) && parseFloat(value) > 0, errorMsg: 'Please enter a valid price.' },
-    { id: 'discount', validate: (value) => {
-        const discount = parseFloat(value);
-        return !isNaN(discount) && discount >= 0 && discount <= 100;
-      }, errorMsg: 'Please enter a discount between 0 and 100.' },
-    { id: 'stock', validate: (value) => !isNaN(value) && parseInt(value) >= 0, errorMsg: 'Stock must be a non-negative number.' },
-    { id: 'category', validate: (value) => value !== "", errorMsg: 'Please select a category.' },
-    { id: 'subcategory', validate: (value) => value.trim().length > 0, errorMsg: 'Subcategory is required.' },
-    { id: 'compatibleDevices', validate: (value) => value.trim().length > 0, errorMsg: 'Please enter compatible devices.' }
-  ];
+  document.getElementById('productForm').addEventListener('submit',function(event){
+        event.preventDefault();
+        console.log('event prevented')
+        const nameInput = document.getElementById('name').value
+  const descriptionInput = document.getElementById('description').value
+  const priceInput = document.getElementById('price').value
+  const discountInput = document.getElementById('discount').value
+  const stockInput = document.getElementById('stock').value
+  const categorySelect = document.getElementById('category').value
+  const subcategoryInput = document.getElementById('subcategory').value
+  const compatibleDevicesInput = document.getElementById('compatibleDevices').value
 
-  // Create error message spans
-  fields.forEach(field => {
-    const input = document.getElementById(field.id);
-    const errorSpan = document.createElement('span');
-    errorSpan.id = `${field.id}-error`;
-    errorSpan.className = 'text-red-500 text-sm mt-1 hidden';
-    input.parentNode.insertBefore(errorSpan, input.nextSibling);
-  });
+const err_name = document.getElementById('name-error');
+const err_description = document.getElementById('description-error')
+const err_price = document.getElementById('price-error')
+const err_discount = document.getElementById('discount-error')
+const err_stock = document.getElementById('stock-error')
+const err_category = document.getElementById('category-error')
+const err_subcategory = document.getElementById('subcategory-error')
+const err_compatable = document.getElementById('compatibleDevices-error')
+const err_img = document.getElementById('image-error')
+err_name.textContent = "";
+err_description.textContent = "";
+err_price.textContent = "";
+err_stock.textContent = "";
+err_category.textContent = "";
+err_discount.textContent=""
+err_subcategory.textContent = "";
+ err_compatable.textContent = "";
+ err_img.textContent="";
 
-  // Validation function
-  function validateField(field) {
-    const input = document.getElementById(field.id);
-    const errorSpan = document.getElementById(`${field.id}-error`);
-    const isValid = field.validate(input.value);
-    
-    if (isValid) {
-      errorSpan.textContent = '';
-      errorSpan.classList.add('hidden');
-    } else {
-      errorSpan.textContent = field.errorMsg;
-      errorSpan.classList.remove('hidden');
-    }
-    
-    return isValid;
-  }
+let valid = true;
+validName = /^[A-Z][a-zA-Z0-9]*[a-zA-Z0-9\s]*$/;
+validDis = /^.{10,}$/
+validPrice = /^(?!0$|-[0-9]+$)[0-9]+$/
+validDiscount = /\b(100|[1-9]?[0-9])\b/
+if(!validName.test(nameInput)){
+  err_name.textContent="Enter a valid name"
+  valid=false;
+}
+if(!validDis.test(descriptionInput)){
+err_description.textContent="Description should be atlead have minimum length of 10 characters "
+  valid=false;
+}
+if(!validPrice.test(priceInput)){
+  err_price.textContent="Enter a valid Price"
+  valid=false;
+}
+if(!validDiscount.test(discountInput)){
+  err_discount.textContent="Discount should be between 0 and 100"
+  valid=false;
+}
+if(!validPrice.test(stockInput)){
+  err_stock.textContent="Enter a valid Stock"
+  valid=false;
+}
+if(!categorySelect){
+  err_category.textContent="Enter the Category"
+  valid=false;
+}
+if(!validName.test(subcategoryInput)){
+  err_subcategory.textContent="Enter a valid subcategory"
+  valid=false;
+}
+if(!validName.test(compatibleDevicesInput)){
+  err_compatable.textContent="Enter a valid subcategory"
+  valid=false;
+}
+if(imageInput.files.length!==3){
+  err_img.textContent="Enter 3 Images"
+  valid=false;
+}
+if(valid){
+  console.log('valid sucess')
+document.getElementById('productForm').submit();
+addProduct();
+}
 
-  // Apply validation to form fields
-  fields.forEach(field => {
-    const input = document.getElementById(field.id);
-    input.addEventListener('input', () => {
-      validateField(field);
-      checkFormValidity();
-    });
-  });
 
-  // Image validation
-  function validateImages() {
-    const imageCount = imageInput.files.length + document.querySelectorAll('.preview-image').length;
-    const errorSpan = document.getElementById('image-error') || document.createElement('span');
-    errorSpan.id = 'image-error';
-    errorSpan.className = 'text-red-500 text-sm mt-1';
-    imageInput.parentNode.appendChild(errorSpan);
 
-    if (imageCount < 3) {
-      errorSpan.textContent = 'Please upload at least 3 images.';
-      errorSpan.classList.remove('hidden');
-      return false;
-    } else {
-      errorSpan.textContent = '';
-      errorSpan.classList.add('hidden');
-      return true;
-    }
-  }
+       })
 
-  // Check overall form validity
-  function checkFormValidity() {
-    const isValid = fields.every(field => validateField(field)) && validateImages();
-    submitButton.disabled = !isValid;
-  }
+  
   function addProduct() {
-      
-
-   
         // Show SweetAlert success popup
         Swal.fire({
           title: 'Success!',
@@ -289,42 +287,6 @@
 
       
     }
-
-// Crop and update button
-
-
-  // Modify the form submission
-  productForm.addEventListener('submit', function(event) {
-    event.preventDefault();
-    if (fields.every(field => validateField(field)) && validateImages()) {
-      this.submit();
-    } else {
-      alert('Please fill out all required fields correctly and upload at least 3 images.');
-    }
-   
-  });
-
-  // Initial form validity check
-  checkFormValidity();
-
-  // Image input change event
-  imageInput.addEventListener('change', function() {
-    validateImages();
-    checkFormValidity();
-  });
-
-  
-  
-      let existingImages = [];
-      try {
-        existingImages = JSON.parse(imagePreviewsContainer.dataset.existingImages);
-        if (!Array.isArray(existingImages)) {
-          existingImages = [];
-        } 
-        console.log('Existing images:', existingImages); 
-      } catch (error) {
-        console.error('Error parsing existing images:', error);
-      }
     
       function createImagePreview(src, isExisting = false) {
         const previewContainer = document.createElement('div');
@@ -389,9 +351,9 @@
       }
     
       // Display existing images
-      existingImages.forEach(imagePath => {
-        createImagePreview(imagePath, true);
-      });
+      // existingImages.forEach(imagePath => {
+      //   createImagePreview(imagePath, true);
+      // });
     
       imageInput.addEventListener('change', function (event) {
         const files = event.target.files;
@@ -449,11 +411,6 @@
          sucessproduct()
         });
       });
-       document.getElementById('productForm').addEventListener('submit',function(event){
-        event.preventDefault();
-        addProduct()
-        document.getElementById('productForm').reset();
-       })
       cancelButton.addEventListener('click', function () {
         imageInput.value = '';
         imagePreviewsContainer.innerHTML = '';

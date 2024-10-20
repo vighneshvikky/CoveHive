@@ -5,17 +5,21 @@
 <%- console.log(`this is a err ${error_msg}`) %>
     <div class="flex items-center justify-start h-full ml-64">
         <div class="w-full max-w-md ml-4"> <!-- Added ml-4 for margin-left -->
-            <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" action="/admin/categories/add" method="post" enctype="multipart/form-data">
+            <form class="bg-white  shadow-md rounded px-8 pt-6 pb-8 mb-4" action="/admin/categories/add" method="post" enctype="multipart/form-data" id="formCheck">
                 <div class="mb-4">
                     <label for="category" class="block text-gray-700 text-sm font-bold mb-2">Category Name</label>
-                    <input type="text" id="category" name="name" required 
+                    <input type="text" id="category" name="name" 
                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-                           placeholder="Enter category name">
+                           placeholder="Enter category name"  >
+                           <small id="err-msg" class="text-red-600 text-center"></small>
+                           <br>
                 </div>
                 <div class="mb-6">
                     <label for="image" class="block text-gray-700 text-sm font-bold mb-2">Upload Image</label>
-                    <input type="file" id="image" name="img" accept="image/*" required 
+                    <input type="file" id="image" name="img" accept="image/*" 
                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                           <small id="err-msg" class="text-red-600 text-center"></small>
+                           <br>
                 </div>
                 <div class="flex items-center justify-between">
                     <button type="submit" 
@@ -143,6 +147,57 @@ function closeModal() {
   const modal = document.getElementById('confirmation-modal');
   modal.classList.add('hidden'); // Hide the modal
 }
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('formCheck').addEventListener('submit', async (event) => {
+        event.preventDefault(); // Prevent default form submission
+        console.log('form submission prevented')
+        const categoryName = document.getElementById('category').value;
+        const errorMsg = document.getElementById('err-msg');
+        const namePattern = /^[A-Z][a-zA-Z]*$/;
+        errorMsg.textContent = '';
+        let valid = true;
+
+        if (!categoryName) {
+            errorMsg.textContent = "Category name is required";
+            valid = false;
+        } else if (!namePattern.test(categoryName)) {
+            errorMsg.textContent = "Enter a valid Category name";
+            valid = false;
+        }
+
+        // If valid, create FormData and submit via fetch
+        // if (valid) {
+        //     console.log(`Form is validated`);
+
+        //     const formData = new FormData(document.getElementById('formCheck')); // Create FormData from form element
+            
+        //     try {
+        //         const response = await fetch('/admin/categories/add', {
+        //             method: 'POST',
+        //             body: formData, // Use the FormData object here
+        //         });
+
+        //         // Check response
+        //         if (response.ok) {
+        //             const result = await response.json();
+        //             console.log(`Form successfully submitted: ${result}`);
+        //             // Optionally reset the form or update the UI here
+        //         } else {
+        //             console.log(`Failed to submit the form: ${response.statusText}`);
+        //         }
+        //     } catch (error) {
+        //         console.log(`Error from form: ${error}`);
+        //     }
+        // }
+        if(valid){
+          console.log(`form validated`)
+          document.getElementById('formCheck').submit()
+        }
+    });
+});
+
+
+
 </script>
 <%- include('../layouts/footer.ejs') %>
 

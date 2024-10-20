@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const adminRoutes = require('./routes/admin/adminRoutes')
 const userRoutes = require('./routes/user/userRoutes')  
 const nocache = require('nocache');
+const bodyParser = require('body-parser')
 const flash = require('connect-flash')
 const passport = require('passport');
 require('./passport');
@@ -20,6 +21,8 @@ app.use(session({
   saveUninitialized: true,
 
 }));
+app.use(bodyParser.json()); // To parse JSON bodies
+app.use(bodyParser.urlencoded({ extended: true })); 
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null; // Modify as per how you store the user session
   next();

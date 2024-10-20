@@ -1,70 +1,157 @@
 <%- include('../layouts/header.ejs') %>
-
-<form action="/admin/products/edit/<%= product._id %>" method="POST" enctype="multipart/form-data" class="bg-white p-8 rounded-md shadow-md">
+<%- include('../layouts/sidebar.ejs') %>  
+<form action="/admin/products/edit/<%= product._id %>" method="POST" enctype="multipart/form-data" class="bg-white p-8 rounded-md shadow-md ml-64" id="formSubmit" >
 
   <!-- Product Name -->
-  <div class="mb-4">
-      <label for="name" class="block text-gray-700">Product Name</label>
-      <input type="text" id="name" name="name" value="<%= product.name %>" class="w-full p-2 border border-gray-300 rounded-md" required>
-  </div>
+       <!-- Product Name -->
+       <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
+          Product Name
+        </label>
+        <input 
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+          type="text" 
+          id="name" 
+          name="name"
+          value="<%= product.name %>" 
+          >
+          <span id="name-error" class="text-red-500 text-sm mt-1 "></span>
+      </div>
 
-  <!-- Product Description -->
-  <div class="mb-4">
-      <label for="description" class="block text-gray-700">Description</label>
-      <textarea id="description" name="description" class="w-full p-2 border border-gray-300 rounded-md" rows="5" required><%= product.description %></textarea>
-  </div>
+          <%= product.description %>  
+          </textarea>
+        
+          <span id="description-error" class="text-red-500 text-sm mt-1 "></span>
+      </div> -->
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
+        Description
+      </label>
+      <div class="mb-4">
+        <textarea id="description" name="description" class="w-full p-2 border border-gray-300 rounded-md" rows="5" required><%= product.description %></textarea>
+        <span id="description-error" class="text-red-500 text-sm mt-1 "></span>
+    </div>
+      <!-- Price -->
+       <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="price">
+          Price
+        </label>
+        <input 
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+          type="number" 
+          id="price" 
+          name="price" 
+          value="<%=product.price%>"
+          >
+          <span id="price-error" class="text-red-500 text-sm mt-1 "></span>
+      </div> 
 
-  <!-- Product Price -->
-  <div class="mb-4">
-      <label for="price" class="block text-gray-700">Price</label>
-      <input type="number" id="price" name="price" value="<%= product.price %>" class="w-full p-2 border border-gray-300 rounded-md" required>
-  </div>
-  <div class="mb-4">
-    <label class="block text-gray-700 text-sm font-bold mb-2" for="discount">
-      discount
-    </label>
-    <input 
-      class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-      type="text" 
-      id="discount" 
-      name="discount" 
-      value="50"
-      required>
-  </div>
-  <div class="mb-4">
-    <label class="block text-gray-700 text-sm font-bold mb-2" for="stock">
-      Stock
-    </label>
-    <input 
-      class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-      type="number" 
-      id="stock" 
-      name="stock"
-      value="5" 
-      required>
-  </div>
-  <!-- Product Category -->
-  <div class="mb-4">
-      <label for="category" class="block text-gray-700">Category</label>
-      <select id="category" name="category" class="w-full p-2 border border-gray-300 rounded-md" required>
-          <% categories.forEach(function(category) { %>
-              <option value="<%= category._id %>" <%= category._id.equals(product.category._id) ? 'selected' : '' %> >
-                  <%= category.name %>
-              </option>
-          <% }); %>
-      </select>
-  </div>
+      <!-- discount -->
 
-  <div class="mb-4">
-    <label class="block text-gray-700 text-sm font-bold mb-2" for="image">Product Images</label>
-    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-700 leading-tight focus:outline-none focus:shadow-outline" type="file" id="imageInput" name="images" accept="image/*" multiple>
-  </div>
 
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="discount">
+          discount
+        </label>
+        <input 
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+          type="text" 
+          id="discount" 
+          name="discount" 
+          value='<%=product.discount%>'
+          >
+          <span id="discount-error" class="text-red-500 text-sm mt-1 "></span>
+      </div>
+      <!-- Stock -->
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="stock">
+          Stock
+        </label>
+        <input 
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+          type="number" 
+          id="stock" 
+          name="stock"
+          value="<%= product.stock%>" 
+          >
+          <span id="stock-error" class="text-red-500 text-sm mt-1 "></span>
+      </div>
+      <div class="mb-4">
+        <label for="category" class="block text-gray-700">Category</label>
+        <select id="category" name="category" class="w-full p-2 border border-gray-300 rounded-md" required>
+            <% categories.forEach(function(category) { %>
+                <option value="<%= category._id %>" <%= category._id.equals(product.category._id) ? 'selected' : '' %> >
+                    <%= category.name %>
+                </option>
+            <% }); %>
+        </select>
+        <span id="category-error" class="text-red-500 text-sm mt-1 "></span>
+    </div>
+      <!-- Subcategory -->
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="subcategory">
+          Subcategory
+        </label>
+        <input 
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+          type="text" 
+          id="subcategory" 
+          name="subcategory"
+          value="<%=product.subcategory%>" 
+          >
+          <span id="subcategory-error" class="text-red-500 text-sm mt-1 "></span>
+      </div>
+      <!-- Compatible Devices -->
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="compatibleDevices">
+          Compatible Devices (Comma separated)
+        </label>
+        <input 
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+          type="text" 
+          id="compatibleDevices" 
+          value="<%=product.compatibleDevices%>"
+          name="compatibleDevices" 
+          placeholder="iPhone 15 Pro, iPhone 15 Pro Max"
+          >
+          <span id="compatibleDevices-error" class="text-red-500 text-sm mt-1 "></span>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="image">Product Images</label>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-700 leading-tight focus:outline-none focus:shadow-outline" type="file" id="imageInput" name="images" accept="image/*" multiple>
+        <span id="image-error" class="text-red-500 text-sm mt-1 "></span>
+      </div>
+  <!-- Existing images preview -->
+
+  <div class="sm:space-y-3 w-16 max-sm:w-12 max-sm:flex max-sm:mb-4 max-sm:gap-4">
+    <% product.image.forEach((img, index) => { %>
+      <div class="relative group">
+        <!-- Image Thumbnail -->
+        <img src="/uploads/<%= img %>" width="100px" height="100px" alt="<%= product.name %>" class="thumbnail w-full cursor-pointer rounded-md" />
+        
+        <!-- Remove Button -->
+        <button 
+          type="button" 
+          class="absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+          onclick="removeImage('<%= img %>', '<%= product._id %>')">
+          Remove
+        </button>
+      </div>
+    <% }) %>
+  </div>
+ 
+
+  <!-- Image Upload Field -->
+  <!-- <input type="file" name="images" multiple> -->
   <!-- Image Preview and Crop Section -->
   <div class="cropper-container max-w-lg mx-auto p-4 bg-gray-100 border rounded-lg">
     <div id="imagePreviews" class="flex flex-wrap justify-center gap-4" data-existing-images='<%= JSON.stringify(product.images || []) %>'>
       <!-- Existing image previews will be inserted here by JavaScript -->
     </div>
+  </div>
+  <div>
+
+     
   </div>
 <!-- Crop and Cancel Buttons -->
 <div class="flex justify-between mt-4 space-x-4">
@@ -120,6 +207,86 @@ document.addEventListener('DOMContentLoaded', function() {
   const productForm = document.querySelector('form');
   let cropperInstances = [];
 
+
+  document.getElementById('formSubmit').addEventListener('submit',function(event){
+        event.preventDefault();
+        console.log('event prevented')
+        const nameInput = document.getElementById('name').value
+  const descriptionInput = document.getElementById('description').value
+  const priceInput = document.getElementById('price').value
+  const discountInput = document.getElementById('discount').value
+  const stockInput = document.getElementById('stock').value
+  const categorySelect = document.getElementById('category').value
+  const subcategoryInput = document.getElementById('subcategory').value
+  const compatibleDevicesInput = document.getElementById('compatibleDevices').value
+
+const err_name = document.getElementById('name-error');
+const err_description = document.getElementById('description-error')
+const err_price = document.getElementById('price-error')
+const err_discount = document.getElementById('discount-error')
+const err_stock = document.getElementById('stock-error')
+const err_category = document.getElementById('category-error')
+const err_subcategory = document.getElementById('subcategory-error')
+const err_compatable = document.getElementById('compatibleDevices-error')
+const err_img = document.getElementById('image-error')
+err_name.textContent = "";
+err_description.textContent = "";
+err_price.textContent = "";
+err_stock.textContent = "";
+err_category.textContent = "";
+err_discount.textContent=""
+err_subcategory.textContent = "";
+ err_compatable.textContent = "";
+ err_img.textContent="";
+
+let valid = true;
+validName = /^[A-Z][a-zA-Z0-9]*[a-zA-Z0-9\s]*$/;
+validDis = /^.{10,}$/
+validPrice = /^(?!0$|-[0-9]+$)[0-9]+$/
+validDiscount = /\b(100|[1-9]?[0-9])\b/
+if(!validName.test(nameInput)){
+  err_name.textContent="Enter a valid name"
+  valid=false;
+}
+if(!validDis.test(descriptionInput)){
+err_description.textContent="Description should be atlead have minimum length of 10 characters "
+  valid=false;
+}
+if(!validPrice.test(priceInput)){
+  err_price.textContent="Enter a valid Price"
+  valid=false;
+}
+if(!validDiscount.test(discountInput)){
+  err_discount.textContent="Discount should be between 0 and 100"
+  valid=false;
+}
+if(!validPrice.test(stockInput)){
+  err_stock.textContent="Enter a valid Stock"
+  valid=false;
+}
+if(!categorySelect){
+  err_category.textContent="Enter the Category"
+  valid=false;
+}
+if(!validName.test(subcategoryInput)){
+  err_subcategory.textContent="Enter a valid subcategory"
+  valid=false;
+}
+if(!validName.test(compatibleDevicesInput)){
+  err_compatable.textContent="Enter a valid subcategory"
+  valid=false;
+}
+
+if(valid){
+  console.log('valid sucess')
+document.getElementById('formSubmit').submit();
+
+}
+
+
+
+       })
+    
   // Retrieve existing images from data attribute
   let existingImages = [];
   try {
@@ -246,5 +413,33 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
+function removeImage(image, productId) {
+  console.log(`image is ${image}`);
+  console.log(`product is ${productId}`);
+  
+  
+    if (confirm('Are you sure you want to remove this image?')) {
+      fetch(`/admin/product/remove-image/${productId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ image, productId }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Remove the image from the DOM or refresh the page
+          location.reload(); // You can also remove the image without refreshing the page
+        } else {
+          alert('Failed to remove the image');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+  }
+
 </script>
 <%- include('../layouts/footer.ejs') %>

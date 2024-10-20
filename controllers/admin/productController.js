@@ -5,7 +5,7 @@ const { default: mongoose } = require('mongoose');
 
 exports.loadProduct = async(req,res) => {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit =  8;
     try {
          const totalProduct = await Product.countDocuments();
         const productData = await Product.find({isAvailable:true}).populate('category')
@@ -109,12 +109,38 @@ exports.loadEditProduct = async (req,res) =>{
   }
 };
 
+exports.removeImage = async(req,res) => {
+  try {
+       // Find the product by ID
+       const product = await Product.findById(req.params.id);
+
+       // Remove the image from the product's image array
+       product.image = product.image.filter(img => img !== image);
+   
+       // Save the updated product
+       await product.save();
+   
+       // Optionally: delete the image file from the server
+       const fs = require('fs');
+       const path = `./uploads/${image}`;
+       fs.unlink(path, (err) => {
+         if (err) {
+           console.error('Failed to delete image:', err);
+         }
+       });
+   
+       res.json({ success: true });
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
 exports.postEditProduct = async (req,res) => {
  // const { name, description, price, category } = req.body;
   try {
 //console.log(req.files+"hai")
     const productId = req.params.id; // Get product ID from the route
-    const imagePaths = req.files.map(file => file.filename);
+    //const imagePaths = req.files.map(file => file.filename);
 
     // Fetch the product
     let product = await Product.findById(productId)
@@ -125,13 +151,20 @@ exports.postEditProduct = async (req,res) => {
     }
 
 
-      product.name = req.body.name;
-      product.description = req.body.description;
-      product.price = req.body.price;
-      product.category =req.body.category;
-      product.image = imagePaths;
+      product.name = req.body.name||product.name;
+      product.description = req.body.description||product.description;
+      product.price = req.body.price||product.price;
+      product.category =req.body.category||product.category;
       product.discount = req.body.discount;
       product.stock = req.body.stock;
+      product.subcategory = req.body.subcategory||product.subcategory;
+      product.compatibleDevices = req.body.compatibleDevices||product.compatibleDevices;
+
+      if (req.files && req.files.length > 0) {
+        const newImages = req.files.map(file => file.filename); // New uploaded images
+        console.log(`newImages is ${newImages}`)
+        product.image =  newImages// Append new images to the existing ones
+      }
 
 
     await product.save();

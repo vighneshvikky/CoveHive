@@ -1,8 +1,157 @@
-<h1>Flash Message Test</h1>
-<% if (success_msg) { %>
-  <p class="text-green-600"><%= success_msg %></p>
-<% } %>
+<div class="container mx-auto px-4 py-8 flex items-center justify-center min-h-screen"> 
 
-<% if (error_msg) { %>
-  <p class="text-red-600"><%= error_msg %></p>
-<% } %>
+
+  <form action="/admin/product/add" method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-1/2" id="productForm" >
+
+     <!-- Product Name -->
+     <div class="mb-4">
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
+        Product Name
+      </label>
+      <input 
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+        type="text" 
+        id="name" 
+        name="name"
+        value="Apple" 
+        >
+        <span id="name-error" class="text-red-500 text-sm mt-1 hidden"></span>
+    </div>
+
+    <!-- Description -->
+    <div class="mb-4">
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
+        Product Description
+      </label>
+     
+      <textarea 
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+        id="description" 
+        name="description"
+        rows="3"></textarea>
+        <span id="description-error" class="text-red-500 text-sm mt-1 hidden"></span>
+    </div>
+
+    <!-- Price -->
+    <div class="mb-4">
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="price">
+        Price
+      </label>
+      <input 
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+        type="number" 
+        id="price" 
+        name="price" 
+        value="2000"
+        >
+        <span id="price-error" class="text-red-500 text-sm mt-1 hidden"></span>
+    </div>
+
+    
+    <!-- discount -->
+
+
+    <div class="mb-4">
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="discount">
+        discount
+      </label>
+      <input 
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+        type="text" 
+        id="discount" 
+        name="discount" 
+        value="50"
+        >
+        <span id="discount-error" class="text-red-500 text-sm mt-1 hidden"></span>
+    </div>
+    <!-- Stock -->
+    <div class="mb-4">
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="stock">
+        Stock
+      </label>
+      <input 
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+        type="number" 
+        id="stock" 
+        name="stock"
+        value="5" 
+        >
+        <span id="stock-error" class="text-red-500 text-sm mt-1 hidden"></span>
+    </div>
+
+    <div class="mb-4">
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="category">
+          Category  
+      </label>
+      <select 
+          id="category" 
+          name="category" 
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+            >
+          <option value="">Select a Category</option>
+          <% categories.forEach(category => { %>
+              <option value="<%= category._id %>">
+                  <%= category.name %>
+              </option>
+          <% }); %>
+      </select>
+      <span id="category-error" class="text-red-500 text-sm mt-1 hidden"></span>
+    </div>
+  
+    <!-- Subcategory -->
+    <div class="mb-4">
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="subcategory">
+        Subcategory
+      </label>
+      <input 
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+        type="text" 
+        id="subcategory" 
+        name="subcategory"
+        value="Apple 15 series" 
+        >
+        <span id="subcategory-error" class="text-red-500 text-sm mt-1 hidden"></span>
+    </div>
+    <!-- Compatible Devices -->
+    <div class="mb-4">
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="compatibleDevices">
+        Compatible Devices (Comma separated)
+      </label>
+      <input 
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+        type="text" 
+        id="compatibleDevices" 
+        value="iphone 15 Pro"
+        name="compatibleDevices" 
+        placeholder="iPhone 15 Pro, iPhone 15 Pro Max"
+        >
+        <span id="compatibleDevices-error" class="text-red-500 text-sm mt-1 hidden"></span>
+    </div>
+
+    <div class="mb-4">
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="image">Product Images</label>
+      <input class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-700 leading-tight focus:outline-none focus:shadow-outline" type="file" id="imageInput" name="images" accept="image/*" multiple>
+      <span id="image-error" class="text-red-500 text-sm mt-1 hidden"></span>
+    </div>
+  
+    
+     <div class="cropper-container max-w-lg mx-auto p-4 bg-gray-100 border rounded-lg">
+      <div id="imagePreviews" class="flex flex-wrap justify-center gap-4"> 
+         <!-- Existing image previews will be inserted here by JavaScript  -->
+       </div>
+    </div>
+  
+    <!-- Crop and Cancel Buttons -->
+    <div class="flex justify-between mt-4">
+      <button type="button" id="cropButton" style="display: none;" class="bg-purple-600 text-white py-2 px-4 rounded">Crop and Update</button>
+      <button type="button" id="cancelButton" style="display: none;" class="bg-gray-400 text-white py-2 px-4 rounded">Cancel</button>
+    </div>
+  
+    <!-- Submit Button -->
+    <button type="submit" id="submitButton" class="bg-purple-600 text-white py-2 px-4 rounded mt-4">Add Product</button>
+  
+    <!-- Back to Products Button -->
+   
+  </form>
+  <!-- Added ID here -->
+          </div>
