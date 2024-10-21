@@ -16,6 +16,9 @@
         },
         productImage:{
             type:String
+        },
+        productDiscountPrice:{
+            type:Number
         }
     },{_id:false,timestamps:true});
 

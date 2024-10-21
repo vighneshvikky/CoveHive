@@ -5,6 +5,7 @@ const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
 const Product = require('../../models/admin/productModel');
 const Category = require('../../models/admin/categoryModel');
+const { isblocked } = require('../../middlewares/user/userAuth');
 dotenv.config()
 //------------------------------------ Function to hash the password---------------------------------------
 const securePassword = async (password) => {
@@ -270,6 +271,7 @@ exports.googleAuthCallback = async (req, res) => {
       }
   
       // Set session data
+      req.session.user=user;
       req.session.user_id = user._id;
       req.session.fullName = user.fullName;
   
@@ -331,7 +333,7 @@ exports.googleAuthCallback = async (req, res) => {
     try {
         const user = await User.findById(req.session.user_id);
         console.log(`user is ${user}`);
-
+        const categories = await Category.find()
         const searchQuery = req.query.q || ''; // Get search query from request
         const selectedSort = req.query.sort || ''; // Get the sort option from the query, default to empty string
 
@@ -350,7 +352,7 @@ exports.googleAuthCallback = async (req, res) => {
         }
 
         // Pass the products, user, searchQuery, and selectedSort to the view
-        res.render('user/allProducts', { products, user, searchQuery, selectedSort });
+        res.render('user/allProducts', { products, user, searchQuery, selectedSort ,categories});
     } catch (error) {
         console.log(error.message);
     }

@@ -13,20 +13,8 @@ if(!userId){
 try {
  
   const cart = await Cart.findOne({userId}).populate('items.productId');
-
-  const price = cart.items.map((item) => {
-    const productPrice = item.productId.price;
-    const discount = item.productId.discount || 0; // Fallback to 0 if no discount
-
-    // Calculate the discount price if a discount is applied
-    const discountAmount = (productPrice * discount) / 100;
-    const discountedPrice = productPrice - discountAmount;
-
-    // Return the discounted price if applicable, otherwise return the original price
-    return discount > 0 ? discountedPrice : productPrice;
-  });
   
-  res.render('user/userCart',{cart,price,currentRoute:'/home'})
+  res.render('user/userCart',{cart,currentRoute:'/home'})
 } catch (error) {
   console.error('Error fetching cart:', error.message);
   req.flash('error', 'Error fetching cart');
@@ -91,7 +79,11 @@ exports.addToCart = async (req, res) => {
               productId: product._id,
               productCount: 1,
               productPrice: product.price || 0, // Fallback to 0 if product.price is undefined
-              productImage: product.image[0]
+              productImage: product.image[0],
+              productDiscountPrice: product.price 
+              ? (product.discount ? product.price * (1 - (product.discount / 100)) : product.price) 
+              : 0
+          
           });
       }
 
@@ -169,7 +161,7 @@ exports.increment = async (req, res) => {
       cart.items[index].productCount = newCount;
 
       // Calculate the updated total price
-      const updatedPrice = cart.items[index].productPrice * cart.items[index].productCount;
+      const updatedPrice = cart.items[index].productDiscountPrice * cart.items[index].productCount;
 
       // Save the cart
       await cart.save();
@@ -179,8 +171,9 @@ exports.increment = async (req, res) => {
           success: true,
           message: 'Product quantity updated successfully',
           updatedCart: cart,
-          cartTotal: cart.items.reduce((total, item) => total + (item.productPrice * item.productCount), 0),
-          updatedPrice: updatedPrice
+          cartTotal: cart.items.reduce((total, item) => total + (item.productDiscountPrice * item.productCount), 0),
+          updatedPrice: updatedPrice,
+          productCount:newCount 
       });
   } catch (error) {
       console.error(`Error incrementing product quantity in cart: ${error}`);
@@ -212,9 +205,11 @@ exports.decrement = async (req, res) => {
           await cart.save();
           res.status(200).json({
               success: true,
-              cartTotal: cart.items.reduce((total, item) => total + (item.productPrice * item.productCount), 0),
-              updatedPrice: cart.items[index]?.productPrice * cart.items[index]?.productCount || 0});
+              cartTotal: cart.items.reduce((total, item) => total + (item.productDiscountPrice * item.productCount), 0),
+              productCount:cart.items[index].productCount,
+              updatedPrice: cart.items[index]?.productDiscountPrice * cart.items[index]?.productCount || 0});
               disableButton: cart.items[index]?.productCount === 1 // Disable button when count is 1
+              productCount:cart.items[index].productCount;
       } else {
           res.status(404).send('Product not found in cart');
       }

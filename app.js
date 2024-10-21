@@ -27,6 +27,10 @@ app.use((req, res, next) => {
   res.locals.user = req.session.user || null; // Modify as per how you store the user session
   next();
 });
+app.use((req, res, next) => {
+  res.locals.searchQuery = req.query.q || ''; // Set searchQuery globally
+  next(); // Pass control to the next middleware or route handler
+});
 app.use(flash())  
 app.use(nocache());
 app.use(express.static(path.join(__dirname, 'public')));

@@ -6,48 +6,164 @@
   <%- include('../layouts/profileSideBar') %>
   <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
     <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Edit Address</h1>
-    
-    <form action="/user-address-edit/<%= address.id %>" method="POST" class="space-y-4">
-        <div>
-            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name:</label>
-            <input type="text" id="name" name="fullName" value="<%= address.fullName %>" required
-                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
-        
-        <div>
-            <label for="street" class="block text-sm font-medium text-gray-700 mb-1">Building/Address line:</label>
-            <input type="text" id="street" name="street" value="<%= address.street %>"
-                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
-        
-        <div>
-            <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City:</label>
-            <input type="text" id="city" name="city" value="<%= address.city %>" required
-                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
-        
-        <div>
-            <label for="pincode" class="block text-sm font-medium text-gray-700 mb-1">Pincode:</label>
-            <input type="text" id="pincode" name="pincode" value="<%= address.pincode %>" required
-                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
-        
-        <div>
-            <label for="state" class="block text-sm font-medium text-gray-700 mb-1">State:</label>
-            <input type="text" id="state" name="state" value="<%= address.state %>" required
-                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
-        
-        <div>
-            <label for="country" class="block text-sm font-medium text-gray-700 mb-1">Country:</label>
-            <input type="text" id="country" name="country" value="<%= address.country %>" required
-                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
-        
-        <button type="submit" 
-                class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">
-            Update Address
-        </button>
-    </form>
+    <form id="editAddressForm" action="/user-address-edit/<%= address.id %>" method="POST" class="space-y-4">
+      <div>
+          <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name:</label>
+          <input type="text" id="name" name="fullName" value="<%= address.fullName %>" 
+                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <span id="nameError" class="text-red-500 text-sm hidden">Please enter at least 3 characters.</span>
+      </div>
+  
+      <div>
+          <label for="street" class="block text-sm font-medium text-gray-700 mb-1">Building/Address line:</label>
+          <input type="text" id="street" name="street" value="<%= address.street %>"
+                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <span id="streetError" class="text-red-500 text-sm hidden">Please enter a valid address.</span>
+      </div>
+  
+      <div>
+          <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City:</label>
+          <input type="text" id="city" name="city" value="<%= address.city %>" 
+                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <span id="cityError" class="text-red-500 text-sm hidden">Please enter a valid city.</span>
+      </div>
+  
+      <div>
+          <label for="pincode" class="block text-sm font-medium text-gray-700 mb-1">Pincode:</label>
+          <input type="text" id="pincode" name="pincode" value="<%= address.pincode %>" 
+                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <span id="pincodeError" class="text-red-500 text-sm hidden">Please enter a 6-digit pincode.</span>
+      </div>
+  
+      <div>
+          <label for="state" class="block text-sm font-medium text-gray-700 mb-1">State:</label>
+          <input type="text" id="state" name="state" value="<%= address.state %>" 
+                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <span id="stateError" class="text-red-500 text-sm hidden">Please enter a valid state.</span>
+      </div>
+  
+      <div>
+          <label for="country" class="block text-sm font-medium text-gray-700 mb-1">Country:</label>
+          <input type="text" id="country" name="country" value="<%= address.country %>" 
+                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <span id="countryError" class="text-red-500 text-sm hidden">Please enter a valid country.</span>
+      </div>
+  
+      <button type="submit" id="submitBtn"
+              class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">
+          Update Address
+      </button>
+  </form>
   </div>
 </div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const editAddressForm = document.getElementById('editAddressForm');
+
+    // Input elements
+    const nameInput = document.getElementById('name');
+    const streetInput = document.getElementById('street');
+    const cityInput = document.getElementById('city');
+    const pincodeInput = document.getElementById('pincode');
+    const stateInput = document.getElementById('state');
+    const countryInput = document.getElementById('country');
+
+    // Error elements
+    const nameError = document.getElementById('nameError');
+    const streetError = document.getElementById('streetError');
+    const cityError = document.getElementById('cityError');
+    const pincodeError = document.getElementById('pincodeError');
+    const stateError = document.getElementById('stateError');
+    const countryError = document.getElementById('countryError');
+
+    // Real-time validation functions
+    const validateName = () => {
+      if (nameInput.value.trim().length >= 3) {
+        nameError.classList.add('hidden');
+        nameInput.classList.remove('border-red-500');
+        return true;
+      } else {
+        nameError.classList.remove('hidden');
+        nameInput.classList.add('border-red-500');
+        return false;
+      }
+    };
+
+    const validateStreet = () => {
+      if (streetInput.value.trim().length > 0) {
+        streetError.classList.add('hidden');
+        streetInput.classList.remove('border-red-500');
+        return true;
+      } else {
+        streetError.classList.remove('hidden');
+        streetInput.classList.add('border-red-500');
+        return false;
+      }
+    };
+
+    const validateCity = () => {
+      if (cityInput.value.trim().length > 0) {
+        cityError.classList.add('hidden');
+        cityInput.classList.remove('border-red-500');
+        return true;
+      } else {
+        cityError.classList.remove('hidden');
+        cityInput.classList.add('border-red-500');
+        return false;
+      }
+    };
+
+    const validatePincode = () => {
+      const pinRegex = /^\d{6}$/; // 6-digit pincode
+      if (pinRegex.test(pincodeInput.value.trim())) {
+        pincodeError.classList.add('hidden');
+        pincodeInput.classList.remove('border-red-500');
+        return true;
+      } else {
+        pincodeError.classList.remove('hidden');
+        pincodeInput.classList.add('border-red-500');
+        return false;
+      }
+    };
+
+    const validateState = () => {
+      if (stateInput.value.trim().length > 0) {
+        stateError.classList.add('hidden');
+        stateInput.classList.remove('border-red-500');
+        return true;
+      } else {
+        stateError.classList.remove('hidden');
+        stateInput.classList.add('border-red-500');
+        return false;
+      }
+    };
+
+    const validateCountry = () => {
+      if (countryInput.value.trim().length > 0) {
+        countryError.classList.add('hidden');
+        countryInput.classList.remove('border-red-500');
+        return true;
+      } else {
+        countryError.classList.remove('hidden');
+        countryInput.classList.add('border-red-500');
+        return false;
+      }
+    };
+
+    // Event listeners for real-time validation
+    nameInput.addEventListener('input', validateName);
+    streetInput.addEventListener('input', validateStreet);
+    cityInput.addEventListener('input', validateCity);
+    pincodeInput.addEventListener('input', validatePincode);
+    stateInput.addEventListener('input', validateState);
+    countryInput.addEventListener('input', validateCountry);
+
+    // Final form validation on submit
+    editAddressForm.addEventListener('submit', function (event) {
+      if (!validateName() || !validateStreet() || !validateCity() || !validatePincode() || !validateState() || !validateCountry()) {
+        event.preventDefault(); // Prevent form submission if validation fails
+      }
+    });
+  });
+</script>
+<%- include('../layouts/userFooter.ejs') %>
