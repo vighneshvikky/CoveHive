@@ -12,7 +12,7 @@ exports.searchProducts = async (req, res) => {
         if (q) {
             searchQuery = { name: { $regex: q, $options: 'i' } };
         }
-
+        const categories = await Category.find({isBlocked:false});
         // Sort based on user's selection
         if (sort) {
             switch (sort) {
@@ -36,7 +36,7 @@ exports.searchProducts = async (req, res) => {
 
         const products = await Product.find(searchQuery).sort(sortQuery);
 
-        res.render('user/allProducts', { products,user, searchQuery: q, selectedSort: sort });
+        res.render('user/allProducts', { products,user, searchQuery: q, selectedSort: sort,categories });
     } catch (error) {
         console.error('Error during search:', error.message);
         res.status(500).send('Error during search');

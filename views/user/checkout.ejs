@@ -1,43 +1,135 @@
-<!-- checkout.ejs -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout</title>
-    <link rel="stylesheet" href="/path/to/your/css/styles.css">
-</head>
-<body>
-    <h1>Checkout</h1>
-    
-    <form id="checkout-form" method="POST" action="/checkout/place-order">
-        <h2>Select Address</h2>
-        <div id="address-selection">
-            <% addresses.forEach(function(address) { %>
-                <div>
-                    <input type="radio" id="<%= address._id %>" name="selectedAddress" value="<%= address._id %>">
-                    <label for="<%= address._id %>"><%= address.street %>, <%= address.city %>, <%= address.state %>, <%= address.zip %></label>
+<%- include('../layouts/userHeader.ejs') %>
+
+<div class="container mx-auto my-8">
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+        <!-- Shipping and Payment Information -->
+        <div class="bg-white shadow-lg rounded-lg p-6 border border-[#14213d]">
+            <form action="/place-order" method="POST" id="orderForm">
+                <ol class="space-y-6">
+                    <!-- Shipping Info -->
+              <!-- Shipping Info -->
+<li class="relative pl-10">
+    <div class="absolute -left-8 top-0 w-8 h-8  flex items-center justify-center">
+        <i class="bx bxs-truck text-xl"></i>
+    </div>
+    <div>
+        <h5 class="text-lg font-semibold text-[#14213d] mb-2">Shipping Info</h5>
+        <div class="text-gray-600">
+            <span class="block text-sm">Saved Address</span>
+            <% if (addresses.length > 0) { %>
+                <% addresses.forEach(address => { %>
+                    <label class="block my-3">
+                        <div class="flex items-center p-3 border border-[#14213d] rounded-lg cursor-pointer peer-checked:bg-gray-200 peer-checked:border-gray-500">
+                            <!-- Styled Radio Button -->
+                            <input type="radio" name="selectedAddress" class="form-radio h-4 w-4 text-[#14213d] border-gray-300 focus:ring-[#14213d] mr-3" value="<%= address._id %>" required>
+                            <p class="text-[#14213d]">
+                                <%= address.building %>, <%= address.street %>, <%= address.city %>, <%= address.country %>, <%= address.postalCode %>
+                            </p>
+                        </div>
+                    </label>
+                <% }) %>
+            <% } else { %>
+                <p class="text-red-500">No addresses available. Please add a new address.</p>
+            <% } %>
+        </div>
+        <div class="mt-4">
+            <a href="/userprofile" class="px-4 py-2 bg-[#14213d] text-white rounded-lg hover:bg-black">Change</a>
+        </div>
+    </div>
+</li>
+                    <!-- Payment Method -->
+                    <li class="relative pl-10">
+                        <div class="absolute -left-8 top-0 w-8 h-8 flex items-center justify-center">
+                            <i class="bx bxs-wallet-alt text-xl"></i>
+                        </div>
+                        <div>
+                            <h5 class="text-md font-semibold text-[#14213d] mb-3">Payment method</h5>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <label class="block">
+                                    <input type="radio" name="paymentMethod" value="Credit Card" class="hidden peer" required>
+                                    <div class="p-3 border border-[#14213d] rounded-lg text-center cursor-pointer peer-checked:bg-gray-200 peer-checked:border-gray-500">
+                                        <i class="bx bx-credit-card text-3xl mb-2"></i>
+                                        <p class="text-sm text-[#14213d]">Credit / Debit Card</p>
+                                    </div>
+                                </label>
+                                <label class="block">
+                                    <input type="radio" name="paymentMethod" value="Paypal" class="hidden peer" required>
+                                    <div class="p-3 border border-[#14213d] rounded-lg text-center cursor-pointer peer-checked:bg-gray-200 peer-checked:border-gray-500">
+                                        <i class="bx bxl-paypal text-3xl mb-2"></i>
+                                        <p class="text-sm text-[#14213d]">Paypal</p>
+                                    </div>
+                                </label>
+                                <label class="block">
+                                    <input type="radio" name="paymentMethod" value="Cash on Delivery" class="hidden peer" required>
+                                    <div class="p-3 border border-[#14213d] rounded-lg text-center cursor-pointer peer-checked:bg-gray-200 peer-checked:border-gray-500">
+                                        <i class="bx bx-money text-3xl mb-2"></i>
+                                        <p class="text-sm text-[#14213d]">Cash on Delivery</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </li>
+                </ol>
+
+                <!-- Buttons -->
+                <div class="flex justify-between mt-8">
+                    <a href="/cart" class="px-4 py-2 bg-[#14213d] text-white rounded-lg hover:bg-black">
+                        <i class="mdi mdi-arrow-left mr-2"></i> Continue Shopping
+                    </a>
+                    <button type="submit" class="px-4 py-2 bg-[#14213d] text-white rounded-lg hover:bg-black">
+                        <i class="mdi mdi-cart-outline mr-2"></i> Proceed
+                    </button>
                 </div>
-            <% }) %>
+            </form>
         </div>
 
-        <h2>Add New Address</h2>
-        <div>
-            <input type="text" name="street" placeholder="Street" required>
-            <input type="text" name="city" placeholder="City" required>
-            <input type="text" name="state" placeholder="State" required>
-            <input type="text" name="pincode" placeholder="Pin Code" required>
-            <button type="button" id="add-address">Add Address</button>
+        <!-- Order Summary -->
+        <div class="bg-white shadow-lg rounded-lg p-6 border border-[#14213d]">
+            <div class="bg-gray-200 p-4 mb-4">
+                <h5 class="text-lg font-semibold text-[#14213d]">Order Summary <span class="float-right">#MN0124</span></h5>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full table-auto">
+                    <thead>
+                        <tr>
+                            <th class="text-left text-[#14213d] py-2">Product</th>
+                            <th class="text-left text-[#14213d] py-2">Product Desc</th>
+                            <th class="text-left text-[#14213d] py-2">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% cartDetails.items.forEach(item => { %>
+                            <tr>
+                                <td><img src="/uploads/<%= item.productImage %>" alt="<%= item.productId.name %>" class="w-16 h-16 rounded-lg"></td>
+                                <td>
+                                    <h5 class="text-sm font-semibold text-[#14213d]"><%= item.productId.name %></h5>
+                                    <p class="text-gray-500 text-sm"><%= item.productDiscountPrice.toFixed(2) %> x <%= item.productCount %></p>
+                                </td>
+                                <td class="text-[#14213d]">$<%= (item.productDiscountPrice * item.productCount).toFixed(2) %></td>
+                            </tr>
+                        <% }) %>
+                        <tr class="bg-gray-100">
+                            <td colspan="2" class="text-right text-[#14213d] font-semibold py-2">Total:</td>
+                             <td class="text-[#14213d] font-semibold"><%= cartDetails.items.reduce((total, item) => total + (item.productDiscountPrice * item.productCount), 0).toFixed(2) %></td> 
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
+    </div>
+</div>
+<script>
+    // Add click event listener to all address cards
+document.querySelectorAll('.card-radio').forEach(card => {
+    card.addEventListener('click', function() {
+        // Remove active class from all cards
+        document.querySelectorAll('.card-radio').forEach(c => c.classList.remove('active'));
 
-        <button type="submit">Place Order (COD)</button>
-    </form>
+        // Add active class to the clicked card
+        this.classList.add('active');
+    });
+});
 
-    <script>
-        document.getElementById('add-address').addEventListener('click', function() {
-            // Implement functionality to add a new address dynamically
-            // You may want to add a new address form in the DOM or a modal
-        });
-    </script>
-</body>
-</html>
+</script>
+
+<%- include('../layouts/userFooter.ejs') %>

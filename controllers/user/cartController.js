@@ -98,7 +98,7 @@ exports.addToCart = async (req, res) => {
 
       // Log the cart before saving
       console.log('Cart before saving:', JSON.stringify(cart, null, 2));
-
+    //   req.session.cart = cart
       // Save the cart
       await cart.save();
 

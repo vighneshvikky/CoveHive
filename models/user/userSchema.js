@@ -12,17 +12,7 @@ const userSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date }, // Add default value for createdAt
-    addresses: [
-        {
-            fullName:{type:String,required:true},
-            street: { type: String, required: true },
-            city: { type: String, required: true },
-            pincode: { type: String, required: true },
-            state: { type: String, required: true },
-            country: { type: String, required: true },
-            isDefault: { type: Boolean, default: false }
-        }
-    ], // Add an array of addresses for multiple address management
+    addresses: [{type:mongoose.Schema.Types.ObjectId,ref:'Address'}], // Add an array of addresses for multiple address management
     orders: [
         {
             orderId: { type: mongoose.Schema.Types.ObjectId, ref: 'Order' }, // Reference to an Order collection

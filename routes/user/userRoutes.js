@@ -12,6 +12,7 @@ const userProfile = require('../../controllers/user/userProfile');
 const forgetPass = require('../../controllers/user/userForgetPass')
 const userCart = require('../../controllers/user/cartController');
 const searchController = require('../../controllers/user/searchController')
+const checkOutController= require('../../controllers/user/checkoutController')
 
 
  //user_route.get('/',userAuth.isLogout,userController.loadHome);
@@ -108,8 +109,14 @@ user_route.get('/cart/remove/:id',userCart.removeFromCart);
 
 user_route.get('/products',searchController.searchAndFilterProducts);
 
+
+//--------------------------------------Check out page ----------------------------------
+
+user_route.get('/checkout',checkOutController.getCheckoutPage)
+
 //--------------------------------------user logout ----------------------------------
 
 user_route.get('/logout',userController.userLogout)
 module.exports = user_route;
-
+                                                                                                                                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                        

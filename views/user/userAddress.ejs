@@ -14,7 +14,7 @@
         <a href="/add-address" class="inline-block mb-8 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200">Add New Address</a>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <% user.addresses.forEach(function(address) { %>
+            <% addresses.forEach(function(address) { %>
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <h2 class="text-xl font-semibold mb-4"><%= address.fullName %></h2>
                     <p class="mb-2"><%= address.street %></p>

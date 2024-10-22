@@ -18,7 +18,7 @@
     <% } %>
 
     <!-- If there are items in the cart -->
-    <% if (cart.items && cart.items.length > 0) { %>
+    <% if (cart.items&& cart.items.length > 0) { %>
         <table class="min-w-full table-auto border border-gray-300">
             <thead class="bg-gray-200">
                 <tr>
@@ -130,6 +130,7 @@ productDiscountPrice * item.productCount).toFixed(2) %></span></td> <!-- Total f
 
         <!-- Button to proceed to checkout -->
         <a href="/checkout" class="btn bg-green-500 text-white hover:bg-green-600 rounded p-2 mt-4 inline-block">Proceed to Checkout</a>
+         <!-- <a href="/checkout"><button>proceed to checkout</button></a> -->
 
     <% } else { %>
         <!-- Message when cart is empty -->
