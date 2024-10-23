@@ -26,6 +26,7 @@ exports.editProfile = async (req,res) => {
 
 exports.loadAddAddress = async (req,res) => {
     try {
+        req.session.source = null
         const user = await User.findById(req.session.user_id)
         res.render('user/addAddress',{user,currentRoute:'/home'})
     } catch (error) {
@@ -97,8 +98,12 @@ exports.postAddAddress = async (req,res) => {
         // user.addresses.push(savedAddress._id)
 
         await user.save();
-        res.redirect('/user-address')
-
+        if(req.session.source =='checkout'){
+           res.redirect('/checkout')
+        }else{
+            res.redirect('/user-address')
+        }
+       
     } catch (error) {
        console.log(error.message) 
     }

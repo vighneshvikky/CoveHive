@@ -9,7 +9,7 @@ const orderSchema =new mongoose.Schema({
     items: [{
         productId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'products',
+            ref: 'Product',
             required: true
         },
         productCount: {
@@ -49,3 +49,5 @@ const orderSchema =new mongoose.Schema({
         default: Date.now
     }
 })
+
+module.exports = mongoose.model('Orders',orderSchema)

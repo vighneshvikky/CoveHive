@@ -4,7 +4,7 @@
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
         <!-- Shipping and Payment Information -->
         <div class="bg-white shadow-lg rounded-lg p-6 border border-[#14213d]">
-            <form action="/place-order" method="POST" id="orderForm">
+    <form action="/place-order" method="POST" id="orderForm">
                 <ol class="space-y-6">
                     <!-- Shipping Info -->
               <!-- Shipping Info -->
@@ -21,9 +21,9 @@
                     <label class="block my-3">
                         <div class="flex items-center p-3 border border-[#14213d] rounded-lg cursor-pointer peer-checked:bg-gray-200 peer-checked:border-gray-500">
                             <!-- Styled Radio Button -->
-                            <input type="radio" name="selectedAddress" class="form-radio h-4 w-4 text-[#14213d] border-gray-300 focus:ring-[#14213d] mr-3" value="<%= address._id %>" required>
+                            <input type="radio" name="selectedAddress" class="form-radio h-4 w-4 text-[#14213d] border-gray-300 focus:ring-[#14213d] mr-3" value="<%= address._id %>">
                             <p class="text-[#14213d]">
-                                <%= address.building %>, <%= address.street %>, <%= address.city %>, <%= address.country %>, <%= address.postalCode %>
+                                <%= address.fullName%>, <%= address.street %>, <%= address.city %>, <%= address.country %>,<%=address.state%>, <%= address.pincode %>
                             </p>
                         </div>
                     </label>
@@ -33,7 +33,7 @@
             <% } %>
         </div>
         <div class="mt-4">
-            <a href="/userprofile" class="px-4 py-2 bg-[#14213d] text-white rounded-lg hover:bg-black">Change</a>
+            <a href="/add-address" class="px-4 py-2 bg-[#14213d] text-white rounded-lg hover:bg-black">Add Address</a>
         </div>
     </div>
 </li>
@@ -44,7 +44,7 @@
                         </div>
                         <div>
                             <h5 class="text-md font-semibold text-[#14213d] mb-3">Payment method</h5>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div id="paymentOptions" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                 <label class="block">
                                     <input type="radio" name="paymentMethod" value="Credit Card" class="hidden peer" required>
                                     <div class="p-3 border border-[#14213d] rounded-lg text-center cursor-pointer peer-checked:bg-gray-200 peer-checked:border-gray-500">
@@ -67,6 +67,7 @@
                                     </div>
                                 </label>
                             </div>
+                            <p id="paymentError" class="text-red-500 text-sm mt-2 hidden">Please select a payment method before proceeding.</p>
                         </div>
                     </li>
                 </ol>
@@ -76,7 +77,7 @@
                     <a href="/cart" class="px-4 py-2 bg-[#14213d] text-white rounded-lg hover:bg-black">
                         <i class="mdi mdi-arrow-left mr-2"></i> Continue Shopping
                     </a>
-                    <button type="submit" class="px-4 py-2 bg-[#14213d] text-white rounded-lg hover:bg-black">
+                    <button type="submit" id="submitButton" class="px-4 py-2 bg-[#14213d] text-white rounded-lg hover:bg-black">
                         <i class="mdi mdi-cart-outline mr-2"></i> Proceed
                     </button>
                 </div>
@@ -119,16 +120,7 @@
     </div>
 </div>
 <script>
-    // Add click event listener to all address cards
-document.querySelectorAll('.card-radio').forEach(card => {
-    card.addEventListener('click', function() {
-        // Remove active class from all cards
-        document.querySelectorAll('.card-radio').forEach(c => c.classList.remove('active'));
 
-        // Add active class to the clicked card
-        this.classList.add('active');
-    });
-});
 
 </script>
 

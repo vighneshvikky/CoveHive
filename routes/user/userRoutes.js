@@ -6,14 +6,12 @@ const passport = require('passport');
 
 const userController = require('../../controllers/user/userController');
 const userAuth = require('../../middlewares/user/userAuth');
-const User = require('../../models/user/userSchema');
-const ProductController = require('../../controllers/admin/productController');
 const userProfile = require('../../controllers/user/userProfile');
 const forgetPass = require('../../controllers/user/userForgetPass')
 const userCart = require('../../controllers/user/cartController');
 const searchController = require('../../controllers/user/searchController')
 const checkOutController= require('../../controllers/user/checkoutController')
-
+const orderController = require('../../controllers/user/orderController');
 
  //user_route.get('/',userAuth.isLogout,userController.loadHome);
 user_route.get('/',userAuth.isLogout,userController.loadHome)
@@ -87,7 +85,11 @@ user_route.post('/reset-password/:token', forgetPass.postResetPassword);
 
 //----------------------------------user orders ---------------------------------------
 
-user_route.get('/user-orders',userAuth.isLogin,userProfile.loadOrders)
+user_route.get('/orders',userAuth.isLogin,orderController.placeOrder)
+
+//----------------------------------cancel orders ---------------------------------------
+
+user_route.get('/cancelOrder/:id',orderController.cancelOrder)
 
 //----------------------------------Google Authentication---------------------------------------
 
@@ -112,7 +114,8 @@ user_route.get('/products',searchController.searchAndFilterProducts);
 
 //--------------------------------------Check out page ----------------------------------
 
-user_route.get('/checkout',checkOutController.getCheckoutPage)
+user_route.get('/checkout',checkOutController.getCheckoutPage);
+user_route.post('/place-order',checkOutController.placeOrder)
 
 //--------------------------------------user logout ----------------------------------
 
