@@ -72,28 +72,29 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                <form action="/admin/orders/status" method="POST" class="mb-2">
-                                    <input type="hidden" name="orderId" value="<%= order._id %>">
-                                    <div class="flex space-x-2">
-                                        
-                                        <select name="status"
-                                            id="orderStatus" 
-                                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
-                                            onchange="handleStatusChange()"
-                                            >
-                                            <option value="Pending" <%= order.status === 'Pending' ? 'selected' : '' %>>Pending</option>
-                                            <option value="Shipped" <%= order.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
-                                            <option value="Confirmed" <%= order.status === 'Confirmed' ? 'selected' : '' %>>Confirmed</option>
-                                            <option value="Delivered" <%= order.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
-                                            <option value="Cancelled" <%= order.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
-                                            <option value="Returned" <%= order.status === 'Returned' ? 'selected' : '' %>>Returned</option>
-                                        </select>
-                                        <button type="submit" 
-                                            class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                            Update
-                                        </button>
-                                    </div>
-                                </form>
+        <form action="/admin/orders/status" method="POST" class="mb-2 statusForm" >
+    <input type="hidden" name="orderId" value="<%= order._id %>">
+    <input type="hidden" name="success" value="true"> <!-- Hidden field for success -->
+    <div class="flex space-x-2">
+        <% if (order.status !== 'Delivered' && order.status !== 'Cancelled' && order.status !== 'Returned') { %>
+            <select name="status"
+                id="orderStatus"
+                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                <option value="Confirmed" <%= order.status === 'Confirmed' ? 'selected' : '' %>>Confirmed</option>
+                <option value="Shipped" <%= order.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                <option value="Delivered" <%= order.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                <option value="Cancelled" <%= order.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                <option value="Returned" <%= order.status === 'Returned' ? 'selected' : '' %>>Returned</option>
+            </select>
+            <button type="submit" 
+                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                Update
+            </button>
+        <% } else { %>
+            <span class="text-sm font-medium"><%= order.status %></span>
+        <% } %>
+    </div>
+</form>
                     
 
                                 <td class="px-4 py-4 flex space-x-2">
@@ -237,6 +238,26 @@ function closeModal() {
     document.getElementById('modalBackground').classList.add('hidden');
 }
 
+document.querySelectorAll('.statusForm').forEach(form => {
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to update the order status?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, update it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.submit();
+            }
+        });
+    });
+});
+    
  
     </script>
     <style>

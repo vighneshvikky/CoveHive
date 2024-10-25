@@ -1,63 +1,62 @@
 <%- include('../layouts/header') %>
 <%- include('../layouts/sidebar') %>
-  <div class="font-[sans-serif] overflow-x-auto ml-64">
-    <table class="min-w-full bg-white">
-      <thead class="bg-gray-800 whitespace-nowrap">
+<div class="font-sans overflow-x-auto">
+  <table class="min-w-full divide-y divide-gray-200 bg-white shadow-sm rounded-lg overflow-hidden ml-64">
+    <thead class="bg-gray-800">
+      <tr>
+        <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-white uppercase tracking-wider">
+          SL
+        </th>
+        <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-white uppercase tracking-wider">
+          Name
+        </th>
+        <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-white uppercase tracking-wider">
+          Email
+        </th>
+        <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-white uppercase tracking-wider">
+          Action
+        </th>
+      </tr>
+    </thead>
+
+    <tbody class="bg-white divide-y divide-gray-200">
+      <% if (users.length > 0) { %>
+        <% for (let i = 0; i < users.length; i++) { %>
+          <tr class="even:bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+              <%= i + 1 %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <%= users[i].fullName %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <%= users[i].email %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <button 
+                onclick="openModal('<%= users[i]._id %>', '<%= users[i].is_blocked %>')"
+                class="<%= users[i].is_blocked ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600' %> 
+                       text-white px-4 py-2 rounded-md transition-colors duration-200 font-medium">
+                <%= users[i].is_blocked ? 'Unblock' : 'Block' %>
+              </button>
+            </td>
+          </tr>
+        <% } %>
+      <% } else { %>
         <tr>
-          <th class="p-4 text-left text-sm font-medium text-white">
-            SL
-          </th>
-          <th class="p-4 text-left text-sm font-medium text-white">
-            Name
-          </th>
-          <th class="p-4 text-left text-sm font-medium text-white">
-            Email
-          </th>
-          <!-- <th class="p-4 text-left text-sm font-medium text-white">
-            Date
-          </th> -->
-           <th class="p-4 text-left text-sm font-medium text-white">
-            Action
-          </th>
-        </tr>
-      </thead>
-
-      <tbody class="whitespace-nowrap">
-           <% 
-  if (users.length > 0) {
-      for (let i = 0; i < users.length; i++) {
-  %>
-      
-  
-        <tr class="even:bg-blue-50">
-          <td class="p-4 text-sm text-black">
-           <%= i + 1 %>
+          <td colspan="4" class="px-6 py-8 text-center text-sm text-gray-500 bg-gray-50">
+            <div class="flex flex-col items-center justify-center space-y-2">
+              <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+              </svg>
+              <span class="font-medium">User Not Found</span>
+            </div>
           </td>
-          <td class="p-4 text-sm text-black">
-          <%= users[i].fullName %>
-          </td>
-           <td class="p-4 text-sm text-black">
-           <%= users[i].email %>
-           </td>
-        
-       <td>
-        <button onclick="openModal('<%= users[i]._id %>', '<%= users[i].is_blocked %>')" class="<%= users[i].is_blocked ? 'bg-green-500 text-white' : 'bg-red-500 text-white' %> px-4 py-2 rounded">
-  <%= users[i].is_blocked ? 'Unblock' : 'Block' %>
-</button>
-
-        </td>
         </tr>
-         <% 
-      }
-  } else {
-  %>
-  <tr>
-      <td colspan="6" class="px-4 py-2 text-center text-gray-500">User Not Found</td>
-  </tr>
-  <% } %>
-        </tbody>
-    </table>
-  </div>
+      <% } %>
+    </tbody>
+  </table>
+</div>
 
   // pagination
   

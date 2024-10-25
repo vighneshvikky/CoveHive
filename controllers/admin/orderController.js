@@ -20,6 +20,7 @@ exports.changeOrderStatus = async (req,res) => {
        order.status=status;
       await order.save();
       res.redirect('/admin/orders');
+      res.sendStatus(200); 
         }else{
             res.status(404).send('Order not found');
         }
