@@ -50,7 +50,13 @@
                               <%= product.price.toFixed(2) %> <!-- Output the original price if no discount -->
                           <% } %></p>
                 
-                        </p> <!-- Assuming price is a number -->
+                        </p> 
+                        <% if(product.stock == 0){ %>
+                          <p style="color: red; font-weight: bold; font-size: 18px; text-align: center; margin-top: 10px;">
+                            Out of Stock
+                          </p>
+                        <% } %>
+                        <!-- Assuming price is a number -->
                     </div>
                 </div>
             <% }); %>

@@ -3,26 +3,85 @@ include('../layouts/landingNav.ejs') %> <%} %>
 <main class="flex-grow">
   <!-- Banner Section -->
   <!-- Banner Section -->
-  <section
-    class="relative bg-primary text-black py-24"
-    style="
-      background-image: url('/path/to/banner-image.jpg');
+  <section 
+  class="relative min-h-[600px] flex items-center justify-center py-20 lg:py-32 overflow-hidden"
+  style="
+      background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/path/to/banner-image.jpg');
       background-size: cover;
       background-position: center;
-    "
-  >
-    <div class="container mx-auto text-center">
-      <h1 class="text-4xl font-bold mb-4">Experience Next-Gen Smartphones</h1>
-      <p class="text-lg mb-8">
-        Discover the latest iPhone, Galaxy, and Pixel devices
-      </p>
-      <a
-        href="#shop"
-        class="bg-accent text-white px-6 py-3 rounded-full font-semibold hover:bg-secondary transition duration-300"
-        >Shop Now</a
-      >
-    </div>
-  </section>
+      background-attachment: fixed;
+  "
+>
+  <!-- Overlay gradient for better text readability -->
+  <div class="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50"></div>
+
+  <!-- Content Container -->
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="max-w-3xl mx-auto text-center">
+          <!-- Main Heading with animation -->
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 
+                     animate-fade-in-down tracking-tight leading-tight">
+              Experience Next-Gen 
+              <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+                  Smartphones
+              </span>
+          </h1>
+
+          <!-- Subheading -->
+          <p class="text-lg sm:text-xl text-gray-200 mb-8 sm:mb-12 max-w-2xl mx-auto 
+                    animate-fade-in-up leading-relaxed">
+              Discover the latest iPhone, Galaxy, and Pixel devices with cutting-edge technology 
+              and innovative features.
+          </p>
+
+          <!-- CTA Button Container -->
+          <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <!-- Primary CTA Button -->
+              <a 
+                  href="#shop"
+                  class="inline-flex items-center px-8 py-4 rounded-full text-base font-semibold
+                         bg-gradient-to-r from-blue-600 to-purple-600 text-white
+                         transform transition-all duration-300 ease-in-out
+                         hover:scale-105 hover:shadow-lg hover:from-blue-700 hover:to-purple-700
+                         focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+              >
+                  Shop Now
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+              </a>
+
+              <!-- Secondary CTA Button (Optional) -->
+              <a 
+                  href="#learn-more"
+                  class="inline-flex items-center px-8 py-4 rounded-full text-base font-semibold
+                         bg-white/10 text-white backdrop-blur-sm border border-white/20
+                         transform transition-all duration-300 ease-in-out
+                         hover:bg-white/20 hover:scale-105
+                         focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2"
+              >
+                  Learn More
+              </a>
+          </div>
+
+          <!-- Optional: Feature Badges -->
+          <div class="mt-12 flex flex-wrap justify-center gap-4">
+              <span class="px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-white text-sm">
+                  Free Shipping
+              </span>
+              <span class="px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-white text-sm">
+                  24/7 Support
+              </span>
+              <span class="px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-white text-sm">
+                  30-Day Returns
+              </span>
+          </div>
+      </div>
+  </div>
+
+  <!-- Decorative Elements -->
+  <div class="absolute -bottom-8 left-0 right-0 h-16 bg-gradient-to-t from-white"></div>
+</section>
   <!-- Categories Section -->
   <section class="py-16 bg-lightGray border-t border-navy">
     <div class="container mx-auto px-4">
@@ -58,34 +117,61 @@ include('../layouts/landingNav.ejs') %> <%} %>
       </h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         <% products.forEach(product => { %>
-        <div
-          class="bg-lightGray rounded-lg overflow-hidden shadow-lg transition duration-300 transform hover:scale-105"
-        >
-          <a href="/products/<%= product._id %>"
-            ><img
-              src="/uploads/<%= product.image[0] %>  %>"
-              alt="<%= product.name %>"
-              class="w-full h-48 object-cover"
-          /></a>
-          <div class="p-6">
-            <h3 class="text-lg font-semibold text-navy mb-2">
-              <%= product.name %>
-            </h3>
-            <p class="text-xl font-bold text-black">
-              <i class="fa-solid fa-indian-rupee-sign"></i>
+            <div class="group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl 
+                        transition-all duration-300 transform hover:-translate-y-1">
+                <!-- Product Image -->
+                <a href="/products/<%= product._id %>" class="block relative overflow-hidden">
+                    <img 
+                        src="/uploads/<%= product.image[0] %>" 
+                        alt="<%= product.name %>" 
+                        class="w-full h-56 object-cover transform transition-transform duration-300 
+                               group-hover:scale-105"
+                    >
+                </a>
 
-              <% if(product.discount > 0) { %> <% const discountAmount =
-              (product.price * product.discount) / 100; %> <% const
-              discountedPrice = product.price - discountAmount; %> <%=
-              discountedPrice.toFixed(2) %>
-              <!-- Output the discounted price -->
-              <% } else { %> <%= product.price.toFixed(2) %>
-              <!-- Output the original price if no discount -->
-              <% } %> 
-            </p>
-            <!-- Assuming price is a number -->
-          </div>
-        </div>
+                <!-- Product Details -->
+                <div class="p-6">
+                    <!-- Product Name -->
+                    <h3 class="text-lg font-semibold text-[#14213d] mb-3 line-clamp-2">
+                        <%= product.name %>
+                    </h3>
+
+                    <!-- Price Section -->
+                    <div class="flex items-center space-x-2 mb-3">
+                        <span class="text-xl font-bold text-gray-900 flex items-center">
+                            <i class="fa-solid fa-indian-rupee-sign mr-1"></i>
+                            <% if(product.discount > 0) { %>
+                                <% const discountAmount = (product.price * product.discount) / 100; %>
+                                <% const discountedPrice = product.price - discountAmount; %>
+                                <%= discountedPrice.toFixed(2) %>
+                                <span class="ml-2 text-sm text-gray-500 line-through">
+                                    <%= product.price.toFixed(2) %>
+                                </span>
+                                <span class="ml-2 text-sm text-green-600">
+                                    -<%= product.discount %>%
+                                </span>
+                            <% } else { %>
+                                <%= product.price.toFixed(2) %>
+                            <% } %>
+                        </span>
+                    </div>
+
+                    <!-- Stock Status -->
+                    <% if(product.stock == 0){ %>
+                        <div class="mt-4 text-center">
+                            <span class="bg-red-100 text-red-800 text-sm font-semibold px-4 py-2 rounded-full">
+                                Out of Stock
+                            </span>
+                        </div>
+                    <% } else { %>
+                        <div class="mt-4 text-center">
+                            <span class="bg-green-100 text-green-800 text-sm font-semibold px-4 py-2 rounded-full">
+                                In Stock
+                            </span>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
         <% }); %>
       </div>
     </div>
@@ -181,6 +267,37 @@ include('../layouts/landingNav.ejs') %> <%} %>
     document.getElementById("cartCount").innerText = count; // Example: update an element with id 'cartCount'
   }
 </script>
-
+<style>
+  @keyframes fade-in-down {
+      0% {
+          opacity: 0;
+          transform: translateY(-20px);
+      }
+      100% {
+          opacity: 1;
+          transform: translateY(0);
+      }
+  }
+  
+  @keyframes fade-in-up {
+      0% {
+          opacity: 0;
+          transform: translateY(20px);
+      }
+      100% {
+          opacity: 1;
+          transform: translateY(0);
+      }
+  }
+  
+  .animate-fade-in-down {
+      animation: fade-in-down 1s ease-out;
+  }
+  
+  .animate-fade-in-up {
+      animation: fade-in-up 1s ease-out 0.3s;
+      animation-fill-mode: backwards;
+  }
+</style>
 
 <%- include('../layouts/userFooter.ejs') %>

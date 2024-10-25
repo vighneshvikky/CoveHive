@@ -42,8 +42,8 @@ exports.addToCart = async (req, res) => {
 
       // Check if the product is in stock
       if (product.stock <= 0) {
-          res.locals.alertMessage = "Product is out of stock.";
-          return res.redirect('/cart');
+          req.flash('error_msg','Product is out of Stock');
+          return res.redirect(`/products/${productId}`);
       }
 
       // Fetch the user's cart

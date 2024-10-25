@@ -1,102 +1,115 @@
 <!-- Sidebar Navigation -->
-<nav class="bg-[#f7f7f8] h-screen fixed top-0 left-0 min-w-[250px] py-6 px-4 font-[sans-serif]">
-  <div class="flex items-center space-x-2">
-    <img src="/CoveHive logo.png" alt="CoveHive Logo" class="w-auto h-12 rounded-full">
-    <a href="#" class="text-2xl font-bold">CoveHive</a>
+<nav class="bg-white h-screen fixed top-0 left-0 w-64 border-r border-gray-200 shadow-lg">
+  <!-- Logo Section -->
+  <div class="px-6 py-4 border-b border-gray-200">
+      <div class="flex items-center gap-3">
+          <img src="/CoveHive logo.png" alt="CoveHive Logo" class="w-12 h-12 rounded-lg">
+          <span class="text-xl font-semibold text-gray-800">CoveHive</span>
+      </div>
   </div>
 
-  <div class="overflow-auto py-6 h-full mt-4">
-    <ul class="space-y-1">
-      <li>
-        <a href="/admin/adminDashboard"
-          class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4" viewBox="0 0 512 512">
-            <!-- SVG content here -->
-          </svg>
-          <span>Dashboard</span>
-        </a>
-      </li>
-      <li>
-        <a href="/admin/customers"
-          class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4" viewBox="0 0 512 512">
-            <!-- SVG content here -->
-          </svg>
-          <span>Customers</span>
-        </a>
-      </li>
-      <li>
-        <a href="/admin/products"
-          class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4" viewBox="0 0 24 24">
-            <!-- SVG content here -->
-          </svg>
-          <span>Products</span>
-        </a>
-      </li>
-      <li>
-        <a href="/admin/addProducts"
-          class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4">
-            <!-- SVG content here -->
-          </svg>
-          <span>Add Products</span>
-        </a>
-      </li>
-      <li>
-        <a href="/admin/coupons"
-          class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4" viewBox="0 0 512.003 512.003">
-            <!-- SVG content here -->
-          </svg>
-          <span>Coupons</span>
-        </a>
-      </li>
-      <li>
-        <a href="/admin/orders"
-          class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4" viewBox="0 0 512.003 512.003">
-            <!-- SVG content here -->
-          </svg>
-          <span>Orders</span>
-        </a>
-      </li>
-      <li>
-        <a href="/admin/banners"
-          class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4" viewBox="0 0 511.877 511.877">
-            <!-- SVG content here -->
-          </svg>
-          <span>Banners</span>
-        </a>
-      </li>
-      <li>
-        <a href="/admin/offers"
-          class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4" viewBox="0 0 193.769 193.769">
-            <!-- SVG content here -->
-          </svg>
-          <span>Offers</span>
-        </a>
-      </li>
-      <li>
-        <a href="/admin/categories"
-          class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4" viewBox="0 0 512 512">
-            <!-- SVG content here -->
-          </svg>
-          <span>Categories</span>
-        </a>
-      </li>
-      <li>
-        <a href="/admin/logout"
-          class="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-[18px] h-[18px] mr-4" viewBox="0 0 6.35 6.35">
-            <!-- SVG content here -->
-          </svg>
-          <span>Logout</span>
-        </a>
-      </li>
-    </ul>
+  <!-- Navigation Links -->
+  <div class="px-3 py-4">
+      <ul class="space-y-1">
+          <!-- Dashboard -->
+          <li>
+              <a href="/admin/adminDashboard" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg group">
+                  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                  </svg>
+                  <span class="font-medium">Dashboard</span>
+              </a>
+          </li>
+
+          <!-- Customers -->
+          <li>
+              <a href="/admin/customers" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg group">
+                  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                  </svg>
+                  <span class="font-medium">Customers</span>
+              </a>
+          </li>
+
+          <!-- Products -->
+          <li>
+              <a href="/admin/products" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg group">
+                  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                  </svg>
+                  <span class="font-medium">Products</span>
+              </a>
+          </li>
+
+          <!-- Add Products -->
+          <li>
+              <a href="/admin/addProducts" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg group">
+                  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                  </svg>
+                  <span class="font-medium">Add Products</span>
+              </a>
+          </li>
+
+          <!-- Coupons -->
+          <li>
+              <a href="/admin/coupons" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg group">
+                  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path>
+                  </svg>
+                  <span class="font-medium">Coupons</span>
+              </a>
+          </li>
+
+          <!-- Orders -->
+          <li>
+              <a href="/admin/orders" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg group">
+                  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                  </svg>
+                  <span class="font-medium">Orders</span>
+              </a>
+          </li>
+
+          <!-- Banners -->
+          <li>
+              <a href="/admin/banners" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg group">
+                  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  <span class="font-medium">Banners</span>
+              </a>
+          </li>
+
+          <!-- Offers -->
+          <li>
+              <a href="/admin/offers" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg group">
+                  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                  </svg>
+                  <span class="font-medium">Offers</span>
+              </a>
+          </li>
+
+          <!-- Categories -->
+          <li>
+              <a href="/admin/categories" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg group">
+                  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                  </svg>
+                  <span class="font-medium">Categories</span>
+              </a>
+          </li>
+
+          <!-- Logout -->
+          <li class="mt-8">
+              <a href="/admin/logout" class="flex items-center px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg group">
+                  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                  </svg>
+                  <span class="font-medium">Logout</span>
+              </a>
+          </li>
+      </ul>
   </div>
 </nav>

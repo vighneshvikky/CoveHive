@@ -1,71 +1,125 @@
 <%- include('../layouts/userHeader.ejs') %>
             
-            <!-- Right section of the navbar (Sorting dropdown) -->
-            <div class="ml-4">
-                <form id="sortingForm" action="/search" method="GET" class="flex items-center">
-                    <input type="hidden" name="q" value="<%= searchQuery || '' %>"> 
-                    <select 
-                        name="sort" 
-                        onchange="document.getElementById('sortingForm').submit();" 
-                        class="border border-gray-300 p-2 rounded-lg bg-white text-black shadow-md focus:outline-none focus:ring-2 focus:ring-[#14213d]">
-                        <option value="">Sort By</option>
-                        <option value="price_asc" <%= selectedSort === 'price_asc' ? 'selected' : '' %>>Price: Low to High</option>
-                        <option value="price_desc" <%= selectedSort === 'price_desc' ? 'selected' : '' %>>Price: High to Low</option>
-                        <!-- <option value="rating_desc" <%= //selectedSort === 'rating_desc' ? 'selected' : '' %>>Top Rated</option> -->
-                        <option value="name_asc" <%= selectedSort === 'name_asc' ? 'selected' : '' %>>Alphabetical: A-Z</option>
-                        <option value="name_desc" <%= selectedSort === 'name_desc' ? 'selected' : '' %>>Alphabetical: Z-A</option>
-                    </select>
-                </form>
-            </div>
-        <!-- filter -->
-
-        <div class="filter-section">
-            <form action="/products" method="GET">
-                <!-- <select name="category" onchange="this.form.submit()">
-                    <option value="">All Categories</option>
-                    <option value="electronics">Electronics</option>
-                    <option value="fashion">Fashion</option>
-                    <option value="home">Home & Furniture</option> -->
-                    <!-- Add more categories as needed -->
-                <!-- </select> -->
-                <select 
-                id="category" 
-                name="category"
-                onchange="this.form.submit()" 
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-                  >
-                <option value="">All Categories</option>
-                <% categories.forEach(category => { %>
-                    <option value="<%= category._id %>">
-                        <%= category.name %>
+           <!-- Navigation and Filters Section -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <!-- Sorting and Filtering Container -->
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
+        <!-- Sorting Dropdown -->
+        <div class="w-full sm:w-auto">
+            <form id="sortingForm" action="/search" method="GET" class="flex items-center">
+                <input type="hidden" name="q" value="<%= searchQuery || '' %>">
+                <select
+                    name="sort"
+                    onchange="document.getElementById('sortingForm').submit();"
+                    class="w-full sm:w-64 h-10 rounded-lg border border-gray-200 bg-white px-3 
+                           text-gray-700 shadow-sm transition-all duration-200 
+                           hover:border-gray-300 focus:border-gray-300 focus:outline-none 
+                           focus:ring-2 focus:ring-blue-100"
+                >
+                    <option value="">Sort By</option>
+                    <option value="price_asc" <%= selectedSort === 'price_asc' ? 'selected' : '' %>>
+                        Price: Low to High
                     </option>
-                <% }); %>
-            </select>
+                    <option value="price_desc" <%= selectedSort === 'price_desc' ? 'selected' : '' %>>
+                        Price: High to Low
+                    </option>
+                    <option value="name_asc" <%= selectedSort === 'name_asc' ? 'selected' : '' %>>
+                        Alphabetical: A-Z
+                    </option>
+                    <option value="name_desc" <%= selectedSort === 'name_desc' ? 'selected' : '' %>>
+                        Alphabetical: Z-A
+                    </option>
+                </select>
             </form>
         </div>
 
-
-    
-  <h2 class="text-3xl font-bold mb-10 text-center text-navy mt-8">Our Products</h2>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-    <% products.forEach(product => { %>
-        <div class="bg-lightGray rounded-lg overflow-hidden shadow-lg transition duration-300 transform hover:scale-105">
-           <a href="/products/<%= product._id %>"><img src="/uploads/<%= product.image[0] %>  %>" alt="<%= product.name %>" class="w-full h-48 object-cover"></a> 
-            <div class="p-6">
-                <h3 class="text-lg font-semibold text-navy mb-2"><%= product.name %></h3>
-                <p class="text-xl font-bold text-black"><i class="fa-solid fa-indian-rupee-sign"></i> 
-        
-                  <% if(product.discount > 0) { %>
-                      <% const discountAmount = (product.price * product.discount) / 100; %>  
-                      <% const discountedPrice = product.price - discountAmount; %>
-                      <%= discountedPrice.toFixed(2) %> <!-- Output the discounted price -->
-                  <% } else { %>
-                      <%= product.price.toFixed(2) %> <!-- Output the original price if no discount -->
-                  <% } %></p> 
-                  <!-- Assuming price is a number -->
-                  
-            </div>
+        <!-- Category Filter -->
+        <div class="w-full sm:w-auto">
+            <form action="/products" method="GET">
+                <select
+                    id="category"
+                    name="category"
+                    onchange="this.form.submit()"
+                    class="w-full sm:w-64 h-10 rounded-lg border border-gray-200 bg-white px-3 
+                           text-gray-700 shadow-sm transition-all duration-200 
+                           hover:border-gray-300 focus:border-gray-300 focus:outline-none 
+                           focus:ring-2 focus:ring-blue-100"
+                >
+                    <option value="">All Categories</option>
+                    <% categories.forEach(category => { %>
+                        <option value="<%= category._id %>">
+                            <%= category.name %>
+                        </option>
+                    <% }); %>
+                </select>
+            </form>
         </div>
-    <% }); %>
+    </div>
+
+    <!-- Page Title -->
+    <h2 class="text-3xl font-bold text-center text-[#14213d] mb-12">
+        Our Products
+    </h2>
+
+    <!-- Product Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <% products.forEach(product => { %>
+            <div class="group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl 
+                        transition-all duration-300 transform hover:-translate-y-1">
+                <!-- Product Image -->
+                <a href="/products/<%= product._id %>" class="block relative overflow-hidden">
+                    <img 
+                        src="/uploads/<%= product.image[0] %>" 
+                        alt="<%= product.name %>" 
+                        class="w-full h-56 object-cover transform transition-transform duration-300 
+                               group-hover:scale-105"
+                    >
+                </a>
+
+                <!-- Product Details -->
+                <div class="p-6">
+                    <!-- Product Name -->
+                    <h3 class="text-lg font-semibold text-[#14213d] mb-3 line-clamp-2">
+                        <%= product.name %>
+                    </h3>
+
+                    <!-- Price Section -->
+                    <div class="flex items-center space-x-2 mb-3">
+                        <span class="text-xl font-bold text-gray-900 flex items-center">
+                            <i class="fa-solid fa-indian-rupee-sign mr-1"></i>
+                            <% if(product.discount > 0) { %>
+                                <% const discountAmount = (product.price * product.discount) / 100; %>
+                                <% const discountedPrice = product.price - discountAmount; %>
+                                <%= discountedPrice.toFixed(2) %>
+                                <span class="ml-2 text-sm text-gray-500 line-through">
+                                    <%= product.price.toFixed(2) %>
+                                </span>
+                                <span class="ml-2 text-sm text-green-600">
+                                    -<%= product.discount %>%
+                                </span>
+                            <% } else { %>
+                                <%= product.price.toFixed(2) %>
+                            <% } %>
+                        </span>
+                    </div>
+
+                    <!-- Stock Status -->
+                    <% if(product.stock == 0){ %>
+                        <div class="mt-4 text-center">
+                            <span class="bg-red-100 text-red-800 text-sm font-semibold px-4 py-2 rounded-full">
+                                Out of Stock
+                            </span>
+                        </div>
+                    <% } else { %>
+                        <div class="mt-4 text-center">
+                            <span class="bg-green-100 text-green-800 text-sm font-semibold px-4 py-2 rounded-full">
+                                In Stock
+                            </span>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        <% }); %>
+    </div>
 </div>
 <%- include('../layouts/userFooter.ejs') %>

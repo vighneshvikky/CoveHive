@@ -1,0 +1,265 @@
+<%- include('../layouts/header.ejs') %>
+
+<%- include('../layouts/sidebar.ejs') %>
+
+<!-- Tailwind CSS CDN -->
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+<div class="max-w-7xl mx-auto p-6 ml-64">
+    <div class="bg-white rounded-lg shadow">
+        <!-- Header -->
+        <div class="px-6 py-4 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <h1 class="text-2xl font-semibold text-gray-800">Order Management</h1>
+                <span class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-full">
+                    Total Orders: <%= orders.length %>
+                </span>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-gray-50">
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Order ID
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Customer
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Items
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Status
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    <% orders.forEach(order => { %>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                <%= order._id %>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <%= order.userId.fullName %>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">
+                                <% order.items.forEach(item => { %>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="w-4 h-4 bg-blue-100 rounded-full flex items-center justify-center text-xs text-blue-600">
+                                            <%= item.productCount %>
+                                        </span>
+                                        <span><%= item.productId.name %></span>
+                                    </div>
+                                <% }) %>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <% const statusColors = {
+                                    'Pending': 'bg-yellow-100 text-yellow-800',
+                                    'Shipped': 'bg-blue-100 text-blue-800',
+                                    'Confirmed': 'bg-green-100 text-green-800',
+                                    'Delivered': 'bg-purple-100 text-purple-800',
+                                    'Cancelled': 'bg-red-100 text-red-800',
+                                    'Returned': 'bg-gray-100 text-gray-800'
+                                } %>
+                                <span class="px-3 py-1 text-xs rounded-full <%= statusColors[order.status] %>">
+                                    <%= order.status %>
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <form action="/admin/orders/status" method="POST" class="mb-2">
+                                    <input type="hidden" name="orderId" value="<%= order._id %>">
+                                    <div class="flex space-x-2">
+                                        
+                                        <select name="status"
+                                            id="orderStatus" 
+                                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
+                                            onchange="handleStatusChange()"
+                                            >
+                                            <option value="Pending" <%= order.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                                            <option value="Shipped" <%= order.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                                            <option value="Confirmed" <%= order.status === 'Confirmed' ? 'selected' : '' %>>Confirmed</option>
+                                            <option value="Delivered" <%= order.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                                            <option value="Cancelled" <%= order.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                            <option value="Returned" <%= order.status === 'Returned' ? 'selected' : '' %>>Returned</option>
+                                        </select>
+                                        <button type="submit" 
+                                            class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                            Update
+                                        </button>
+                                    </div>
+                                </form>
+                    
+
+                                <td class="px-4 py-4 flex space-x-2">
+                  <button onclick="viewOrder('<%= order._id %>')" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">View</button>
+
+                  </td>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+
+
+<div id="modalBackground" class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity z-40 hidden"></div>
+
+<div id="orderModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div class="relative w-full max-w-4xl bg-white rounded-xl shadow-2xl">
+        <!-- Header -->
+        <h2 class="text-2xl font-semibold text-gray-900 p-6 border-b border-gray-200">Order Details</h2>
+
+        <!-- Main Content -->
+        <div class="p-6">
+            <!-- Two Column Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Left Column -->
+                <div>
+                    <div class="mb-4">
+                        <p class="font-medium text-gray-900">Order ID: <span id="orderId" class="text-gray-700"></span></p>
+                        <p class="font-medium text-gray-900">Order Date: <span id="orderDate" class="text-gray-700"></span></p>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Shipping Address</h3>
+                        <p id="shippingAddress" class="text-gray-700"></p>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div>
+                    <div class="mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Order Status</h3>
+                        <p id="orderStatus" class="text-gray-700"></p>
+                    </div>
+
+                    <div class="mt-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Payment Method</h3>
+                        <p id="paymentMethod" class="text-gray-700"></p>
+                        <p class="mt-2">
+                            <span class="font-medium text-gray-900">Payment Status:</span>
+                            <span id="paymentStatus" class="text-gray-700"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Items Table -->
+            <div class="mt-8">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Items Purchased</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Product</th>
+                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Image</th>
+                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Quantity</th>
+                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Price</th>
+                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemsPurchased" class="divide-y divide-gray-200"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Total Price -->
+            <div class="mt-6 flex justify-end">
+                <p class="text-lg">
+                    <span class="font-semibold text-gray-900">Total Price:</span>
+                    <span class="ml-2">₹<span id="totalPrice" class="text-gray-900"></span></span>
+                </p>
+            </div>
+
+            <!-- Close Button -->
+            <div class="mt-8 flex justify-end">
+                <button onclick="closeModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors duration-200">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    function viewOrder(orderId) {
+    fetch(`/admin/orders/${orderId}`)
+        .then(response => response.json())
+        .then(order => {
+            // Populate Order Info
+            document.getElementById('orderId').textContent = order._id;
+            document.getElementById('orderDate').textContent = new Date(order.createdAt).toLocaleString();
+            document.getElementById('shippingAddress').textContent = order.address;
+            document.getElementById('orderStatus').textContent = order.status;
+            document.getElementById('paymentMethod').textContent = order.paymentMethod;
+            document.getElementById('paymentStatus').textContent = order.status || 'N/A';
+            document.getElementById('totalPrice').textContent = order.totalPrice;
+
+            // Populate Items Purchased
+            const itemsPurchased = document.getElementById('itemsPurchased');
+            itemsPurchased.innerHTML = '';  // Clear any existing content
+            order.items.forEach(item => {
+                const row = `
+                    <tr>
+                        <td class="border px-4 py-2">${item.productId.name}</td>
+                        <td class="border px-4 py-2">
+    <img src="/uploads/${item.productImage}" alt="Product Image" class="w-16 h-16 object-cover" />
+</td>
+                        <td class="border px-4 py-2">${item.productCount}</td>
+                        <td class="border px-4 py-2">₹${item.productPrice}</td>
+                        <td class="border px-4 py-2">₹${item.productCount * item.productPrice}</td>
+                    </tr>
+                `;
+                itemsPurchased.innerHTML += row;
+            });
+
+            // Show Modal
+            document.getElementById('orderModal').classList.remove('hidden');
+            document.getElementById('modalBackground').classList.remove('hidden');
+        })
+        .catch(err => console.error('Error fetching order details:', err));
+}
+
+function closeModal() {
+    document.getElementById('orderModal').classList.add('hidden');
+    document.getElementById('modalBackground').classList.add('hidden');
+}
+
+ 
+    </script>
+    <style>
+        /* Modal background */
+#modalBackground {
+    background-color: rgba(0, 0, 0, 0.5); /* Darken background */
+}
+
+/* Modal box */
+#orderModal {
+    max-width: 80%; /* Adjust width */
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* Close button */
+button {
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #2563EB; /* Darker blue on hover */
+}
+   
+   </style>
+    <%- include('../layouts/footer.ejs') %>

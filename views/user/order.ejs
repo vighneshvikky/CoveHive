@@ -6,44 +6,78 @@
 <!-- Bootstrap JS -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<div class="container mx-auto mt-5">
+<div class="container mx-auto mt-8 px-4">
   <div class="flex justify-center">
-      <div class="w-full max-w-2xl">
+      <div class="w-full max-w-4xl">
           <!-- Order Card -->
           <% orderDetails.forEach(order => { %>
-              <div class="order-card flex mb-4 border p-4 rounded-lg shadow-md bg-white">
+              <div class="mb-6 overflow-hidden bg-white rounded-lg shadow-md border border-gray-100">
                   <% order.items.forEach(item => { %>
-                      <img src="/uploads/<%= item.productImage %>" alt="<%= item.productId.name %>" class="order-image w-24 h-auto mr-4">
-                      <div class="order-details flex-grow">
-                          <h5 class="font-bold text-lg text-gray-800"><%= item.productId.name %></h5>
-                          <p class="text-gray-600">$<%= (item.productPrice * item.productCount).toFixed(2) %></p>
+                      <div class="flex flex-col md:flex-row p-6 gap-6">
+                          <img src="/uploads/<%= item.productImage %>" 
+                               alt="<%= item.productId.name %>" 
+                               class="w-full md:w-48 h-48 object-cover rounded-lg">
+                          
+                          <div class="flex-1 space-y-4">
+                              <div class="flex justify-between items-start">
+                                  <h5 class="text-xl font-semibold text-gray-900">
+                                      <%= item.productId.name %>
+                                  </h5>
+                                  <p class="text-lg font-bold text-gray-900">
+                                      $<%= (item.productPrice * item.productCount).toFixed(2) %>
+                                  </p>
+                              </div>
 
-                          <!-- Delivery Status Section -->
-                          <div id="delivery-status-<%= order._id %>" class="delivery-status mt-2">
-                              <% if (order.status === 'Cancelled') { %>
-                                  <p><span class="text-red-600">●</span> <strong class="text-red-600">Cancelled</strong></p>
-                                  <p>Your order has been cancelled.</p>
-                              <% } else if (order.status === 'Delivered') { %>
-                                  <p><span class="text-green-600">●</span> <strong class="text-green-600">Delivered</strong> on <%= order.deliveryDate %></p>
-                                  <p>Your item has been delivered.</p>
-                              <% } else if (order.status === 'Pending') { %>
-                                  <p><span class="text-yellow-600">●</span> <strong class="text-yellow-600">Pending</strong></p>
-                                  <p>Your order is currently being processed.</p>
-                              <% } else { %>
-                                  <p><span class="text-blue-600">●</span> Status: <%= order.status %></p>
-                                  <p>Your order status is <%= order.status %>.</p>
-                              <% } %>
-                          </div>
+                              <!-- Delivery Status Section -->
+                              <div id="delivery-status-<%= order._id %>" class="space-y-2">
+                                  <% if (order.status === 'Cancelled') { %>
+                                      <div class="flex items-center gap-2">
+                                          <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                                          <strong class="font-medium text-red-600">Cancelled</strong>
+                                      </div>
+                                      <p class="text-gray-600 text-sm">Your order has been cancelled.</p>
+                                  <% } else if (order.status === 'Delivered') { %>
+                                      <div class="flex items-center gap-2">
+                                          <span class="w-2.5 h-2.5 rounded-full bg-green-500"></span>
+                                          <strong class="font-medium text-green-600">Delivered</strong>
+                                          <span class="text-gray-600">on <%= order.deliveryDate %></span>
+                                      </div>
+                                      <p class="text-gray-600 text-sm">Your item has been delivered.</p>
+                                  <% } else if (order.status === 'Pending') { %>
+                                      <div class="flex items-center gap-2">
+                                          <span class="w-2.5 h-2.5 rounded-full bg-yellow-500"></span>
+                                          <strong class="font-medium text-yellow-600">Pending</strong>
+                                      </div>
+                                      <p class="text-gray-600 text-sm">Your order is currently being processed.</p>
+                                  <% } else { %>
+                                      <div class="flex items-center gap-2">
+                                          <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                                          <strong class="font-medium text-blue-600">Status: <%= order.status %></strong>
+                                      </div>
+                                      <p class="text-gray-600 text-sm">Your order status is <%= order.status %>.</p>
+                                  <% } %>
+                              </div>
 
-                          <a href="#" class="btn btn-link text-green-600 mt-2 hover:underline">★ Rate & Review Product</a>
+                              <a href="#" class="inline-flex items-center text-green-600 hover:text-green-700 text-sm font-medium">
+                                  <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                  </svg>
+                                  Rate & Review Product
+                              </a>
 
-                          <!-- Action Buttons -->
-                          <div class="order-actions mt-3">
-                   
-                              <!-- Cancel Order Button -->
-                              <a href="#" class="bg-red-500 text-white py-2 px-4 rounded-sm hover:bg-red-600 transition duration-200" data-toggle="modal" data-target="#cancelModal" data-order-id="<%= order._id %>">Cancel Order</a>
-                              <!-- Prepay Button -->
-                              <a href="/prepay/<%= order._id %>" class="bg-yellow-500 text-white py-2 px-4 rounded-sm hover:bg-yellow-600 transition duration-200">Prepay</a>
+                              <!-- Action Buttons -->
+                              <div class="flex flex-wrap gap-3 pt-4">
+                                  <button class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
+                                          data-toggle="modal" 
+                                          data-target="#cancelModal" 
+                                          data-order-id="<%= order._id %>">
+                                      Cancel Order
+                                  </button>
+                                  <a href="/prepay/<%= order._id %>" 
+                                     class="px-4 py-2 text-sm font-medium text-white bg-yellow-500 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors">
+                                      Prepay
+                                  </a>
+                              </div>
                           </div>
                       </div>
                   <% }) %>
@@ -51,8 +85,8 @@
           <% }) %>
 
           <!-- No More Results Message -->
-          <div class="no-more-results text-center mt-4">
-              <p class="text-gray-600 font-semibold">No More Results To Display</p>
+          <div class="text-center py-8 border-t border-gray-100">
+              <p class="text-gray-500 font-medium">No More Results To Display</p>
           </div>
       </div>
   </div>

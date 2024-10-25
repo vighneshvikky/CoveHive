@@ -27,6 +27,13 @@
   </a>
 </ul>
 <body>
+  <% if (error_msg) { %>
+    <div class="my-4 p-3 text-red-700 text-center border-red-500 rounded">
+      <p><%= error_msg %></p>
+    </div>
+  <% } %>
+  
+  
     <div class="font-sans">
         <div class="p-4 lg:max-w-5xl max-w-lg mx-auto">
             <div class="grid items-start grid-cols-1 lg:grid-cols-2 gap-6 max-lg:gap-12">
@@ -114,15 +121,7 @@
                     </div>
                   
                     <div class="mt-8 flex space-x-4 justify-center">
-                      <!-- <form id="addToCartForm<%= //product._id %>" action="/cart/add" method="POST">
-                        <input type="hidden" name="productId" value="<%= product._id %>">
-                        <input type="number" name="quantity" value="1" min="1">
-                        <button type="submit" id="add-to-cart" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-blue-500">
-                          Add to Cart
-                        </button>
-                      </form>
-
- -->        
+          
                      
  <% if(user){ %>
   <form action="/cart/add/<%=product._id%>/<%= product.price %>" method="POST" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-blue-500">
@@ -133,19 +132,12 @@
     <button type="submit" class="btn btn-success">Add to Cart</button>
 </form>
 <%} %>                
-                      <!-- <a href="/cart/add/<%= //product._id %>"> <button type="submit" id="add-to-cart" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-blue-500">
-                        Add to Cart
-                      </button> </a> -->
+      
                       <button type="button" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-green-500">
                         Buy Now
                       </button>
                     </div>
                           
-                    <!-- <div class="mb-6">
-                        <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">Quantity:</label>
-                        <input type="number" id="quantity" name="quantity" min="1" value="1"
-                                      class="w-12 text-center rounded-md border-gray-300  shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                      </div> -->
               
                     <div class="mt-8">
                         <h3 class="text-xl font-bold text-gray-800">About the item</h3>
@@ -170,7 +162,13 @@
                        <a href="/products/<%= relatedProduct._id %>"><img src="/uploads/<%= relatedProduct.image[0] %>  %>" alt="<%= relatedProduct.name %>" class="w-full h-48 object-cover"></a> 
                         <div class="p-6">
                             <h3 class="text-lg font-semibold text-navy mb-2"><%= relatedProduct.name %></h3>
-                            <p class="text-xl font-bold text-black"><%= relatedProduct.price.toFixed(2) %></p> <!-- Assuming price is a number -->
+                            <p class="text-xl font-bold text-black"><i class="fa-solid fa-indian-rupee-sign"></i> <%= relatedProduct.price.toFixed(2) %></p>
+                            <% if(relatedProduct.stock == 0){ %>
+                              <p style="color: red; font-weight: bold; font-size: 18px; text-align: center; margin-top: 10px;">
+                                Out of Stock
+                              </p>
+                            <% } %>
+                             <!-- Assuming price is a number -->
                         </div>
                     </div>
                 <% }); %>
@@ -262,5 +260,54 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 .toast-error {
     background-color: #F44336; /* Red */
-}  
+} 
+.notification {
+  padding: 15px;
+  margin: 15px 0;
+  background-color: #f8d7da;
+  color: #721c24;
+  border-left: 5px solid #f5c6cb;
+  border-radius: 5px;
+  position: relative;
+  font-family: Arial, sans-serif;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* Error-specific notification */
+.error-notification {
+  background-color: #f8d7da; /* Light red background */
+  color: #721c24; /* Darker red text */
+  border-left-color: #f5c6cb; /* Border to enhance visibility */
+}
+
+/* Close button */
+.close-btn {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #721c24;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* Fade-out animation */
+.notification.fade-out {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+/* Notification will disappear after 5 seconds */
+.notification {
+  animation: fadeOut 5s forwards;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; display: none; }
+} 
 </style>
