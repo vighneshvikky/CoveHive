@@ -78,10 +78,15 @@ user_route.get('/user-address-remove/:id',userAuth.isLogin,userProfile.removeAdd
 //----------------------------------All Products---------------------------------------
  user_route.get('/allProducts',userAuth.isLogin,userController.allProducts)
 //----------------------------------user Forget pass ---------------------------------------
-user_route.get('/forget-password',userAuth.isLogin,forgetPass.loadForgotPassword);
+user_route.get('/forget-password',forgetPass.loadForgotPassword);
 user_route.post('/forgot-password', forgetPass.forgotPassword);
-user_route.get('/reset-password/:token',userAuth.isLogin, forgetPass.getResetPassword);
+user_route.get('/reset-password/:token', forgetPass.getResetPassword);
 user_route.post('/reset-password/:token', forgetPass.postResetPassword);
+
+//----------------------------------user Change pass ---------------------------------------
+
+user_route.get('/change-password',forgetPass.getChangePass)
+user_route.post('/change-password',forgetPass.postChangePass)
 
 //----------------------------------user orders ---------------------------------------
 

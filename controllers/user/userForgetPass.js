@@ -1,7 +1,9 @@
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const User = require('../../models/user/userSchema');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const { error } = require('console');
+const { PerformanceObserverEntryList } = require('perf_hooks');
 
 
 let transporter = nodemailer.createTransport({
@@ -119,3 +121,59 @@ exports.postResetPassword = async (req, res) => {
         res.status(500).send('Error resetting password.');
     }
 };
+
+exports.getChangePass = async (req,res) => {
+    try {
+       res.render('user/changePassword') 
+    } catch (error) {
+        console.log(`Error from getChangePassword ${error}`)
+    }
+}
+exports.postChangePass = async (req, res) => {
+    try {
+        // Get form data
+        const currentPassword = req.body['current-password'];
+        const newPassword = req.body['new-password'];
+        const confirmPassword = req.body['confirm-password'];
+
+        // Find user
+        
+        const user = await User.findById(req.session.user_id)
+        console.log(`user is ${user}`)
+        if (!user) {
+            req.flash('error_msg', 'User not found');
+            return res.redirect('/change-password');
+        }
+
+        // Verify current password
+        const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
+        
+        // If current password is wrong
+        if (!isCurrentPasswordValid) {
+            req.flash('error_msg', 'Current password is incorrect');
+            return res.redirect('/change-password');
+        }
+
+        // Check if new passwords match
+        if (newPassword !== confirmPassword) {
+            req.flash('error_msg', 'New passwords do not match');
+            return res.redirect('/change-password');
+        }
+
+        // Hash and save new password
+        const saltRounds = 10;
+        const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
+        
+        await User.findByIdAndUpdate(req.session.user_id, {
+            password: hashedNewPassword
+        });
+
+        req.flash('success_msg', 'Password updated successfully');
+        return res.redirect('/change-password');
+
+    } catch (error) {
+        console.log(`Error from postChangePassword: ${error}`);
+        req.flash('error_msg', 'An error occurred while changing password');
+        return res.redirect('/change-password');
+    }
+}

@@ -9,11 +9,12 @@ exports.placeOrder = async(req,res) => {
         }
         console.log(`user = ${user}`)
 
-        const orderDetails = await Order.find({userId:user}).populate('items.productId')
+        const orderDetails = await Order.find({userId:user}).populate('items.productId').sort({ createdAt:-1})
         console.log(orderDetails); 
         console.log(`orderDetails = ${orderDetails}`)
         res.render('user/order',{
-            orderDetails
+            orderDetails,
+            currentRoute:'/home'
         })
     } catch (error) {
         console.log(`error from placeOrder ${error}`)
@@ -25,12 +26,12 @@ exports.cancelOrder = async (req,res) => {
     try {
 
         const orderId = req.params.id;
-
+ 
         if(!orderId){
             req.flash('error', 'Invalid order ID');
             return res.redirect('/orders');
         }
-        const order = await Order.findByIdAndUpdate(orderId,{status:"Cancelled",isCancel:true});
+        const order = await Order.findById(orderId);
             
         if (!order) {
             req.flash('error', 'Order not found');
@@ -38,6 +39,7 @@ exports.cancelOrder = async (req,res) => {
         }
 
         for(const item of order.items){
+            item.productStatus = "Cancelled"
             const product = await Product.findById(item.productId);
             if(product){
                 product.stock += item.productCount;
@@ -45,6 +47,7 @@ exports.cancelOrder = async (req,res) => {
             }
 
         }
+        await order.save();
         req.flash('success', 'Order cancelled successfully');
         res.redirect('/orders');
     } catch (error) {

@@ -56,69 +56,57 @@
                                         </span>
                                         <span><%= item.productId.name %></span>
                                     </div>
+                                    
+                                    <!-- Status change buttons with irreversibility check -->
+                                    <% const statusOptions = ['Confirmed', 'Shipped', 'Delivered', 'Cancelled', 'Returned']; %>
+                                    <% const currentStatusIndex = statusOptions.indexOf(item.productStatus); %>
+                                    
+                                    <% statusOptions.forEach((status, index) => { %>
+                                        <button 
+                                            onclick="updateStatus('<%= order._id %>', '<%= item.productId._id %>', '<%= status %>')"
+                                            class="px-3 py-1 text-xs rounded-md <%= status === item.productStatus ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-800 hover:bg-gray-200' %>"
+                                            <%= index <= currentStatusIndex ? 'disabled' : '' %>>
+                                            <%= status %>
+                                        </button>
+                                    <% }) %>
                                 <% }) %>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <% const statusColors = {
-                                    'Pending': 'bg-yellow-100 text-yellow-800',
-                                    'Shipped': 'bg-blue-100 text-blue-800',
-                                    'Confirmed': 'bg-green-100 text-green-800',
-                                    'Delivered': 'bg-purple-100 text-purple-800',
-                                    'Cancelled': 'bg-red-100 text-red-800',
-                                    'Returned': 'bg-gray-100 text-gray-800'
-                                } %>
-                                <span class="px-3 py-1 text-xs rounded-full <%= statusColors[order.status] %>">
-                                    <%= order.status %>
-                                </span>
+                                <% order.items.forEach(item => { %>
+                                    <% const statusColors = {
+                                        'Pending': 'bg-yellow-100 text-yellow-800',
+                                        'Shipped': 'bg-blue-100 text-blue-800',
+                                        'Confirmed': 'bg-green-100 text-green-800',
+                                        'Delivered': 'bg-purple-100 text-purple-800',
+                                        'Cancelled': 'bg-red-100 text-red-800',
+                                        'Returned': 'bg-gray-100 text-gray-800'
+                                    } %>
+                                    <span class="px-3 py-1 text-xs rounded-full <%= statusColors[item.productStatus] %>">
+                                        <%= item.productStatus %>
+                                    </span>
+                                <% }) %>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm">
-        <form action="/admin/orders/status" method="POST" class="mb-2 statusForm" >
-    <input type="hidden" name="orderId" value="<%= order._id %>">
-    <input type="hidden" name="success" value="true"> <!-- Hidden field for success -->
-    <div class="flex space-x-2">
-        <% if (order.status !== 'Delivered' && order.status !== 'Cancelled' && order.status !== 'Returned') { %>
-            <select name="status"
-                id="orderStatus"
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
-                <option value="Confirmed" <%= order.status === 'Confirmed' ? 'selected' : '' %>>Confirmed</option>
-                <option value="Shipped" <%= order.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
-                <option value="Delivered" <%= order.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
-                <option value="Cancelled" <%= order.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
-                <option value="Returned" <%= order.status === 'Returned' ? 'selected' : '' %>>Returned</option>
-            </select>
-            <button type="submit" 
-                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                Update
-            </button>
-        <% } else { %>
-            <span class="text-sm font-medium"><%= order.status %></span>
-        <% } %>
-    </div>
-</form>
-                    
-
-                                <td class="px-4 py-4 flex space-x-2">
-                  <button onclick="viewOrder('<%= order._id %>')" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">View</button>
-
-                  </td>
+                            <td class="px-4 py-4 flex space-x-2">
+                                <button onclick="viewOrder('<%= order._id %>')" 
+                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    View
+                                </button>
                             </td>
                         </tr>
                     <% }) %>
-                </tbody>
+                </tbody> 
             </table>
         </div>
     </div>
 </div>
 <!-- Modal -->
 
-
 <div id="modalBackground" class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity z-40 hidden"></div>
-
 <div id="orderModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
     <div class="relative w-full max-w-4xl bg-white rounded-xl shadow-2xl">
         <!-- Header -->
         <h2 class="text-2xl font-semibold text-gray-900 p-6 border-b border-gray-200">Order Details</h2>
-
+        
         <!-- Main Content -->
         <div class="p-6">
             <!-- Two Column Grid -->
@@ -135,15 +123,10 @@
                         <p id="shippingAddress" class="text-gray-700"></p>
                     </div>
                 </div>
-
+                
                 <!-- Right Column -->
                 <div>
                     <div class="mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Order Status</h3>
-                        <p id="orderStatus" class="text-gray-700"></p>
-                    </div>
-
-                    <div class="mt-6">
                         <h3 class="text-lg font-semibold text-gray-900 mb-2">Payment Method</h3>
                         <p id="paymentMethod" class="text-gray-700"></p>
                         <p class="mt-2">
@@ -153,7 +136,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <!-- Items Table -->
             <div class="mt-8">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">Items Purchased</h3>
@@ -165,14 +148,17 @@
                                 <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Image</th>
                                 <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Quantity</th>
                                 <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Price</th>
+                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Status</th>
                                 <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Subtotal</th>
                             </tr>
                         </thead>
-                        <tbody id="itemsPurchased" class="divide-y divide-gray-200"></tbody>
+                        <tbody id="itemsPurchased" class="divide-y divide-gray-200">
+                            <!-- Items will be dynamically inserted here -->
+                        </tbody>
                     </table>
                 </div>
             </div>
-
+            
             <!-- Total Price -->
             <div class="mt-6 flex justify-end">
                 <p class="text-lg">
@@ -180,7 +166,7 @@
                     <span class="ml-2">₹<span id="totalPrice" class="text-gray-900"></span></span>
                 </p>
             </div>
-
+            
             <!-- Close Button -->
             <div class="mt-8 flex justify-end">
                 <button onclick="closeModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors duration-200">
@@ -196,67 +182,160 @@
 
 <script>
     function viewOrder(orderId) {
-    fetch(`/admin/orders/${orderId}`)
+    // Show modal
+    document.getElementById('modalBackground').classList.remove('hidden');
+    document.getElementById('orderModal').classList.remove('hidden');
+
+    // Fetch order details
+    fetch(`/admin   /orders/${orderId}`)
         .then(response => response.json())
         .then(order => {
-            // Populate Order Info
-            document.getElementById('orderId').textContent = order._id;
-            document.getElementById('orderDate').textContent = new Date(order.createdAt).toLocaleString();
+            // Populate basic order details
+            document.getElementById('orderId').textContent = order.orderId || order._id;
+            document.getElementById('orderDate').textContent = new Date(order.createdAt).toLocaleDateString();
             document.getElementById('shippingAddress').textContent = order.address;
-            document.getElementById('orderStatus').textContent = order.status;
             document.getElementById('paymentMethod').textContent = order.paymentMethod;
-            document.getElementById('paymentStatus').textContent = order.status || 'N/A';
-            document.getElementById('totalPrice').textContent = order.totalPrice;
+            document.getElementById('paymentStatus').textContent = order.status;
+            document.getElementById('totalPrice').textContent = order.totalPrice.toLocaleString();
 
-            // Populate Items Purchased
-            const itemsPurchased = document.getElementById('itemsPurchased');
-            itemsPurchased.innerHTML = '';  // Clear any existing content
+            // Clear existing items
+            const itemsTable = document.getElementById('itemsPurchased');
+            itemsTable.innerHTML = '';
+
+            // Add items with status
             order.items.forEach(item => {
-                const row = `
-                    <tr>
-                        <td class="border px-4 py-2">${item.productId.name}</td>
-                        <td class="border px-4 py-2">
-    <img src="/uploads/${item.productImage}" alt="Product Image" class="w-16 h-16 object-cover" />
-</td>
-                        <td class="border px-4 py-2">${item.productCount}</td>
-                        <td class="border px-4 py-2">₹${item.productPrice}</td>
-                        <td class="border px-4 py-2">₹${item.productCount * item.productPrice}</td>
-                    </tr>
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-6 py-4 text-sm text-gray-700">
+                        ${item.productName}
+                    </td>
+                    <td class="px-6 py-4">
+                        <img src="${item.productImage}" alt="${item.productName}" 
+                             class="w-16 h-16 object-cover rounded-md">
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-700">
+                        ${item.productCount}
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-700">
+                        ₹${item.productPrice.toLocaleString()}
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 text-xs font-medium rounded-full ${getStatusClass(item.productStatus)}">
+                            ${item.productStatus}
+                        </span>
+                        ${getStatusTimeline(item.productStatus)}
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-700">
+                        ₹${(item.productCount * item.productPrice).toLocaleString()}
+                        ${item.productDiscount ? `
+                            <div class="text-xs text-green-600">
+                                Discount: ${item.productDiscount}%
+                            </div>
+                        ` : ''}
+                    </td>
                 `;
-                itemsPurchased.innerHTML += row;
+                itemsTable.appendChild(row);
             });
 
-            // Show Modal
-            document.getElementById('orderModal').classList.remove('hidden');
-            document.getElementById('modalBackground').classList.remove('hidden');
-        })
-        .catch(err => console.error('Error fetching order details:', err));
+            // Add order status section
+            const orderStatusDiv = document.getElementById('orderStatus');
+            if (orderStatusDiv) {
+                orderStatusDiv.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        <span class="px-3 py-1 text-xs font-medium rounded-full ${getStatusClass(order.status)}">
+                            ${order.status}
+                        </span>
+                        ${order.isCancel ? 
+                            '<span class="text-red-600 text-sm">(Order Cancelled)</span>' 
+                            : ''}
+                    </div>
+                `;
+            }
+        });
+}
+
+function getStatusClass(status) {
+    const statusClasses = {
+        'Pending': 'bg-yellow-100 text-yellow-800',
+        'Confirmed': 'bg-green-100 text-green-800',
+        'Shipped': 'bg-blue-100 text-blue-800',
+        'Delivered': 'bg-purple-100 text-purple-800',
+        'Cancelled': 'bg-red-100 text-red-800',
+        'Returned': 'bg-gray-100 text-gray-800'
+    };
+    return statusClasses[status] || 'bg-gray-100 text-gray-800';
+}
+
+function getStatusTimeline(currentStatus) {
+    const statuses = ['Pending', 'Confirmed', 'Shipped', 'Delivered'];
+    const currentIndex = statuses.indexOf(currentStatus);
+    
+    if (currentStatus === 'Cancelled' || currentStatus === 'Returned') {
+        return ''; // Don't show timeline for cancelled/returned items
+    }
+
+    return `
+        <div class="mt-2">
+            <div class="flex items-center space-x-2 text-xs">
+                ${statuses.map((status, index) => `
+                    <span class="${index <= currentIndex ? 'text-blue-600' : 'text-gray-400'}">
+                        ${status}
+                    </span>
+                    ${index < statuses.length - 1 ? `
+                        <span class="${index < currentIndex ? 'text-blue-600' : 'text-gray-300'}">→</span>
+                    ` : ''}
+                `).join('')}
+            </div>
+        </div>
+    `;
 }
 
 function closeModal() {
-    document.getElementById('orderModal').classList.add('hidden');
     document.getElementById('modalBackground').classList.add('hidden');
+    document.getElementById('orderModal').classList.add('hidden');
 }
 
-document.querySelectorAll('.statusForm').forEach(form => {
-    form.addEventListener('submit', function (event) {
-        event.preventDefault();
 
+function updateStatus(orderId, productId, newStatus) {
         Swal.fire({
-            title: 'Are you sure?',
-            text: "You want to update the order status?",
+            title: 'Change Status?',
+            text: `Are you sure you want to change the status to "${newStatus}"? Once changed, it cannot be reverted.`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, update it!'
+            confirmButtonText: 'Yes, change it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                this.submit();
+                // Send the status update via fetch (AJAX) to avoid page reload
+                fetch('/admin/orders/status', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ orderId: orderId, productId: productId, status: newStatus })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire(
+                            'Updated!',
+                            'The order status has been updated and cannot be changed back.',
+                            'success'
+                        ).then(() => {
+                            // Reload or update the page to reflect the new status
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire('Error', 'There was an issue updating the status.', 'error');
+                    }
+                })
+                .catch(error => {
+                    Swal.fire('Error', 'Failed to update status.', 'error');
+                });
             }
         });
-    });
-});
+    }
     
  
     </script>

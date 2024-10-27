@@ -37,7 +37,7 @@
         </div>
 
         <div>
-          <a href="/forgot-password" class="font-medium text-white hover:text-gray-300 text-sm">Forgot Password?</a>
+          <a href="/forget-password" class="font-medium text-white hover:text-gray-300 text-sm">Forgot Password?</a>
         </div>
       </div>
 
@@ -88,7 +88,7 @@
 
     // Password validation function
     function validatePassword(password) {
-      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/; 
       return passwordRegex.test(password);
     }
 

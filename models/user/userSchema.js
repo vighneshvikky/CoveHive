@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
     addresses: [{type:mongoose.Schema.Types.ObjectId,ref:'Address'}], // Add an array of addresses for multiple address management
     orders: [
         {
-            orderId: { type: mongoose.Schema.Types.ObjectId, ref: 'Order' }, // Reference to an Order collection
+            orderId: { type: mongoose.Schema.Types.ObjectId, ref: 'Orders' }, // Reference to an Order collection
             status: { type: String, enum: ['pending', 'shipped', 'delivered', 'cancelled'], default: 'pending' },
             createdAt: { type: Date, default: Date.now }
         }

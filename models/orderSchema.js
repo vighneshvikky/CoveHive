@@ -6,11 +6,20 @@ const orderSchema =new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    orderId:{
+        type:Number
+    },
     items: [{
         productId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Product',
             required: true
+        },
+        productName:{
+            type:String
+        },
+        productCategory:{
+            type:String
         },
         productCount: {
             type: Number,
@@ -22,6 +31,15 @@ const orderSchema =new mongoose.Schema({
         },
         productImage: {
             type: String
+        },
+        productDiscount: {
+            type: Number
+        },
+        productStatus:{
+            type: String,
+            enum:['Confirmed','Shipped', 'Pending', 'Delivered', 'Returned', 'Cancelled'],
+            default:'Pending'
+
         }
     }],
     totalPrice: {
