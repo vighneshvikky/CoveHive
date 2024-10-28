@@ -99,6 +99,25 @@
         </div>
     </div>
 </div>
+
+// pagination
+<div class="mt-4 flex justify-center space-x-4">
+    <% if (currentPage > 1) { %>
+      <a href="?page=<%= currentPage - 1 %>&limit=10" class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">Previous</a>
+    <% } %>
+    
+    <% for (let i = 1; i <= totalPages; i++) { %>
+      <a href="?page=<%= i %>&limit=10" class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300 <%= currentPage === i ? 'bg-gray-400' : '' %>">
+        <%= i %>
+      </a>
+    <% } %>
+    
+    <% if (currentPage < totalPages) { %>
+      <a href="?page=<%= currentPage + 1 %>&limit=10" class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">Next</a>
+    <% } %>
+  </div>
+
+
 <!-- Modal -->
 
 <div id="modalBackground" class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity z-40 hidden"></div>
@@ -129,10 +148,6 @@
                     <div class="mb-4">
                         <h3 class="text-lg font-semibold text-gray-900 mb-2">Payment Method</h3>
                         <p id="paymentMethod" class="text-gray-700"></p>
-                        <p class="mt-2">
-                            <span class="font-medium text-gray-900">Payment Status:</span>
-                            <span id="paymentStatus" class="text-gray-700"></span>
-                        </p>
                     </div>
                 </div>
             </div>
@@ -187,7 +202,7 @@
     document.getElementById('orderModal').classList.remove('hidden');
 
     // Fetch order details
-    fetch(`/admin   /orders/${orderId}`)
+    fetch(`/admin/orders/${orderId}`)
         .then(response => response.json())
         .then(order => {
             // Populate basic order details
@@ -195,7 +210,6 @@
             document.getElementById('orderDate').textContent = new Date(order.createdAt).toLocaleDateString();
             document.getElementById('shippingAddress').textContent = order.address;
             document.getElementById('paymentMethod').textContent = order.paymentMethod;
-            document.getElementById('paymentStatus').textContent = order.status;
             document.getElementById('totalPrice').textContent = order.totalPrice.toLocaleString();
 
             // Clear existing items
@@ -207,10 +221,10 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td class="px-6 py-4 text-sm text-gray-700">
-                        ${item.productName}
+                        ${item.productId.name}
                     </td>
                     <td class="px-6 py-4">
-                        <img src="${item.productImage}" alt="${item.productName}" 
+                        <img src="/uploads/${item.productImage}" alt="hai" 
                              class="w-16 h-16 object-cover rounded-md">
                     </td>
                     <td class="px-6 py-4 text-sm text-gray-700">

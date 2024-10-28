@@ -5,7 +5,7 @@ const User = require('../../models/user/userSchema');
 //---------------------------loading Customers--------------------------------------------------------------
 exports.loadCustomers = async (req,res) => {
       const page = parseInt(req.query.page) || 1; // Get page from query or default to 1
-      const limit = parseInt(req.query.limit) || 10;
+      const limit =  8;
     try {
       const totalUsers = await User.countDocuments();
       

@@ -108,6 +108,44 @@ exports.postAddAddress = async (req,res) => {
        console.log(error.message) 
     }
 }
+
+exports.checkOutAddress = async (req,res) => {
+    try {
+        const userId = req.session.user_id;
+        if(!userId)return res.redirect('/login');
+
+        const {fullName,street,city,pincode,state,country,isDefault} = req.body;
+
+        const newAddress = new Address({
+            fullName,
+            street,
+            city,
+            state,
+            country,
+            pincode,
+            isDefault:isDefault||false
+        });
+        const savedAddress = await newAddress.save();
+      console.log(`savedAddress = ${savedAddress}`)
+        const user = await User.findById(req.session.user_id);
+        if(!user) {
+            return res.status(404).send('User not found')
+        }
+        console.log(`user = ${user}`)
+           // If the new address is marked as default, update the previous default address to false
+        if(isDefault){
+            await Address.updateMany({_id:{$in :user.addresses},isDefault:true},{$set:{isDefault:false}});
+        }
+        user.addresses.push(savedAddress._id);
+        // user.addresses.push(savedAddress._id)
+
+        await user.save();
+        res.redirect('/checkout')
+    } catch (error) {
+        console.log(`error from checkOutAddress:${error}`)
+    }
+}
+
 exports.editAddress = async (req, res) => {
     try {
         const addressId = req.params.id;

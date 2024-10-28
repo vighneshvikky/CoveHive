@@ -1,13 +1,24 @@
 const Order = require('../../models/orderSchema');
 const Product = require('../../models/admin/productModel');
 exports.listOrders = async (req,res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = 8;
     try {
+
+        const totalOrders = await Order.countDocuments(); 
+         console.log(`totalOrders = ${totalOrders}`)
         const orders = await Order.find().sort({createdAt:-1})
+        .skip((page-1)*limit)
+        .limit(limit)
         .populate('userId')
         .populate('items.productId')
         console.log(orders);
         
-        res.render('admin/order',{orders})
+        res.render('admin/order',{
+            orders,
+            currentPage:page,
+            totalPages:Math.ceil(totalOrders/limit)
+        })
     } catch (error) {
        console.log(`error from adminOrder ${error}`) 
     }

@@ -13,28 +13,32 @@
         <i class="bx bxs-truck text-xl"></i>
     </div>
     <div>
-        <h5 class="text-lg font-semibold text-[#14213d] mb-2">Shipping Info</h5>
-        <div class="text-gray-600">
-            <span class="block text-sm">Saved Address</span>
-            <% if (addresses.length > 0) { %>
-                <% addresses.forEach(address => { %>
-                    <label class="block my-3">
-                        <div class="flex items-center p-3 border border-[#14213d] rounded-lg cursor-pointer peer-checked:bg-gray-200 peer-checked:border-gray-500">
-                            <!-- Styled Radio Button -->
-                            <input type="radio" name="selectedAddress" class="form-radio h-4 w-4 text-[#14213d] border-gray-300 focus:ring-[#14213d] mr-3" value="<%= address._id %>">
-                            <p class="text-[#14213d]">
-                                <%= address.fullName%>, <%= address.street %>, <%= address.city %>, <%= address.country %>,<%=address.state%>, <%= address.pincode %>
-                            </p>
-                        </div>
-                    </label>
-                <% }) %>
-            <% } else { %>
-                <p class="text-red-500">No addresses available. Please add a new address.</p>
-            <% } %>
+        <div id="addressList" class="mt-4">
+            <!-- Newly added addresses will appear here -->
+            <h5 class="text-lg font-semibold text-[#14213d] mb-2">Shipping Info</h5>
+            <div class="text-gray-600">
+                <span class="block text-sm">Saved Address</span>
+                <% if (addresses.length > 0) { %>
+                    <% addresses.forEach(address => { %>
+                        <label class="block my-3">
+                            <div class="flex items-center p-3 border border-[#14213d] rounded-lg cursor-pointer peer-checked:bg-gray-200 peer-checked:border-gray-500">
+                                <!-- Styled Radio Button -->
+                                <input type="radio" name="selectedAddress" class="form-radio h-4 w-4 text-[#14213d] border-gray-300 focus:ring-[#14213d] mr-3" value="<%= address._id %>">
+                                <p class="text-[#14213d]">
+                                    <%= address.fullName%>, <%= address.street %>, <%= address.city %>, <%= address.country %>,<%=address.state%>, <%= address.pincode %>
+                                </p>
+                            </div>
+                        </label>
+                    <% }) %>
+                <% } else { %>
+                    <p class="text-red-500">No addresses available. Please add a new address.</p>
+                <% } %>
+            </div>
         </div>
-        <div class="mt-4">
+  
+        <!-- <div class="mt-4">
             <a href="/add-address" class="px-4 py-2 bg-[#14213d] text-white rounded-lg hover:bg-black">Add Address</a>
-        </div>
+        </div> -->
     </div>
 </li>
                     <!-- Payment Method -->
@@ -119,8 +123,211 @@
         </div>
     </div>
 </div>
-<script>
+<!-- Button to Open the Modal -->
+<button onclick="toggleModal(true)" class="bg-blue-500 text-white font-bold py-2 px-4 rounded">
+    Add Address
+</button>
 
+<!-- Modal Structure -->
+<div id="addressModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="relative w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+            <!-- Close Button -->
+            <button onclick="toggleModal(false)" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+                ×
+            </button>
+
+            <!-- Modal Content -->
+            <h2 class="text-2xl font-semibold mb-4">Add Address</h2>
+            <form id="addressForm" onsubmit="submitAddress(event)">
+                <div class="mb-4">
+                    <label for="fullName" class="block text-gray-700">Full Name</label>
+                    <input type="text" id="fullName" name="fullName" required class="w-full border border-gray-300 rounded p-2">
+                    <p id="fullNameError" class="text-red-500 text-sm hidden">Full name is required and should be at least 3 characters long.</p>
+                </div>
+                <div class="mb-4">
+                    <label for="street" class="block text-gray-700">Street</label>
+                    <input type="text" id="street" name="street" required class="w-full border border-gray-300 rounded p-2">
+                    <p id="streetError" class="text-red-500 text-sm hidden">Street is required and should be at least 5 characters long.</p>
+                </div>
+                <div class="mb-4">
+                    <label for="city" class="block text-gray-700">City</label>
+                    <input type="text" id="city" name="city" required class="w-full border border-gray-300 rounded p-2">
+                    <p id="cityError" class="text-red-500 text-sm hidden">City is required and should be at least 3 characters long.</p>
+                </div>
+                <div class="mb-4">
+                    <label for="pincode" class="block text-gray-700">Pincode</label>
+                    <input type="text" id="pincode" name="pincode" required class="w-full border border-gray-300 rounded p-2">
+                    <p id="pincodeError" class="text-red-500 text-sm hidden">Pincode is required and should be a 5-digit number.</p>
+                </div>
+                <div class="mb-4">
+                    <label for="state" class="block text-gray-700">State</label>
+                    <input type="text" id="state" name="state" required class="w-full border border-gray-300 rounded p-2">
+                    <p id="stateError" class="text-red-500 text-sm hidden">State is required.</p>
+                </div>
+                <div class="mb-4">
+                    <label for="country" class="block text-gray-700">Country</label>
+                    <input type="text" id="country" name="country" required class="w-full border border-gray-300 rounded p-2">
+                    <p id="countryError" class="text-red-500 text-sm hidden">Country is required.</p>
+                </div>
+             
+                <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
+                    Save Address
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Function to toggle modal visibility
+// Function to toggle modal visibility
+function toggleModal(show) {
+    const modal = document.getElementById("addressModal");
+    modal.classList.toggle("hidden", !show);
+}
+
+// Function to add the new address to the address list in the DOM
+function addAddressToList(address) {
+    const addressList = document.getElementById("addressList"); // Make sure you have an element with this ID in your HTML
+
+    // Create a new address element
+    const addressItem = document.createElement("div");
+    addressItem.className = "address-item p-4 border mb-2";
+    addressItem.innerHTML = `
+        <label class="block my-3">
+            <div class="flex items-center p-3 border border-[#14213d] rounded-lg cursor-pointer peer-checked:bg-gray-200 peer-checked:border-gray-500">
+                <!-- Styled Radio Button -->
+                <input type="radio" name="selectedAddress" class="form-radio h-4 w-4 text-[#14213d] border-gray-300 focus:ring-[#14213d] mr-3" value="${address._id}">
+                <p class="text-[#14213d]">
+                    ${address.fullName}, ${address.street}, ${address.city}, ${address.country}, ${address.state}, ${address.pincode}
+                </p>
+            </div>
+        </label>
+    `;
+
+    // Append the new address to the list
+    addressList.appendChild(addressItem);
+}
+
+// Form submission handler with validation
+async function submitAddress(event) {
+    event.preventDefault();
+
+    // Clear previous errors
+    clearErrors();
+
+    // Get form values
+    const fullName = document.getElementById("fullName").value.trim();
+    const street = document.getElementById("street").value.trim();
+    const city = document.getElementById("city").value.trim();
+    const pincode = document.getElementById("pincode").value.trim();
+    const state = document.getElementById("state").value.trim();
+    const country = document.getElementById("country").value.trim();
+ 
+
+    let isValid = true;
+
+    // Validate each field
+    function isFirstLetterCapitalAndNoSpaces(value) {
+    const pattern = /^[A-Z][a-zA-Z]*$/; // Capital letter followed by letters with no spaces
+    return pattern.test(value);
+}
+
+if (fullName.length < 3 || !isFirstLetterCapitalAndNoSpaces(fullName)) {
+    displayError("fullNameError");
+    isValid = false;
+}
+if (street.length < 5 || !isFirstLetterCapitalAndNoSpaces(street)) {
+    displayError("streetError");
+    isValid = false;
+}
+if (city.length < 3 || !isFirstLetterCapitalAndNoSpaces(city)) {
+    displayError("cityError");
+    isValid = false;
+}
+const pincodePattern = /^[0-9]{6}$/;
+if (!pincodePattern.test(pincode)) {
+    displayError("pincodeError");
+    isValid = false;
+}
+if (state.length === 0 || !isFirstLetterCapitalAndNoSpaces(state)) {
+    displayError("stateError");
+    isValid = false;
+}
+if (country.length === 0 || !isFirstLetterCapitalAndNoSpaces(country)) {
+    displayError("countryError");
+    isValid = false;
+}
+
+    // If all fields are valid, proceed to submit the data
+    if (isValid) {
+        const addressData = {
+            fullName,
+            street,
+            city,
+            pincode,
+            state,
+            country,
+           
+        };
+
+        try {
+            // Send data to the backend route
+            const response = await fetch('/checkout-address', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(addressData)
+            });
+
+            if (response.ok) {
+                // Show SweetAlert success message
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Address Added!',
+                    text: 'Your address was successfully added.',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    // Close the modal and reset the form after a successful submission
+                    document.getElementById("addressForm").reset();
+                    toggleModal(false);
+
+                    // Add the new address to the address list
+                    addAddressToList(addressData);
+                });
+            } else {
+                // Show SweetAlert error message on failure
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Failed to Add Address',
+                    text: 'Please try again later.',
+                    confirmButtonText: 'OK'
+                });
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Network Error',
+                text: 'Could not connect to the server.',
+                confirmButtonText: 'OK'
+            });
+        }
+    }
+}
+
+// Function to show error message
+function displayError(errorId) {
+    document.getElementById(errorId).classList.remove("hidden");
+}
+
+// Function to clear all error messages
+function clearErrors() {
+    const errorElements = document.querySelectorAll("p.text-red-500");
+    errorElements.forEach((el) => el.classList.add("hidden"));
+}
 
 </script>
 
