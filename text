@@ -1,15 +1,24 @@
-<form action="/search" method="GET" class="relative">
-                    <input 
-                        type="text" 
-                        name="q" 
-                        placeholder="Search for products..." 
-                        value="<%= searchQuery || '' %>" 
-                        class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14213d] bg-white text-black"
-                    >
-                    <button 
-                    type="submit" 
-                    class="absolute right-2 top-2 bg-[#14213d] text-white rounded-lg hover:bg-black transition duration-300 px-3 py-0.5 ">
-                    Search
-                </button>
-                
-                </form>
+
+Next Week
+User side :
+Integrate online payment method(Razorpay or Paypal). The integration of multiple payment gateways will be an add-on..
+Change order status(cancel,return etc.)
+Coupon Management (Apply Coupon, Remove Coupon) 
+Search, Category filtering
+Wishlist (Add, Remove)
+Wallet (for canceled orders)
+
+Admin side : 
+Offer module(Product offer, Category offer, Referral offer).
+Coupon Management (Create, Delete)
+Sales report(Daily, Weekly, Yearly, Custom date)
+Generate sales report 
+Should be able to filter based on  
+Custom date range 
+1 Day / week / month 
+Show discount and coupons deduction in sales report 
+Overall sales count  
+Overall order amount 
+Overall discount
+
+Report download (Pdf, Excel)

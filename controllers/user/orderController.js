@@ -9,7 +9,7 @@ exports.placeOrder = async(req,res) => {
         }
         console.log(`user = ${user}`)
 
-        const orderDetails = await Order.find({userId:user}).populate('items.productId').sort({ createdAt:-1})
+        const orderDetails = await Order.find({userId:user}).populate({path:'items.productId',select:"name"}).sort({ createdAt:-1})
         console.log(orderDetails); 
         console.log(`orderDetails = ${orderDetails}`)
         res.render('user/order',{

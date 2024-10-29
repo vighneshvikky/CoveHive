@@ -42,15 +42,16 @@
           <% orderDetails.forEach(order => { %>
               <div class="mb-6 overflow-hidden bg-white rounded-lg shadow-md border border-gray-100">
                   <% order.items.forEach(item => { %>
+                    
                       <div class="flex flex-col md:flex-row p-6 gap-6">
                           <img src="/uploads/<%= item.productImage %>" 
-                               alt="<%= item.productId.name %>" 
+                                
                                class="w-full md:w-48 h-48 object-cover rounded-lg">
                           
                           <div class="flex-1 space-y-4">
                               <div class="flex justify-between items-start">
                                   <h5 class="text-xl font-semibold text-gray-900">
-                                      <%= item.productId.name %>
+                                      <%=item.productId.name%>
                                   </h5>
                                   <p class="text-lg font-bold text-gray-900">
                                       $<%= (item.productPrice * item.productCount).toFixed(2) %>

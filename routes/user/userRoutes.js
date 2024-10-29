@@ -120,7 +120,7 @@ user_route.get('/products',searchController.searchAndFilterProducts);
 
 //--------------------------------------Check out page ----------------------------------
 
-user_route.get('/checkout',checkOutController.getCheckoutPage);
+user_route.get('/checkout',userAuth.isload,checkOutController.getCheckoutPage); 
 user_route.post('/place-order',checkOutController.placeOrder)
 
 //--------------------------------------user logout ----------------------------------
