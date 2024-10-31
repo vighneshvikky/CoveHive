@@ -1,0 +1,147 @@
+<%- include('../layouts/header.ejs') %>
+    <div class="flex">
+        <%- include('../layouts/sidebar.ejs') %>
+        
+        <main class="flex-1 p-8 ml-64">
+            <div class="max-w-7xl mx-auto">
+                <!-- Header Section -->
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800">Coupon Management</h2>
+                    <a href="/admin/addCoupon" 
+                       class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-lg font-medium transition duration-200 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Add New Coupon
+                    </a>
+                </div>
+
+                <!-- Table Section -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table id="couponsTable" class="w-full">
+                            <thead>
+                                <tr class="bg-gray-50 text-left">
+                                        <th class="px-6 py-4 text-sm font-semibold text-gray-600">Coupon Code</th>
+                                        <th class="px-6 py-4 text-sm font-semibold text-gray-600">Discount Type</th>
+                                        <th class="px-6 py-4 text-sm font-semibold text-gray-600">Discount Value</th>
+                                        <th class="px-6 py-4 text-sm font-semibold text-gray-600">Min. Order</th>
+                                        <th class="px-6 py-4 text-sm font-semibold text-gray-600">Start Date</th>
+                                        <th class="px-6 py-4 text-sm font-semibold text-gray-600">End Date</th>
+                                        <th class="px-6 py-4 text-sm font-semibold text-gray-600">Usage</th>
+                                        <th class="px-6 py-4 text-sm font-semibold text-gray-600">Status</th>
+                                        <th class="px-6 py-4 text-sm font-semibold text-gray-600">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <% coupons.forEach(coupon => { %>
+                                    <tr class="hover:bg-gray-50 transition duration-150">
+                                        <td class="px-6 py-4 text-sm text-gray-800 font-medium">
+                                            <%= coupon.couponCode %>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">
+                                            <%= coupon.discountType %>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">
+                                            ₹<%= coupon.discountValue %>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">
+                                            ₹<%= coupon.minimumOrderAmount %>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">
+                                            <%= new Date(coupon.startDate).toLocaleDateString() %>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">
+                                            <%= new Date(coupon.endDate).toLocaleDateString() %>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">
+                                            <%= coupon.usageCount %>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <% if (coupon.isActive) { %>
+                                                <span class="px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                                                    Active
+                                                </span>
+                                            <% } else { %>
+                                                <span class="px-3 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
+                                                    Inactive
+                                                </span>
+                                            <% } %>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <a href="/admin/editCoupon/?id=<%= coupon._id %>" 
+                                                   class="text-blue-600 hover:text-blue-800 font-medium transition duration-150">
+                                                    Edit
+                                                </a>
+                                                <button onclick="couponToggle('<%= coupon._id %>',' <%= coupon.isActive %>')"
+                                                        class="<%= coupon.isActive ? 'text-red-600 hover:text-red-800' : 'text-green-600 hover:text-green-800' %> font-medium transition duration-150">
+                                                    <%= coupon.isActive ? 'Delete' : 'Add' %>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+<script>
+// Initialize DataTables
+$(document).ready(function() {
+$('#couponsTable').DataTable();
+});
+
+
+
+
+function couponToggle(couponId,status){
+console.log('hai');
+
+fetch(`/admin/removeCoupon/${couponId}`,{
+method:'PATCH',
+headers:{
+  'Content-Type':'application/json'
+},
+body:JSON.stringify({
+  couponId:couponId
+})
+
+})
+.then(response=>response.json())
+.then(response=>{
+if(response.status == 'success'){
+  Swal.fire({
+    icon:'success',
+    title:'Updated',
+    text:response.message|| 'coupon updated successfully'
+  }).then(()=>{
+    window.location.reload()
+  })
+}else{
+  Swal.fire({
+    icon:'error',
+    title:'Updation Failed',
+    text:response.message||'coupon updation failed'
+  })
+}
+}).catch(error=>{
+console.error('server error',error)
+Swal.fire({
+    icon:'error',
+    title:'Server error',
+    text:error
+  })
+})
+
+
+}
+</script>
+<%- include('../layouts/footer.ejs') %>

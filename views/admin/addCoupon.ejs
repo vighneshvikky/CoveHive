@@ -1,0 +1,276 @@
+<%- include('../layouts/header.ejs') %>
+<%- include('../layouts/sidebar.ejs') %>
+<div class="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8">
+    <div class="w-full max-w-lg bg-gray-800 rounded-xl shadow-2xl p-6 sm:p-8 space-y-8">
+        <!-- Header -->
+        <div class="space-y-2">
+            <h2 class="text-2xl font-bold text-white">Add Coupon</h2>
+            <p class="text-gray-400 text-sm">Create a new discount coupon</p>
+        </div>
+
+        <!-- Form -->
+        <form class="space-y-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <!-- Coupon Code -->
+                <div class="space-y-2">
+                    <label for="couponCode" class="block text-sm font-medium text-gray-300">Coupon Code</label>
+                    <input 
+                        id="couponCode" 
+                        type="text" 
+                        class="w-full px-3 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition duration-200"
+                        placeholder="Enter coupon code" 
+                    />
+                    <p id="couponCodeError" class="text-red-500 text-sm hidden"></p>
+                </div>
+
+                <!-- Min Amount -->
+                <div class="space-y-2">
+                    <label for="minAmount" class="block text-sm font-medium text-gray-300">Min Amount</label>
+                    <input 
+                        id="minAmount" 
+                        type="number" 
+                        class="w-full px-3 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition duration-200"
+                        placeholder="Enter the amount" 
+                    />
+                    <p id="minAmountError" class="text-red-500 text-sm hidden"></p>
+                </div>
+
+                <!-- Discount -->
+                <div class="space-y-2">
+                    <label for="discount" class="block text-sm font-medium text-gray-300">Discount</label>
+                    <input 
+                        id="discount" 
+                        type="number" 
+                        class="w-full px-3 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition duration-200"
+                    />
+                    <p id="discountValueError" class="text-red-500 text-sm hidden"></p>
+                </div>
+
+                <!-- Discount Type -->
+                <div class="space-y-2">
+                    <label for="discountType" class="block text-sm font-medium text-gray-300">Discount Type</label>
+                    <select 
+                        id="discountType" 
+                        class="w-full px-3 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition duration-200"
+                    >
+                        <option value="Percentage">Percentage</option>
+                        <option value="Fixed">Fixed</option>
+                    </select>
+                    <p id="discountTypeError" class="text-red-500 text-sm hidden"></p>
+                </div>
+
+                <!-- Start Date -->
+                <div class="space-y-2">
+                    <label for="startDate" class="block text-sm font-medium text-gray-300">Start Date</label>
+                    <input 
+                        id="startDate" 
+                        type="date" 
+                        class="w-full px-3 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition duration-200"
+                    />
+                    <p id="startDateError" class="text-red-500 text-sm hidden"></p>
+                </div>
+
+                <!-- Expiry Date -->
+                <div class="space-y-2">
+                    <label for="expiryDate" class="block text-sm font-medium text-gray-300">Expiry Date</label>
+                    <input 
+                        id="expiryDate" 
+                        type="date" 
+                        class="w-full px-3 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition duration-200"
+                    />
+                    <p id="expiryDateError" class="text-red-500 text-sm hidden"></p>
+                </div>
+
+                <!-- Usage Count -->
+                <div class="space-y-2">
+                    <label for="usageCount" class="block text-sm font-medium text-gray-300">Usage Count</label>
+                    <input 
+                        id="usageCount" 
+                        type="number" 
+                        class="w-full px-3 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition duration-200"
+                        placeholder="Number of uses" 
+                    />
+                    <p id="usageCountError" class="text-red-500 text-sm hidden"></p>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button 
+                type="submit" 
+                onclick="submitForm(event)" 
+                class="w-full py-3 px-4 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition duration-200 mt-8"
+            >
+                Add New Coupon
+            </button>
+        </form>
+    </div>
+</div>
+<!-- Search box -->
+
+
+<script>
+
+document.getElementById('discountType').addEventListener('change', function() {
+let discountInput = document.getElementById('discount');
+if (this.value === 'Percentage') {
+discountInput.placeholder = 'Enter the percentage';
+} else {
+discountInput.placeholder = 'Enter the amount';
+}
+});
+
+function submitForm(event){
+
+event.preventDefault();
+
+let couponCode = document.getElementById('couponCode').value.trim();
+let minAmount = document.getElementById('minAmount').value.trim();
+let discountValue = document.getElementById('discount').value.trim();
+let discountType = document.getElementById('discountType').value;
+let startDate = document.getElementById('startDate').value;
+let expiryDate = document.getElementById('expiryDate').value;
+let usageCount = document.getElementById('usageCount').value.trim();
+
+let currentDate = new Date();
+let startDateObj = new Date(startDate);
+let expiryDateObj = new Date(expiryDate);
+let isValid = true;
+
+
+
+
+document.querySelectorAll('.text-red-500').forEach(el => el.classList.add('hidden'));
+
+
+
+// Validate coupon code: must be uppercase and numbers only
+const couponCodeRegex = /^[A-Z0-9]+$/;
+if (!couponCodeRegex.test(couponCode)) {
+document.getElementById('couponCodeError').innerHTML = "Coupon code must be uppercase and contain only letters and numbers.";
+document.getElementById('couponCodeError').classList.remove('hidden');
+isValid = false;
+}
+
+// Validate usage count: should not exceed 5
+if (isNaN(usageCount) || usageCount > 5 || usageCount < 1) {
+document.getElementById('usageCountError').innerHTML = "Usage count should be between 1 and 5.";
+document.getElementById('usageCountError').classList.remove('hidden');
+isValid = false;
+}
+
+if (expiryDateObj < startDateObj) {
+document.getElementById('expiryDateError').innerHTML = "Expiry date cannot be earlier than the start date.";
+document.getElementById('expiryDateError').classList.remove('hidden');
+isValid = false;
+}
+
+// Validate start date: should not be earlier than today
+if (startDateObj < currentDate) {
+document.getElementById('startDateError').innerHTML = "Start date cannot be in the past.";
+document.getElementById('startDateError').classList.remove('hidden');
+isValid = false;
+}
+
+if(parseFloat(minAmount) <= 0 || isNaN(minAmount)){
+document.getElementById('minAmountError').innerHTML='Minimum order amount should be greater than zero';
+document.getElementById('minAmountError').classList.remove('hidden')
+isValid = false
+}
+
+
+if(discountType === 'Fixed'){
+if(parseFloat(discountValue) <= 0 || isNaN(discountValue)){
+document.getElementById('discountValueError').innerHTML = 'Discount value should be greater than zero'
+document.getElementById('discountValueError').classList.remove('hidden');
+isValid = false;
+}
+}else{
+if(parseFloat(discountValue)>100 || isNaN(discountValue)){
+document.getElementById('discountValueError').innerHTML = 'Discount percentage should not greater than 100'
+document.getElementById('discountValueError').classList.remove('hidden');
+isValid = false;
+}
+}
+
+if(discountType=='Percentage'){
+
+if(discountValue>100){{
+document.getElementById('discountValueError').innerHTML = 'Discount percentage should not greater than 100'
+document.getElementById('discountValueError').classList.remove('hidden');
+isValid = false;
+
+}}
+
+}
+
+
+
+
+if(isValid){
+let formData ={
+
+couponCode,
+minAmount,
+discountValue,
+discountType,
+startDate,
+expiryDate,
+usageCount
+
+}
+fetch('/admin/addCouponPost',{
+method:'POST',
+headers:{
+'Content-Type': 'application/json'
+},
+body:JSON.stringify(formData)
+})
+.then(response=>response.json())
+.then((result)=>{
+if(result.status === 'success'){
+Swal.fire({
+icon:'success',
+title:"Coupon added",
+text: result.message || 'Coupon created success fully'
+}).then(()=>{
+window.location.reload()
+})
+}else if(result.status === 'alreadyFound'){
+Swal.fire({
+icon:'error',
+title:'Already Exist',
+text: result.message || 'Coupon code already exist'
+})
+}else{
+Swal.fire({
+icon:"error",
+title:"Failed coupon creation",
+text: result.message || "Failed to add coupon."
+})
+
+}
+}).catch(error=>{
+console.log("error while adding counpon",error);
+Swal.fire({
+icon:"error",
+title:error,
+text: "An error occurred while creating coupon"
+})
+
+
+})
+}
+
+
+
+
+
+
+
+
+}
+
+
+
+</script>
+<%- include('../layouts/footer.ejs') %>
