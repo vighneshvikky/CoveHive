@@ -5,55 +5,34 @@
     <!-- Sorting and Filtering Container -->
      
     <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
-        <!-- Sorting Dropdown -->
-        <div class="w-full sm:w-auto">
-            <form id="sortingForm" action="/search" method="GET" class="flex items-center">
-                <input type="hidden" name="q" value="<%= searchQuery || '' %>">
-                <select
-                    name="sort"
-                    onchange="document.getElementById('sortingForm').submit();"
-                    class="w-full sm:w-64 h-10 rounded-lg border border-gray-200 bg-white px-3 
-                           text-gray-700 shadow-sm transition-all duration-200 
-                           hover:border-gray-300 focus:border-gray-300 focus:outline-none 
-                           focus:ring-2 focus:ring-blue-100"
-                >
-                    <option value="">Sort By</option>
-                    <option value="price_asc" <%= selectedSort === 'price_asc' ? 'selected' : '' %>>
-                        Price: Low to High
-                    </option>
-                    <option value="price_desc" <%= selectedSort === 'price_desc' ? 'selected' : '' %>>
-                        Price: High to Low
-                    </option>
-                    <option value="name_asc" <%= selectedSort === 'name_asc' ? 'selected' : '' %>>
-                        Alphabetical: A-Z
-                    </option>
-                    <option value="name_desc" <%= selectedSort === 'name_desc' ? 'selected' : '' %>>
-                        Alphabetical: Z-A
-                    </option>
-                </select>
-            </form>
-        </div>
+        
 
-        <!-- Category Filter -->
-        <div class="w-full sm:w-auto">
-            <form action="/products" method="GET">
-                <select
-                    id="category"
-                    name="category"
-                    onchange="this.form.submit()"
-                    class="w-full sm:w-64 h-10 rounded-lg border border-gray-200 bg-white px-3 
-                           text-gray-700 shadow-sm transition-all duration-200 
-                           hover:border-gray-300 focus:border-gray-300 focus:outline-none 
-                           focus:ring-2 focus:ring-blue-100"
-                >
-                    <option value="">Filter</option>
-                    <% categories.forEach(category => { %>
-                        <option value="<%= category._id %>">
-                            <%= category.name %>
-                        </option>
-                    <% }); %>
-                </select>
-            </form>
+        <div class="flex  justify-between mb-4 p-4">
+            <!-- Category Filter -->
+    <div class="flex items-center">
+      <label for="filter" class="text-white mr-2 font-semibold">Filter</label>
+      <select id="filter"class="bg-gray-800 text-white rounded-md p-2" onchange="filterProducts()">
+        <option value="all" <%= categoryFilter === 'all' ? 'selected' : '' %>>All</option>
+        <% categories.forEach(category => { %>
+          <option value="<%= category.name %>" <%= categoryFilter === category.name ? 'selected' : '' %>>
+            <%= category.name %>
+          </option>
+        <% }) %>
+      </select>
+    </div>
+            <!-- Sorting option -->
+            <div class="flex items-center">
+              <label for="sort" class="text-white mr-2 font-semibold">Sort by:</label>
+              <select id="sort"
+                  class="bg-gray-800 text-white rounded-md p-2 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onchange="filterProducts()">
+                  <option value="latest" <%= sortOption === 'latest' ? 'selected' : "" %>>Latest</option>
+                  <option value="discount" <%= sortOption === 'discount' ? 'selected' : "" %>>Price: Low to High</option>
+                  <option value="discount-desc" <%= sortOption === 'discount-desc' ? 'selected' : "" %>>Price:High to Low</option>
+                  <option value="a-z" <%= sortOption === 'a-z' ? 'selected' : "" %>>A-Z</option>
+                  <option value="z-a" <%= sortOption === 'z-a' ? 'selected' : "" %>>Z-A</option>
+              </select>
+            </div>
         </div>
     </div>
 
@@ -123,4 +102,14 @@
         <% }); %>
     </div>
 </div>
+<script>
+     function filterProducts() {
+    const category = document.getElementById('filter').value;
+    const sort = document.getElementById('sort').value;
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.set('category', category);
+    currentUrl.searchParams.set('sort', sort);
+    window.location.href = currentUrl.href;
+  } 
+</script>
 <%- include('../layouts/userFooter.ejs') %>

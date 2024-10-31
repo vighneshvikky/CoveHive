@@ -331,29 +331,93 @@ exports.googleAuthCallback = async (req, res) => {
 
   exports.allProducts = async (req, res) => {
     try {
-        const user = await User.findById(req.session.user_id);
-        console.log(`user is ${user}`);
-        const categories = await Category.find()
-        const searchQuery = req.query.q || ''; // Get search query from request
-        const selectedSort = req.query.sort || ''; // Get the sort option from the query, default to empty string
+        const categoryFilter = req.query.category || "all";
+        const sortOption = req.query.sort || "latest";
+        const searchQuery = req.query.search || "";
+    
+        // Pagination settings
+        const page = parseInt(req.query.page) || 1; // default to page 1
+        const limit = 8;
+        const skip = (page - 1) * limit;
+    
+        let filterOption={isBlocked:false};
+        if (categoryFilter !== "all") {
+          const category = await Category.findOne({ name: categoryFilter });
+          if (!category) {
+            return res.status(400).send("category not found");
+          }
+          filterOption.category = category._id;
+        }
+    
+        if (searchQuery) {
+          filterOption.name = { $regex: searchQuery, $options: 'i' };
+        }
+      
+         
+        // Fetch all products based on the filter
+        const products = await Product
+        .find(filterOption)
+        .populate("category", "name")
+        .lean();
 
-        // Fetch products from the database, sorted based on the selected sort option
-        let products = await Product.find({ isBlocked: false });
-
-        // Sort products based on selectedSort
-        if (selectedSort === 'price_asc') {
-            products = products.sort((a, b) => a.price - b.price); // Price: Low to High
-        } else if (selectedSort === 'price_desc') {
-            products = products.sort((a, b) => b.price - a.price); // Price: High to Low
-        } else if (selectedSort === 'rating_desc') {
-            products = products.sort((a, b) => b.rating - a.rating); // Top Rated
-        } else if (selectedSort === 'name_asc') {
-            products = products.sort((a, b) => a.name.localeCompare(b.name)); // Alphabetical: A-Z
+    
+        // Calculate discounted price for all products
+        // for (let product of products) {
+        //   product.discountedPrice = await calculateDiscountPrice(product);
+        // }
+    
+        // Sort products based on the selected sort option
+        switch (sortOption) {
+          case 'discount':
+            products.sort((a, b) => {
+              const priceA = a.discountedPrice !== undefined ? a.discountedPrice : a.price; 
+              const priceB = b.discountedPrice !== undefined ? b.discountedPrice : b.price; 
+              return priceA - priceB; // Sort by discounted price (low to high)
+            });
+            break;
+          case 'discount-desc':
+            products.sort((a, b) => {
+              const priceA = a.discountedPrice !== undefined ? a.discountedPrice : a.price; 
+              const priceB = b.discountedPrice !== undefined ? b.discountedPrice : b.price; 
+              return priceB - priceA; // Sort by discounted price (high to low)
+            });
+            break;
+          case 'a-z':
+            products.sort((a, b) => a.name.localeCompare(b.name)); 
+            break;
+          case 'z-a':
+            products.sort((a, b) => b.name.localeCompare(a.name)); 
+            break;
+          default:
+            products.sort((a, b) => b.createdAt - a.createdAt); 
+            break;
         }
 
-        // Pass the products, user, searchQuery, and selectedSort to the view
-        res.render('user/allProducts', { products, user, searchQuery, selectedSort ,categories});
-    } catch (error) {
-        console.log(error.message);
+
+
+
+        
+         //const products = await Product.find({isBlocked:false})
+        // Apply pagination to the sorted products
+        const totalProducts = products.length;
+        const totalPages = Math.ceil(totalProducts / limit);
+        const paginatedProducts = products.slice(skip, skip + limit);
+    
+        const categories = await Category.find({ isBlocked: false });
+    
+        res.render('user/allProducts', {
+          product: paginatedProducts,
+          categories,
+          categoryFilter,
+          currentPage: page,
+          totalPages,
+          sortOption,
+          searchQuery,
+          products
+        });
+    
+      } catch (error) {
+        console.log("Error in all products page", error);
+        
+      }
     }
-};
