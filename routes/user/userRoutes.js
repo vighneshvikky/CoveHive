@@ -121,7 +121,12 @@ user_route.get('/products',searchController.searchAndFilterProducts);
 //--------------------------------------Check out page ----------------------------------
 
 user_route.get('/checkout',userAuth.isload,checkOutController.getCheckoutPage); 
-user_route.post('/place-order',checkOutController.placeOrder)
+//user_route.post('/place-order',checkOutController.placeOrder)
+user_route.post('/place-order/:address/:payment',checkOutController.placeOrder)
+user_route.get('/conform-order',userAuth.isLogin,checkOutController.orderConformPage)
+//--------------------------------------Razorpay----------------------------------
+
+user_route.post('/payment-render/:amount',checkOutController.paymentRender)
 
 //--------------------------------------user logout ----------------------------------
 

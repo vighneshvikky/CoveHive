@@ -164,7 +164,7 @@
                                 <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Quantity</th>
                                 <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Price</th>
                                 <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Status</th>
-                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Subtotal</th>
+                              
                             </tr>
                         </thead>
                         <tbody id="itemsPurchased" class="divide-y divide-gray-200">
@@ -231,7 +231,8 @@
                         ${item.productCount}
                     </td>
                     <td class="px-6 py-4 text-sm text-gray-700">
-                        ₹${item.productPrice.toLocaleString()}
+                        ₹${(item.
+productDiscountPrice * item.productCount).toFixed(2) }
                     </td>
                     <td class="px-6 py-4">
                         <span class="px-3 py-1 text-xs font-medium rounded-full ${getStatusClass(item.productStatus)}">
@@ -239,14 +240,7 @@
                         </span>
                         ${getStatusTimeline(item.productStatus)}
                     </td>
-                    <td class="px-6 py-4 text-sm text-gray-700">
-                        ₹${(item.productCount * item.productPrice).toLocaleString()}
-                        ${item.productDiscount ? `
-                            <div class="text-xs text-green-600">
-                                Discount: ${item.productDiscount}%
-                            </div>
-                        ` : ''}
-                    </td>
+            
                 `;
                 itemsTable.appendChild(row);
             });

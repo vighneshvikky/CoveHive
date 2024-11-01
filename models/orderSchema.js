@@ -32,6 +32,9 @@ const orderSchema =new mongoose.Schema({
         productImage: {
             type: String
         },
+        productDiscountPrice:{
+            type:Number
+        },
         productDiscount: {
             type: Number
         },
@@ -39,26 +42,51 @@ const orderSchema =new mongoose.Schema({
             type: String,
             enum:['Confirmed','Shipped', 'Pending', 'Delivered', 'Returned', 'Cancelled'],
             default:'Pending'
-
         }
     }],
+    totalQuantity: {
+        type: Number
+    },
     totalPrice: {
         type: Number,
         required: true
     },
     address: {
-        type: String,
-        required: true
+        customer_name: String,
+        customer_email: String,
+        building: String,
+        street: String,
+        city: String,
+        country: String,
+        pincode: Number,
+        phonenumber:Number,
+        landMark:String
     },
-    isCancel: {
+    paymentId: {
+        type: String,
+        required: false
+    },
+    isCancelled: {
         type: Boolean,
         default: false
     },
+    couponCode:{
+        type: String,
+    },
+    couponDiscount:{
+        type: Number,
+        default: 0
+    },
     paymentMethod: {
         type: String,
-        default: 'Cash on Delivery'
+        required:true,
+        enum: ['Cash on delivery','razorpay', 'Wallet']
     },
-    status: {
+    paymentStatus:{
+        type:String,
+        required: false
+    },
+    orderStatus: {
         type: String,
         enum:['Pending', 'Shipped', 'Confirmed', 'Delivered', 'Cancelled', 'Returned']
     },

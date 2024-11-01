@@ -159,7 +159,7 @@ exports.increment = async (req, res) => {
 
       // Update the product count in cart
       cart.items[index].productCount = newCount;
-
+      cart.payableAmount =  cart.items.reduce((total, item) => total + (item.productDiscountPrice * item.productCount), 0);
       // Calculate the updated total price
       const updatedPrice = cart.items[index].productDiscountPrice * cart.items[index].productCount;
 
