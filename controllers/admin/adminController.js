@@ -43,7 +43,7 @@ exports.loginAdmin = async (req, res) => {
        if(err){
         console.log(err)
        }
-       res.redirect('/admin//login')
+       res.redirect('/admin/login')
       })
     } catch (error) {
       console.log(error.message)
