@@ -9,62 +9,48 @@
       </p>
     </div>
       
-    <form id="signup-form" class="mt-8 space-y-6" action="/register" method="POST">
+    <form id="signup-form" class="mt-8 space-y-6" action="/register" method="POST" onsubmit="return validateForm()">
       <div class="rounded-md shadow-sm -space-y-px">
-        <!-- Full Name -->
-        <div>
-          <label for="fullname" class="sr-only">Full Name</label>
-          <input id="fullname" name="fullname" type="text"  class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-white bg-gray-900 rounded-t-md focus:outline-none focus:ring-white focus:border-white focus:z-10 sm:text-sm" placeholder="Full Name">
-        </div>
-
-        <!-- Email -->
-        <div>
-          <label for="email" class="sr-only">Email address</label>
-          <input id="email" name="email" type="email" autocomplete="email"  class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-white bg-gray-900 focus:outline-none focus:ring-white focus:border-white focus:z-10 sm:text-sm" placeholder="Email address">
-        </div>
-
-        <!-- Phone -->
-        <div>
-          <label for="phone" class="sr-only">Phone</label>
-          <input id="phone" name="phone" type="tel"  
-              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-300 bg-gray-900 focus:outline-none focus:ring-white focus:border-white focus:z-10 sm:text-sm" 
-              placeholder="Phone Number">
-      </div>
-      
-
-        <!-- Password -->
-        <div>
-          <label for="password" class="sr-only">Password</label>
-          <input id="password" name="password" type="password" autocomplete="current-password" class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-white bg-gray-900 focus:outline-none focus:ring-white focus:border-white focus:z-10 sm:text-sm" placeholder="Password">
-        </div>
-
-        <!-- Confirm Password -->
-        <div>
-          <label for="confirm_password" class="sr-only">Confirm Password</label>
-          <input id="confirm_password" name="confirm_password" type="password"  class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-white bg-gray-900 rounded-b-md focus:outline-none focus:ring-white focus:border-white focus:z-10 sm:text-sm" placeholder="Confirm Password">
-        </div>
-      </div>
-
-      <div class="flex items-center justify-between">
-        <div class="flex items-center">
-          <input id="terms" name="terms" type="checkbox"  class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
-          <label for="terms" class="ml-2 block text-sm text-gray-300">
-            I agree to the <a href="#" class="font-medium text-white hover:text-gray-400">Terms and Conditions</a>
-          </label>
-        </div>
+          <!-- Full Name -->
+          <div>
+              <label for="fullname" class="sr-only">Full Name</label>
+              <input id="fullname" name="fullname" type="text" class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-white bg-gray-900 rounded-t-md focus:outline-none focus:ring-white focus:border-white focus:z-10 sm:text-sm" placeholder="Full Name">
+              <span id="fullname-error" class="text-red-400 text-sm"></span>
+          </div>
+  
+          <!-- Email -->
+          <div>
+              <label for="email" class="sr-only">Email address</label>
+              <input id="email" name="email" type="email" autocomplete="email" class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-white bg-gray-900 focus:outline-none focus:ring-white focus:border-white focus:z-10 sm:text-sm" placeholder="Email address">
+              <span id="email-error" class="text-red-400 text-sm"></span>
+          </div>
+  
+          <!-- Phone -->
+          <div>
+              <label for="phone" class="sr-only">Phone</label>
+              <input id="phone" name="phone" type="tel" class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-300 bg-gray-900 focus:outline-none focus:ring-white focus:border-white focus:z-10 sm:text-sm" placeholder="Phone Number">
+              <span id="phone-error" class="text-red-400 text-sm"></span>
+          </div>
+  
+          <!-- Password -->
+          <div>
+              <label for="password" class="sr-only">Password</label>
+              <input id="password" name="password" type="password" autocomplete="current-password" class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-white bg-gray-900 focus:outline-none focus:ring-white focus:border-white focus:z-10 sm:text-sm" placeholder="Password">
+              <span id="password-error" class="text-red-400 text-sm"></span>
+          </div>
+  
+          <!-- Confirm Password -->
+          <div>
+              <label for="confirm_password" class="sr-only">Confirm Password</label>
+              <input id="confirm_password" name="confirm_password" type="password" class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-white bg-gray-900 rounded-b-md focus:outline-none focus:ring-white focus:border-white focus:z-10 sm:text-sm" placeholder="Confirm Password">
+              <span id="confirm-password-error" class="text-red-400 text-sm"></span>
+          </div>
       </div>
 
       <div>
-        <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-black bg-white hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-          Sign Up
-        </button>
+          <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-black bg-white hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">Sign Up</button>
       </div>
-      <% if (locals.message) { %>
-        <div class="text-red-400 bg-red-100 border border-red-400 p-4 rounded text-center">
-            <%= locals.message %>
-        </div>
-        <% } %>
-    </form>
+  </form>
     <p class="mt-2 text-center text-sm text-gray-400">
       Already have an account? <a href="/login" class="font-medium text-white hover:text-gray-300">Log In</a>
     </p>
@@ -84,79 +70,69 @@
 
 <%- include('../layouts/footer.ejs') %>
 
-<!-- Modal for Validation Messages -->
-<div id="validation-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-  <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-    <h3 id="modal-title" class="text-lg font-medium text-gray-900">Validation Error</h3>
-    <p id="modal-message" class="mt-2 text-gray-600"></p>
-    <button id="modal-close" class="mt-4 px-4 py-2 bg-gray-800 text-white rounded-md">Close</button>
-  </div>
-</div>
-
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('signup-form');
-    const modal = document.getElementById('validation-modal');
-    const modalTitle = document.getElementById('modal-title');
-    const modalMessage = document.getElementById('modal-message');
-    const modalClose = document.getElementById('modal-close');
-
-    form.addEventListener('submit', function (event) {
-      let message = '';
-      
-      // Full Name validation
-      const fullName = document.getElementById('fullname').value.trim();
-      if (fullName.length < 3) {
-        message += 'Full Name must be at least 3 characters long.\n';
-      }
-
-      // Email validation
-      const email = document.getElementById('email').value.trim();
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailPattern.test(email)) {
-        message += 'Please enter a valid email address.\n';
-      }
-
-      // Phone validation
-      const phone = document.getElementById('phone').value.trim();
-      const phonePattern = /^[0-9]{10}$/;
-      if (!phonePattern.test(phone)) {
-        message += 'Phone number must be a valid 10-digit number.\n';
-      }
-
-      // Password validation
-      const password = document.getElementById('password').value;
-      const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-      if (!passwordPattern.test(password)) {
-        message += 'Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a special character, and a number.\n';
-      }
-
-      // Confirm Password validation
-      const confirmPassword = document.getElementById('confirm_password').value;
-      if (password !== confirmPassword) {
-        message += 'Passwords do not match.\n';
-      }
-
-      // Terms and Conditions validation
-      const terms = document.getElementById('terms');
-      if (!terms.checked) {
-        message += 'You must agree to the Terms and Conditions.\n';
-      }
-
-      if (message) {
-        event.preventDefault();
-        showModal(message.trim());
-      }
-    });
-
-    modalClose.addEventListener('click', function () {
-      modal.classList.add('hidden');
-    });
-
-    function showModal(message) {
-      modalMessage.textContent = message;
-      modal.classList.remove('hidden');
+  function validateForm() {
+    let isValid = true;
+  console.log('hahi');
+  
+    // Full Name Validation
+    const fullName = document.getElementById("fullname").value;
+    const nameRegex = /^[A-Za-z]{4,}$/;
+    const fullNameError = document.getElementById("fullname-error");
+    if (!nameRegex.test(fullName)) {
+        fullNameError.textContent = "Name must be at least 4 characters.";
+        isValid = false;
+    } else {
+        fullNameError.textContent = "";
     }
-  });
+
+    // Email Validation (optional: built-in HTML5 validation handles this well)
+    const email = document.getElementById("email").value;
+    const emailError = document.getElementById("email-error");
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+      emailError.textContent = "Email is required.";
+    } else if (!emailRegex.test(email)) {
+      emailError.textContent = "Please enter a valid email address.";
+    } else {
+      emailError.textContent = "";
+    }
+    // Phone Validation (you can add custom regex if needed)
+    const phone = document.getElementById("phone").value;
+    const PhoneError = document.getElementById("phone-error");
+    const phoneRegex = /^\d{10}$/; // Adjust based on required phone format
+    if (!phone) {
+      PhoneError.textContent = "Phone number is required.";
+      isValid = false
+    } else if (!phoneRegex.test(phone)) {
+      PhoneError.textContent = "Please enter a valid 10-digit phone number.";
+      isVali=false
+    } else {
+      PhoneError  .textContent = "";
+    }
+    // Password Validation
+    const password = document.getElementById("password").value;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    const passwordError = document.getElementById("password-error");
+    if (!passwordRegex.test(password)) {
+        passwordError.textContent = "Password must be at least 8 characters with uppercase, lowercase, a number, and a special character.";
+        isValid = false;
+    } else {
+        passwordError.textContent = "";
+    }
+
+    // Confirm Password Validation
+    const confirmPassword = document.getElementById("confirm_password").value;
+    const confirmPasswordError = document.getElementById("confirm-password-error");
+    if (password !== confirmPassword) {
+        confirmPasswordError.textContent = "Passwords do not match.";
+        isValid = false;
+    } else {
+        confirmPasswordError.textContent = "";
+    }
+
+    return isValid; // If isValid is true, form will be submitted; if false, submission is prevented
+}
+ 
 </script>
