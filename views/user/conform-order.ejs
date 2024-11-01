@@ -4,22 +4,20 @@
         justify-content: center;
         align-items: center;
         height: 100vh;
-        background-color: #f5f5f5;
+        background-color: #1a1a1a;
         margin: 0;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-family: 'Arial', sans-serif;
         overflow: hidden;
     }
 
     .success-container {
         text-align: center;
-        background-color: white;
+        background-color: #232323;
         padding: 3em;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         transform: scale(0);
         animation: scale-in 0.5s forwards ease-out;
-        max-width: 480px;
-        width: 90%;
     }
 
     @keyframes scale-in {
@@ -31,16 +29,16 @@
     .checkmark-container {
         display: flex;
         justify-content: center;
-        margin-bottom: 2em;
+        margin-bottom: 1em;
     }
 
     .checkmark {
-        width: 80px;
-        height: 80px;
+        width: 100px;
+        height: 100px;
     }
 
     .checkmark__circle {
-        stroke: #4CAF50;
+        stroke: #4caf50;
         stroke-width: 4;
         stroke-dasharray: 166;
         stroke-dashoffset: 166;
@@ -49,7 +47,7 @@
     }
 
     .checkmark__check {
-        stroke: #4CAF50;
+        stroke: #4caf50;
         stroke-width: 4;
         stroke-dasharray: 48;
         stroke-dashoffset: 48;
@@ -70,20 +68,17 @@
     }
 
     .success-message {
-        color: #2E7D32;
+        color: #4caf50;
         margin-bottom: 0.5em;
         opacity: 0;
         animation: fade-in 1s 0.5s forwards;
-        font-size: 1.5rem;
-        font-weight: 600;
     }
 
     .order-details {
-        color: #424242;
+        color: #fefeeb;
         margin-bottom: 1.5em;
         opacity: 0;
         animation: fade-in 1s 1s forwards;
-        font-size: 1rem;
     }
 
     @keyframes fade-in {
@@ -91,70 +86,23 @@
             opacity: 1;
         }
     }
-
-    h1 {
-        color: #212121;
-        font-size: 2rem;
-        margin-bottom: 0.5em;
-        font-weight: 700;
-    }
-
-    p {
-        color: #616161;
-        line-height: 1.6;
-        margin-bottom: 2em;
-    }
-
-    .btn-container {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-        margin-top: 2em;
-    }
-
-    .btn {
-        padding: 0.75em 1.5em;
-        border-radius: 6px;
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.2s ease;
-    }
-
-    .btn-primary {
-        background-color: #1976D2;
-        color: white;
-    }
-
-    .btn-primary:hover {
-        background-color: #1565C0;
-    }
-
-    .btn-secondary {
-        background-color: #F5F5F5;
-        color: #424242;
-        border: 1px solid #E0E0E0;
-    }
-
-    .btn-secondary:hover {
-        background-color: #EEEEEE;
-    }
 </style>
 
 <div class="success-container">
     <div class="checkmark-container">
         <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-            <circle class="checkmark__circle" cx="26" cy="26" r="22" fill="none"/>
-            <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+            <circle class="checkmark__circle" cx="26" cy="26" r="22" fill="none" />
+            <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
         </svg>
     </div>
-    <h1>Thank you!</h1>
-    <div class="success-message">Order Successfully Placed!</div>
-    <p class="order-details">Thank you for your purchase. Your order number is <%= orders._id %>.</p>
-    <p>
-        We will immediately process your order and it will be delivered in 2-5 business days.
+    <h1 style="color: #Fefeeb;">Thank you.</h1>
+    <h1 class="success-message">Order Successfully Placed!</h1>
+    <p class="order-details">Thank you for your purchase. Your order number is <%= orders.order_id %>.</p>
+    <p style="color: #555;">
+        We will immediatelly process your and it will be delivered in 2 - 5 business days.
     </p>
-    <div class="btn-container">
-        <a href="/orders" class="btn btn-primary">My Orders</a>
-        <a href="/allProducts" class="btn btn-secondary">Continue Shopping</a>
+    <div class="d-flex justify-content-center gap-5 mt-5">
+        <a href="/orders" class="btn btn-danger d-flex">My Orders</a>
+        <a href="/home" class="btn btn-danger d-flex">Continue Shopping</a>
     </div>
-</div>  
+</div>
