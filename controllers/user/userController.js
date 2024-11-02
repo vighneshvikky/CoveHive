@@ -331,16 +331,17 @@ exports.googleAuthCallback = async (req, res) => {
 
   exports.allProducts = async (req, res) => {
     try {
+    
         const categoryFilter = req.query.category || "all";
         const sortOption = req.query.sort || "latest";
         const searchQuery = req.query.search || "";
     
         // Pagination settings
+        const limit = 8 ;
         const page = parseInt(req.query.page) || 1; // default to page 1
-        const limit = 8;
         const skip = (page - 1) * limit;
-    
         let filterOption={isBlocked:false};
+        const totalProducts = await Product.countDocuments(filterOption);
         if (categoryFilter !== "all") {
           const category = await Category.findOne({ name: categoryFilter });
           if (!category) {
@@ -358,15 +359,9 @@ exports.googleAuthCallback = async (req, res) => {
         const products = await Product
         .find(filterOption)
         .populate("category", "name")
+        .skip(skip)
+        .limit(limit)
         .lean();
-
-    
-        // Calculate discounted price for all products
-        // for (let product of products) {
-        //   product.discountedPrice = await calculateDiscountPrice(product);
-        // }
-    
-        // Sort products based on the selected sort option
         switch (sortOption) {
           case 'discount':
             products.sort((a, b) => {
@@ -393,27 +388,20 @@ exports.googleAuthCallback = async (req, res) => {
             break;
         }
 
-
-
-
-        
-         //const products = await Product.find({isBlocked:false})
-        // Apply pagination to the sorted products
-        const totalProducts = products.length;
+      
         const totalPages = Math.ceil(totalProducts / limit);
-        const paginatedProducts = products.slice(skip, skip + limit);
+       
     
         const categories = await Category.find({ isBlocked: false });
     
         res.render('user/allProducts', {
-          product: paginatedProducts,
           categories,
           categoryFilter,
           currentPage: page,
-          totalPages,
           sortOption,
           searchQuery,
-          products
+          products,
+          totalPages:totalPages
         });
     
       } catch (error) {

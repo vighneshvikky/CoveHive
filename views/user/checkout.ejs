@@ -45,8 +45,8 @@
                                     <p class="text-red-600 text-sm">No addresses available. Please add a new address.</p>
                                 </div>
                             <% } %>
-                            
                         </div>
+                        
                     </li>
             
                     <!-- Payment Method -->
@@ -472,26 +472,35 @@ function showError(message) {
 
 // Function to add the new address to the address list in the DOM
 function addAddressToList(address) {
-    const addressList = document.getElementById("addressList"); // Make sure you have an element with this ID in your HTML
+    const addressList = document.getElementById("addressList"); // The parent div container
 
     // Create a new address element
-    const addressItem = document.createElement("div");
-    addressItem.className = "address-item p-4 border mb-2";
+    const addressItem = document.createElement("label");
+    addressItem.className = "block my-3";
     addressItem.innerHTML = `
-        <label class="block my-3">
-            <div class="flex items-center p-3 border border-[#14213d] rounded-lg cursor-pointer peer-checked:bg-gray-200 peer-checked:border-gray-500">
-                <!-- Styled Radio Button -->
-                <input type="radio" name="selectedAddress" class="form-radio h-4 w-4 text-[#14213d] border-gray-300 focus:ring-[#14213d] mr-3" value="${address._id}">
-                <p class="text-[#14213d]">
-                    ${address.fullName}, ${address.street}, ${address.city}, ${address.country}, ${address.state}, ${address.pincode}
+        <div class="group relative flex items-start p-4 border-2 border-gray-200 rounded-lg hover:border-[#14213d] transition-colors duration-200 cursor-pointer">
+            <input 
+                type="radio" 
+                name="selectedAddress" 
+                class="form-radio mt-1 h-5 w-5 text-[#14213d] border-gray-300 focus:ring-[#14213d]" 
+                value="${address._id}"
+                onclick="selectAddress(this)"
+            >
+            <div class="ml-4">
+                <p class="font-medium text-gray-900">${address.fullName}</p>
+                <p class="mt-1 text-sm text-gray-600">
+                    ${address.street}, ${address.city}, 
+                    ${address.state}, ${address.country}, 
+                    ${address.pincode}
                 </p>
             </div>
-        </label>
+        </div>
     `;
 
     // Append the new address to the list
     addressList.appendChild(addressItem);
 }
+
 
 // Form submission handler with validation
 async function submitAddress(event) {

@@ -111,11 +111,11 @@ user_route.post('/cart/decrement',userCart.decrement);
 user_route.get('/cart/remove/:id',userCart.removeFromCart);
 //--------------------------------------user search ----------------------------------
 
- user_route.get('/search',userAuth.isLogin,searchController.searchProducts)
+ //user_route.get('/search',userAuth.isLogin,searchController.searchAndFilterProducts)
 
 //--------------------------------------filter ----------------------------------
 
-user_route.get('/products',searchController.searchAndFilterProducts);
+//user_route.get('/products',searchController.searchAndFilterProducts);
 
 
 //--------------------------------------Check out page ----------------------------------

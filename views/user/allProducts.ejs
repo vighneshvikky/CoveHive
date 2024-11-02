@@ -12,7 +12,7 @@
     <div class="flex items-center">
       <label for="filter" class="text-white mr-2 font-semibold">Filter</label>
       <select id="filter"class="bg-gray-800 text-white rounded-md p-2" onchange="filterProducts()">
-        <option value="all" <%= categoryFilter === 'all' ? 'selected' : '' %>>All</option>
+        <option value="all" <%=categoryFilter === 'all' ? 'selected' : '' %>>All</option>
         <% categories.forEach(category => { %>
           <option value="<%= category.name %>" <%= categoryFilter === category.name ? 'selected' : '' %>>
             <%= category.name %>
@@ -82,7 +82,7 @@
                             <% } %>
                         </span>
                     </div>
-
+                     
                     <!-- Stock Status -->
                     <% if(product.stock == 0){ %>
                         <div class="mt-4 text-center">
@@ -102,6 +102,28 @@
         <% }); %>
     </div>
 </div>
+<div class="mt-4 flex justify-center space-x-4">
+    <% if (currentPage > 1) { %>
+    <a
+      href="?page=<%= currentPage - 1 %>&limit=10"
+      class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300"
+      >Previous</a
+    >
+    <% } %> <% for (let i = 1; i <= totalPages; i++) { %>
+    <a
+      href="?page=<%= i %>&limit=10"
+      class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300 <%= currentPage === i ? 'bg-gray-400' : '' %>"
+    >
+      <%= i %>
+    </a>
+    <% } %> <% if (currentPage < totalPages) { %>
+    <a
+      href="?page=<%= currentPage + 1 %>&limit=10"
+      class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300"
+      >Next</a
+    >
+    <% } %>
+  </div>
 <script>
      function filterProducts() {
     const category = document.getElementById('filter').value;
