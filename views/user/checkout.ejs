@@ -4,47 +4,51 @@
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
         <!-- Shipping and Payment Information -->
         <div class="bg-white shadow-lg rounded-lg p-6 border border-[#14213d]">
-    <form action="/place-order" method="POST" id="orderForm">
-                <ol class="space-y-6">
+            <form action="/place-order" method="POST" id="orderForm" class="max-w-3xl mx-auto px-4 py-8">
+                <ol class="space-y-8">
                     <!-- Shipping Info -->
-              <!-- Shipping Info -->
-<li class="relative pl-10">
-    <div class="absolute -left-8 top-0 w-8 h-8  flex items-center justify-center">
-        <i class="bx bxs-truck text-xl"></i>
-    </div>
-    <div>
-        <div id="addressList" class="mt-4">
-            <!-- Newly added addresses will appear here -->
-            <h5 class="text-lg font-semibold text-[#14213d] mb-2">Shipping Info</h5>
-            <div class="text-gray-600">
-                <span class="block text-sm">Saved Address</span>
-                <% if (addresses.length > 0) { %>
-                    <% addresses.forEach((address, index) => { %>
-                        <label class="block my-3">
-                            <div class="address-card flex items-center p-3 border border-[#14213d] rounded-lg cursor-pointer peer-checked:bg-gray-200 peer-checked:border-gray-500" 
-                                 onclick="selectAddress(this, '<%= index %>')">
-                                <!-- Styled Radio Button -->
-                                <input 
-                                    type="radio" 
-                                    name="selectedAddress" 
-                                    class="form-radio h-4 w-4 text-[#14213d] border-gray-300 focus:ring-[#14213d] mr-3" 
-                                    value="<%= address._id %>">
-                                <p class="text-[#14213d]">
-                                    <%= address.fullName %>, <%= address.street %>, <%= address.city %>, <%= address.country %>, <%= address.state %>, <%= address.pincode %>
-                                </p>
+                    <li class="relative">
+                        <div class="flex items-center mb-6">
+                            <div class="w-10 h-10 bg-[#14213d] rounded-full flex items-center justify-center">
+                                <i class="bx bxs-truck text-xl text-white"></i>
                             </div>
-                        </label>
-                    <% }) %>
-                <% } else { %>
-                    <p class="text-red-500">No addresses available. Please add a new address.</p>
-                <% } %>
-                
-            </div>
-        </div>
-  
- 
-    </div>
-</li>
+                            <h5 class="text-xl font-semibold text-[#14213d] ml-4">Shipping Information</h5>
+                        </div>
+                        
+                        <div id="addressList" class="pl-14">
+                            <% if (addresses.length > 0) { %>
+                                <div class="grid gap-4">
+                                    <% addresses.slice(0, 3).forEach((address, index) => { %>
+                                        <label class="block">
+                                            <div class="group relative flex items-start p-4 border-2 border-gray-200 rounded-lg hover:border-[#14213d] transition-colors duration-200 cursor-pointer">
+                                                <input 
+                                                    type="radio" 
+                                                    name="selectedAddress" 
+                                                    class="form-radio mt-1 h-5 w-5 text-[#14213d] border-gray-300 focus:ring-[#14213d]" 
+                                                    value="<%= address._id %>"
+                                                    onclick="selectAddress(this, '<%= index %>')"
+                                                >
+                                                <div class="ml-4">
+                                                    <p class="font-medium text-gray-900"><%= address.fullName %></p>
+                                                    <p class="mt-1 text-sm text-gray-600">
+                                                        <%= address.street %>, <%= address.city %>, 
+                                                        <%= address.state %>, <%= address.country %>, 
+                                                        <%= address.pincode %>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    <% }) %>
+                                </div>
+                            <% } else { %>
+                                <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                                    <p class="text-red-600 text-sm">No addresses available. Please add a new address.</p>
+                                </div>
+                            <% } %>
+                            
+                        </div>
+                    </li>
+            
                     <!-- Payment Method -->
                     <div class="payment-methods mt-4">
                         <h2>Payment method :</h2>
@@ -64,26 +68,68 @@
                             </div>
                         </div>
                     </div>
+                    <!-- coupon management -->
+                    <div class="mt-6 w-full space-y-6 sm:mt-8 lg:mt-0 lg:max-w-xs xl:max-w-md">
+                        <div id="couponDiv" class="my-9">
+                          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Available coupons</h2>
+                          <form id="applyCouponform" action="">
+                            <select name="couponCode"
+                              class="w-full mt-2 p-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-base font-medium text-gray-900 dark:text-white focus:border-primary-500 focus:ring-primary-500 dark:focus:border-primary-500 dark:focus:ring-primary-500 focus:outline-none transition-colors duration-300 ease-in-out"
+                              id="coupons">
+              
+                              <option selected disabled value="">Select Coupon</option>
+                              <% eligibleCoupons.forEach(coupon=>{ %>
+                                <option value="<%= coupon._id %>">
+                                  <%= coupon.couponCode %> || <% if (coupon.discountType === 'Percentage'){  %> <%= coupon.discountValue %>%<% }else{ %>₹ <%= coupon.discountValue %><% } %> coupon discount
+                                </option>
+              
+                                <% }) %>
+                            </select>
+                            <span id="couponError" class="text-red-500 text-sm"></span>
+              
+                            <% if(!cartDetails.isCouponApplied){ %>
+              
+                              <button id="applyCouponBtn" type="button"
+                                class="bg-green-700 mt-5  dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 w-full items-center justify-center rounded-lg px-5 py-2.5 text-sm font-medium text-white focus:outline-none focus:ring-4 transition-colors duration-300 ease-in-out">
+                                Apply Coupon
+                              </button>
+                              <% }else{ %>
+                                <button id="removeCouponBtn" type="button"
+                                  class="bg-red-700 mt-5  dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 w-full items-center justify-center rounded-lg px-5 py-2.5 text-sm font-medium text-white focus:outline-none focus:ring-4 transition-colors duration-300 ease-in-out">
+                                  Remove Coupon
+                                </button>
+              
+                                <% } %>
+                          </form>
+                        </div>
                 </div>
                 </ol>
-               <!-- <h1>payableAmount = <%= cartDetails.payableAmount%></h1> -->
-                <!-- Buttons -->
-                <div class="flex justify-between mt-8">
-                    <a href="/cart" class="px-4 py-2 bg-[#14213d] text-white rounded-lg hover:bg-black">
-                        <i class="mdi mdi-arrow-left mr-2"></i> Continue Shopping
+            
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mt-12 pl-14">
+                    <a href="/cart" 
+                       class="w-full sm:w-auto px-6 py-3 bg-gray-100 text-[#14213d] font-medium rounded-lg hover:bg-gray-200 transition-colors duration-200 text-center">
+                        <i class="mdi mdi-arrow-left mr-2"></i>
+                        Continue Shopping
                     </a>
-                    <form action="" method="post" id="place-order-form">
-                        <button type="submit" class="bg-slate-400"
-                            data-amount="<%= cartDetails.items.reduce((total, item) => total + (item.productDiscountPrice * item.productCount), 0).toFixed(2) %>"
-                            data-username="<%= user.name %>" data-mail="<%= user.email %>"
-                            data-phone="<%= user.phone %>" id="place-order-btn">Place
-                            order</button>
+                    
+                    <form action="" method="post" id="place-order-form" class="w-full sm:w-auto">
+                        <button type="submit" 
+                                id="place-order-btn"
+                                data-amount="<%= cartDetails.items.reduce((total, item) => total + (item.productDiscountPrice * item.productCount), 0).toFixed(2) %>"
+                                data-username="<%= user.name %>" 
+                                data-mail="<%= user.email %>"
+                                data-phone="<%= user.phone %>"
+                                class="w-full px-6 py-3 bg-[#14213d] text-white font-medium rounded-lg hover:bg-black transition-colors duration-200">
+                            Place Order
+                        </button>
                     </form>
                 </div>
             </form>
         </div>
 
         <!-- Order Summary -->
+
         <div class="bg-white shadow-lg rounded-lg p-6 border border-[#14213d]">
             <div class="bg-gray-200 p-4 mb-4">
                 <h5 class="text-lg font-semibold text-[#14213d]">Order Summary <span class="float-right">#MN0124</span></h5>
@@ -98,6 +144,13 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <tr>
+                            <th>Total</th>
+                            <th></th>
+                            <th></th>
+                            <!-- <th class="total-payable-amount">
+                                 <%= //cartDetails.payableAmount %>
+                            </th> -->
                         <% cartDetails.items.forEach(item => { %>
                             <tr>
                                 <td><img src="/uploads/<%= item.productImage %>" alt="<%= item.productId.name %>" class="w-16 h-16 rounded-lg"></td>
@@ -109,14 +162,14 @@
                             </tr>
                         <% }) %>
                         <tr class="bg-gray-100">
-                            <td colspan="2" class="text-right text-[#14213d] font-semibold py-2">Total:</td>
+                            <td colspan="2" class="total-payable-amount text-right text-[#14213d] font-semibold py-2">Total:</td>
                              <td class="text-[#14213d] font-semibold"><%= cartDetails.items.reduce((total, item) => total + (item.productDiscountPrice * item.productCount), 0).toFixed(2) %></td> 
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-    </div>
+    </div>          
 </div>
 <!-- Button to Open the Modal -->
 <button onclick="toggleModal(true)" class="bg-blue-500 text-white font-bold py-2 px-4 rounded">
@@ -311,7 +364,7 @@ orderPlacementBtn.addEventListener('click', (e) => {
                         };
                         const rzp1 = new Razorpay(options);
                         rzp1.on('payment.failed', function (response) {
-                            const couponCode = document.getElementById('couponCode').value.trim();
+                           
                             const URL = `/place-order/${selectedAddressIndex}/${selectedPaymentMethod}`;
                             fetch(URL, {
                                 method: "POST",
@@ -323,7 +376,7 @@ orderPlacementBtn.addEventListener('click', (e) => {
                                     razorpay_order_id: response.error.metadata.order_id,
                                     razorpay_signature: response.error.metadata.signature,
                                     payment_status: "Pending",
-                                    couponCode: couponCode
+                                 
                                 })
                             })
                                 .then((res) => {
@@ -369,6 +422,53 @@ orderPlacementBtn.addEventListener('click', (e) => {
                     console.error("Error during payment initiation:", error);
                 });
         }
+        function placeOrder(addressIndex, paymentMethod) {
+            const URL = `/place-order/${addressIndex}/${paymentMethod}`;
+            fetch(URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    addressIndex: addressIndex,
+                    paymentMode: paymentMethod,
+                   
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = "/conform-order";
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Order Placement Failed",
+                            text: data.message,
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Order Placement Failed',
+                        text: error.message,
+                    });
+                });
+        }
+
+
+
+
+
+
+function showError(message) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: message
+            });
+        }
 
 // Function to add the new address to the address list in the DOM
 function addAddressToList(address) {
@@ -413,7 +513,7 @@ async function submitAddress(event) {
 
     // Validate each field
     function isFirstLetterCapitalAndNoSpaces(value) {
-    const pattern = /^[A-Z][a-zA-Z]*$/; // Capital letter followed by letters with no spaces
+    const pattern = /^[A-Za-z\s.,'-]+$/; // Capital letter followed by letters with no spaces
     return pattern.test(value);
 }
 

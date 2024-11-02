@@ -1,5 +1,18 @@
 const mongoose = require("mongoose");
 
+const couponUsageSchema = mongoose.Schema({
+    couponId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref: 'Coupon',
+        required:true
+    },
+    usageCount:{
+        type:Number,
+        default:0
+    }
+},{_id:false})
+
+
 const userSchema = new mongoose.Schema({
     fullName: { type: String, required: true },
     email: { type: String, unique: true, required: true }, // Add 'required' for email
@@ -9,6 +22,10 @@ const userSchema = new mongoose.Schema({
     is_varified: { type: Number, default: 0 },
     is_admin: { type: Number, default: 0 },
     googleId: { type: String },
+    couponUsed:{
+        type:[couponUsageSchema],
+        default:[]
+    },
     createdAt: { type: Date, default: Date.now },
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date }, // Add default value for createdAt

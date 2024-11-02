@@ -127,6 +127,9 @@ user_route.get('/conform-order',userAuth.isLogin,checkOutController.orderConform
 //--------------------------------------Razorpay----------------------------------
 
 user_route.post('/payment-render/:amount',checkOutController.paymentRender)
+//--------------------------------------Coupon----------------------------------
+
+user_route.post('/applycoupon',checkOutController.coupon)
 
 //--------------------------------------user logout ----------------------------------
 

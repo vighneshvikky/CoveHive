@@ -3,9 +3,11 @@ const Address = require('../../models/addressSchema');
 const Cart = require('../../models/user/cartSchema');
 const Order = require('../../models/orderSchema');
 const Product = require('../../models/admin/productModel');
+const Coupon = require('../../models/couponSchema')
 
 const  Razorpay = require('razorpay');
 const { concurrency } = require('sharp');
+const orderSchema = require('../../models/orderSchema');
 
 exports.getCheckoutPage = async (req,res) => {
     try {
@@ -35,6 +37,21 @@ exports.getCheckoutPage = async (req,res) => {
             return res.redirect("/cart");
         }
     }
+const availableCoupons = await Coupon.find({
+    isActive:true,
+    endDate:{$gte:new Date()},
+    minimumOrderAmount:{$lte:cartDetails.totalPrice}
+});
+
+const eligibleCoupons = availableCoupons.filter((coupon) =>{
+   const couponUsage =  user.couponUsed.find((c) =>{
+    c.couponId.equals(coupon._id)
+   })
+   if(couponUsage){
+    return couponUsage.usageCount < coupon.usageCount
+   }
+   return true
+});
 
     const addresses = user.addresses;
 
@@ -42,7 +59,8 @@ exports.getCheckoutPage = async (req,res) => {
         user,
         cartDetails,
         userDetails:user,
-        addresses
+        addresses,
+        eligibleCoupons
     })
 
 
@@ -163,11 +181,11 @@ try {
     const userId = req.session.user_id;
     //const addressIndex = parseInt(req.params.address);
     const paymentMode = parseInt(req.params.payment);
-   // let couponDiscount = 0 ;
+    let couponDiscount = 0 ;
    let paymentId = '';
    const { razorpay_payment_id, razorpay_order_id, razorpay_signature, payment_status , couponCode } = req.body;
    if(couponCode){
-    const coupon = await couponSchema.findOne({ code: couponCode });
+    const coupon = await Coupon.findOne({couponCode:couponCode });
     if (coupon && coupon.isActive) {
         couponDiscount = coupon.discountValue;
     }
@@ -187,13 +205,13 @@ if (!cartItems || !cartItems.items || cartItems.items.length === 0) {
 }
 
 const paymentDetails = ["Cash on delivery", "Wallet", "razorpay"];
-if(paymentDetails[paymentMode] === 'Cash on delivery'){
-    if(cartItems.payableAmount > 1000){
-        return res.status(400).json({ success: false, message: 'COD below 1000 only.' });
-    }
-}
+// if(paymentDetails[paymentMode] === 'Cash on delivery'){
+//     if(cartItems.payableAmount > 1000){
+//         return res.status(400).json({ success: false, message: 'COD below 1000 only.' });
+//     }
+// }
 const products = [];
-
+let totalPrices = cartItems.items.reduce((total, item) => total + (item.productDiscountPrice * item.productCount), 0)
 let totalQuantity = 0;
 // cartItems.items.forEach((item) => {
 //     products.push({
@@ -215,10 +233,10 @@ const newOrder = new Order({
     orderId: Math.floor(Math.random() * 1000000),
     items: cartItems.items,
     totalQuantity: totalQuantity,
-    totalPrice: cartItems.payableAmount,
+    totalPrice: totalPrices,    
     couponCode : couponCode,
-    // couponDiscount: couponDiscount,
-    productDiscountPrice:val,
+    couponDiscount: couponDiscount,
+    // productDiscountPrice:val,
     paymentMethod: paymentDetails[paymentMode],
     orderStatus: payment_status === "Pending" ? "Pending" : "Confirmed",
     paymentId: paymentId,
@@ -244,4 +262,61 @@ return res.status(200).json({ success: true, message: 'Order placed successfully
     console.log(`error from ${error}`);
     
 }
+}
+
+
+exports.coupon = async (req,res) =>{
+    try {
+        console.log('hai from coupon controllers')
+        const couponName = req.body.couponCode;
+        const userId = req.session.user_id;
+        console.log(`coupon name = ${couponName}`);
+        
+        if (!userId) {
+            req.flash('error', "User is not found, please login again");
+            return res.redirect('/login');
+        }
+        const coupon = await Coupon.findOne({couponCode:couponName});
+        console.log(`coupon find = ${coupon}`)
+        if (!coupon) {
+            console.log('coupon not found')
+            return res.status(404).json({ error: "Coupon not found" });
+        }
+        if (!coupon.isActive || coupon.expiryDate < new Date()) {
+            return res.status(400).json({ error: "Coupon expired" });
+        }
+
+        const Used = await orderSchema.findOne({userId:userId,couponCode:couponName,orderStatus:{$in:['Delivered', 'Shipped']}})
+        if(Used){
+            return res.status(404).json({ error: "Coupon Already Used" });
+        }
+        const cart = await Cart.findOne({userId});
+        if (!cart) {
+            return res.status(400).json({ error: "Cart not found" });
+        }
+
+        const total = cart.payableAmount;
+        let discountedTotal = total;
+
+        if(total < coupon.minimumOrderAmount){
+            return res.status(400).json({ error: "Minimum purchase limit not reached. Please add more items to your cart." }); 
+        }
+        
+        const couponDiscount = coupon.discountValue;
+        if(coupon.discountType == 'Fixed'){
+            discountedTotal = total - couponDiscount
+        }else if (coupon.discountType == 'Percentage'){
+            const discountAmount = (couponDiscount / 100) * total;
+            discountedTotal = total - discountAmount;
+        }
+        
+        cart.payableAmount = discountedTotal;
+        await cart.save();
+
+        res.status(200).json({ total: discountedTotal, couponDiscount });
+
+    } catch (error) {
+        console.log(`error from coupon ${error}`);
+        
+    }
 }
