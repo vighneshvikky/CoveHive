@@ -1,0 +1,167 @@
+
+<% if(user){ %>
+    <%- include('../layouts/userHeader.ejs') %>
+  <%}else{%>
+    <%- include('../layouts/landingNav.ejs') %>
+  <%} %>
+  <div class="bg-gray-900 min-h-screen flex items-center justify-center">
+    <div class="bg-gray-800 p-6 rounded-lg w-full max-w-4xl">
+      <h2 class="text-center text-2xl font-bold text-white mb-6">My Wishlist</h2>
+      <div class="space-y-4">
+        <!-- Wishlist Item -->
+         
+        
+         <% if(wishlist.products.length > 0){%>
+
+            <% wishlist.products.forEach(product=>{ %>
+
+             <div class="bg-gray-700 p-4 rounded-lg flex flex-col md:flex-row items-center justify-between">
+               <div class="flex items-center space-x-4">
+                 <img src="/uploads/<%= product. productId.image[0] %>" alt="FIFA 23 - PS5" class="w-20 h-20 rounded-lg">
+                 <div class="text-white">
+                   <h3 class="text-lg font-semibold"><%= product. productId.name %></h3>
+                   <% let discountPrice = Math.ceil(product.productId.price - (product.productId.price * product.productId.discount/100))  %>
+                   <p class="text-sm text-gray-300">₹ <%= discountPrice %></p>
+                   <% if(product.productId.stock>0){ %>
+                   <p class="text-sm text-green-500">Status: in stock</p>
+                   <% }else{ %>
+                    <p class="text-sm text-red-500">Status: out of stock</p>
+                    <% } %>
+                 </div>
+               </div>
+               <div class="mt-4 md:mt-0 flex space-x-2">
+                 <button class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg" onclick="removeFromWishlist('<%= product.productId._id %>')">Remove</button>
+
+                 <% if(product.productId.stock>0){ %>
+
+
+                    <form action="/cart/add/<%=product.productId._id%>/<%= product.productId.price %>" method="POST" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-blue-500">
+                        <button type="submit" class="btn btn-success">Add to Cart</button>
+                    </form>
+
+                 <% }else{ %>
+                    <button class=" bg-gray-500 text-gray-400 font-semibold py-2 px-6 rounded-lg cursor-not-allowed" disabled>
+                        Add to cart
+                      </button>
+
+                <% } %>
+               </div>
+             </div>
+             <% }) %>
+             <!-- Wishlist Item -->
+         <% }else{ %>
+            <div class="ml-28">
+                <svg class="h-8 w-8 text-red-500"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />  <polyline points="7.5 4.21 12 6.81 16.5 4.21" />  <polyline points="7.5 19.79 7.5 14.6 3 12" />  <polyline points="21 12 16.5 14.6 16.5 19.79" />  <polyline points="3.27 6.96 12 12.01 20.73 6.96" />  <line x1="12" y1="22.08" x2="12" y2="12" /></svg>
+            </div>
+            <h1 class="text-2xl text-center text-white font-semibold">Wishlist empty</h1>
+
+        <% } %>
+        
+      </div>
+    </div>
+  </div>
+
+  
+  
+  
+
+
+  <script>
+
+
+const addToCart = async (productId)=>{
+    try {
+      const response = await fetch('/cart/add',{
+        method:'POST',
+        headers:{
+          'content-Type' : 'application/json'
+        },
+        body:JSON.stringify({
+          productId : productId,
+          productCount:1
+        })
+      })
+
+      const data = await response.json();
+
+      if(response.ok){
+        Swal.fire({
+          postion:"top-center",
+          icon:"success",
+          title:"Item added to cart",
+          showConfirmButton: false,
+          time:500
+
+        })
+        
+        
+      }else{
+        alert(data.message)
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      
+    }
+}
+
+
+    const heartButton = document.getElementById('heartButton');
+const heartIcon = document.getElementById('heartIcon');
+
+heartButton.addEventListener('click', () => {
+  if (heartIcon.getAttribute('fill') === 'none') {
+    heartIcon.setAttribute('fill', 'currentColor');  // Fill the heart
+  } else {
+    heartIcon.setAttribute('fill', 'none');  // Hollow the heart
+  }
+});
+
+
+function removeFromWishlist(productId){
+    console.log(productId);
+
+    fetch('/removeWishListItem',{
+        method:'DELETE',
+        headers:{
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            productId:productId
+        })
+    })
+    .then(response=>response.json())
+    .then(result=>{
+        if(result.status === 'success'){
+            Swal.fire({
+            icon:'success',
+            title:"Item Removed",
+            text:result.message|| 'Item removed successfully'
+        }).then(()=>{
+            window.location.reload()
+        })
+
+        }else{
+            Swal.fire({
+          icon:"error",
+          title:"Failed to remove",
+          text: result.message || "Failed to remove products."
+      }) 
+        }
+    })
+    .catch(error=>{
+        console.log('error while adding wishList',error);
+        Swal.fire({
+            icon:"error",
+            title:error,
+            text: "An error occurred while adding to wishlist."
+
+            })
+    })
+       
+}
+    
+
+
+
+  </script>
+  <%- include('../layouts/userFooter.ejs') %>

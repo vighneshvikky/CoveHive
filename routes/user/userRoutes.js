@@ -12,6 +12,7 @@ const userCart = require('../../controllers/user/cartController');
 const searchController = require('../../controllers/user/searchController')
 const checkOutController= require('../../controllers/user/checkoutController')
 const orderController = require('../../controllers/user/orderController');
+const wishlistController = require('../../controllers/user/wishlistController');
 
  //user_route.get('/',userAuth.isLogout,userController.loadHome);
 user_route.get('/',userAuth.isLogout,userController.loadHome)
@@ -109,14 +110,6 @@ user_route.get('/cart',userAuth.isload,userCart.getCart);
 user_route.post('/cart/increment',userCart.increment);
 user_route.post('/cart/decrement',userCart.decrement);
 user_route.get('/cart/remove/:id',userCart.removeFromCart);
-//--------------------------------------user search ----------------------------------
-
- //user_route.get('/search',userAuth.isLogin,searchController.searchAndFilterProducts)
-
-//--------------------------------------filter ----------------------------------
-
-//user_route.get('/products',searchController.searchAndFilterProducts);
-
 
 //--------------------------------------Check out page ----------------------------------
 
@@ -130,6 +123,10 @@ user_route.post('/payment-render/:amount',checkOutController.paymentRender)
 //--------------------------------------Coupon----------------------------------
 
 user_route.post('/applycoupon',checkOutController.coupon)
+
+user_route.get('/wishList',userAuth.isLogin,wishlistController.getWishlist)
+user_route.post('/addWishList',wishlistController.postWishlist)
+user_route.delete('/removeWishListItem',wishlistController.removeWishlist)
 
 //--------------------------------------user logout ----------------------------------
 

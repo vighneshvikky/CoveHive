@@ -5,6 +5,8 @@
 <%}else{%>
   <%- include('../layouts/landingNav.ejs') %>
 <%} %>
+
+
 <div id="toast-container" style="position: fixed; top: 10px; right: 10px; z-index: 1000;"></div>
 
 <ul class="flex items-center font-[sans-serif] space-x-4 mt-4">
@@ -48,11 +50,13 @@
                         <img id="largeImage" src="/uploads/<%= product.image[0] %>" alt="<%= product.name %>" class="w-full object-cover" />
                         <div id="magnifier" class="magnifier" style="display: none;"></div>
                     </div>
+                    
                 </div>
                 
                 
 
                   <div>
+                    
                     <h2 class="text-2xl font-bold text-gray-800"><%= product.name %></h2>
                     <div class="flex flex-wrap gap-4 mt-4">
                         <p class="text-gray-800 text-xl font-bold"><i class="fa-solid fa-indian-rupee-sign"></i>
@@ -68,6 +72,7 @@
                             <%= product.discount %>% off
                           </span>
                           </p>
+            
                     </div>
                     
                     <div class="flex items-center mb-4">
@@ -122,20 +127,60 @@
                   
                     <div class="mt-8 flex space-x-4 justify-center">
           
-                     
+                  
  <% if(user){ %>
-  <form action="/cart/add/<%=product._id%>/<%= product.price %>" method="POST" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-blue-500">
-                          <button type="submit" class="btn btn-success">Add to Cart</button>
-                      </form>
+  <div class="mt-6 flex gap-4">
+    <% if (product.stock > 0) { %>
+      <form action="/cart/add/<%=product._id%>/<%= product.price %>" method="POST" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-blue-500">
+        <button type="submit" class="btn btn-success">Add to Cart</button>
+    </form>
+      <!-- Enable buttons when in stock -->
+      <button onclick="addToWishList('<%= product._id %>')" class="bg-pink-500 text-white font-semibold py-2 px-6 rounded-lg hover:bg-pink-400 transition flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+        </svg>
+        Add to Wishlist
+      </button>
+      <button type="button" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-green-500">
+        Buy Now
+      </button>
+      
+    <% } else { %>
+      <!-- Disable buttons and change style when out of stock -->
+      <button onclick="addToWishList('<%= product._id %>')" class="bg-pink-500 text-white font-semibold py-2 px-6 rounded-lg hover:bg-pink-400 transition flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+        </svg>
+        Add to Wishlist
+      </button>
+      <form class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-blue-500">
+        <button  class="btn btn-success cursor-not-allowed" disabled>Add to Cart</button>
+    </form>
+    <button type="button" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-green-500 cursor-not-allowed" disabled>
+      Buy Now
+    </button>
+    <% } %>
+  </div>  
+
 <%}else{%>
+
+  <button onclick="addToWishList('<%= product._id %>')" class="bg-pink-500 text-white font-semibold py-2 px-6 rounded-lg hover:bg-pink-400 transition flex items-center">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+    </svg>
+    Add to Wishlist
+  </button>
+
   <form action="/cart" method="get" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-blue-500">
     <button type="submit" class="btn btn-success">Add to Cart</button>
 </form>
-<%} %>                
+
+<button type="button" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-green-500">
+  Buy Now
+</button>
+<%} %>           
+  
       
-                      <button type="button" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-green-500">
-                        Buy Now
-                      </button>
                     </div>
                           
               
@@ -227,6 +272,68 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
+function addToWishList(productId){
+
+console.log(productId);
+
+
+fetch('/addWishList',{
+  method:'POST',
+  headers:{
+        'content-Type' : 'application/json'
+      },
+  body:JSON.stringify(
+    {productId:productId}
+  )
+})
+
+.then(response=>response.json())
+.then(result=>{
+  if(result.status === 'success'){
+    Swal.fire({
+      icon:'sucess',
+      title:'Added to wishList',
+      text:result.message||'product added to wishlist successfully'
+    }).then(()=>{
+      window.location.reload()
+    })
+  }else if(result.status === 'alreadyIn'){
+    Swal.fire({
+      icon:'warning',
+      title:'Product already in wishlist',
+      text:result.message||'Product already in wishList'
+    })
+
+  }else{
+    Swal.fire({
+        icon:"error",
+        title:"update failed",
+        text: result.message || "Failed to add wishlist."
+    })
+  }
+}).catch(error=>{
+  console.log('error while adding wishList',error);
+  Swal.fire({
+          icon:"error",
+          title:error,
+          text: "An error occurred while adding to wishlist."
+
+      })
+  
+})
+
+}
+
+const heartButton = document.getElementById('heartButton');
+const heartIcon = document.getElementById('heartIcon');
+
+heartButton.addEventListener('click', () => {
+if (heartIcon.getAttribute('fill') === 'none') {
+  heartIcon.setAttribute('fill', 'currentColor');  // Fill the heart
+} else {
+  heartIcon.setAttribute('fill', 'none');  // Hollow the heart
+}
+});
 
       </script>
     
