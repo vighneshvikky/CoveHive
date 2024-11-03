@@ -96,18 +96,34 @@
                               </a>
 
                               <!-- Action Buttons -->
-                              <div class="flex flex-wrap gap-3 pt-4">
+                               <% if(item.productStatus === 'Delivered') { %>
+                                <div class="flex flex-wrap gap-3 pt-4">
+                                  <button class="px-4 py-2 text-sm font-medium text-white bg-red-700 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-offset-2 transition-colors"
+                                          data-toggle="modal" 
+                                          data-target="#cancelModal" 
+                                          data-order-id="<%= order._id %>">
+                                      Return Order
+                                  </button>
+                                  <!-- <a href="/prepay/<%= order._id %>" 
+                                     class="px-4 py-2 text-sm font-medium text-white bg-yellow-500 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors">
+                                      Prepay
+                                  </a> -->
+                              </div>
+                               <%}else{ %>
+                                <div class="flex flex-wrap gap-3 pt-4">
                                   <button class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
                                           data-toggle="modal" 
                                           data-target="#cancelModal" 
                                           data-order-id="<%= order._id %>">
                                       Cancel Order
                                   </button>
-                                  <a href="/prepay/<%= order._id %>" 
+                                  <!-- <a href="/prepay/<%= order._id %>" 
                                      class="px-4 py-2 text-sm font-medium text-white bg-yellow-500 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors">
                                       Prepay
-                                  </a>
+                                  </a> -->
                               </div>
+                             <%  }%>
+                     
                           </div>
                       </div>
                   <% }) %>
