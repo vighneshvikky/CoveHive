@@ -116,7 +116,7 @@
                     <form action="" method="post" id="place-order-form" class="w-full sm:w-auto">
                         <button type="submit" 
                                 id="place-order-btn"
-                                data-amount="<%= cartDetails.items.reduce((total, item) => total + (item.productDiscountPrice * item.productCount), 0).toFixed(2) %>"
+                                data-amount="<%= cartDetails.payableAmount.toFixed(2) %>"
                                 data-username="<%= user.name %>" 
                                 data-mail="<%= user.email %>"
                                 data-phone="<%= user.phone %>"
@@ -163,7 +163,7 @@
                         <% }) %>
                         <tr class="bg-gray-100">
                             <td colspan="2" class="total-payable-amount text-right text-[#14213d] font-semibold py-2">Total:</td>
-                             <td class="text-[#14213d] font-semibold"><%= cartDetails.items.reduce((total, item) => total + (item.productDiscountPrice * item.productCount), 0).toFixed(2) %></td> 
+                             <td class="text-[#14213d] font-semibold"><%= cartDetails.payableAmount.toFixed(2)%></td> 
                         </tr>
                     </tbody>
                 </table>
@@ -422,6 +422,134 @@ orderPlacementBtn.addEventListener('click', (e) => {
                     console.error("Error during payment initiation:", error);
                 });
         }
+
+        window.onload = function () {
+        // Add event listeners after the DOM is fully loaded
+        const applyCouponBtn = document.getElementById('applyCouponBtn');
+        const removeCouponBtn = document.getElementById('removeCouponBtn');
+
+        // Check if the elements exist before adding event listeners
+        if (applyCouponBtn) {
+          applyCouponBtn.addEventListener('click', applyCoupon);
+        }
+
+        if (removeCouponBtn) {
+          removeCouponBtn.addEventListener('click', removeCoupon);
+        }
+      };
+
+      function applyCoupon() {
+        console.log('hai')
+        const selectedCouponId = document.getElementById('coupons').value;
+        const couponError = document.getElementById('couponError')
+
+
+        let isValid = true
+
+        if (!selectedCouponId) {
+          couponError.innerHTML = "Please select a coupon"
+          return
+        }
+
+        const data = {
+          couponCode: selectedCouponId
+        }
+
+        console.log(selectedCouponId);
+
+        fetch('/applyCoupon', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+
+        })
+          .then(response => response.json())
+          .then(result => {
+            if (result.status === 'success') {
+              Swal.fire({
+                icon: 'success',
+                title: 'Coupon Applied',
+                text: result.message || 'Coupon applied successfully'
+              })
+                .then(() => {
+                  window.location.reload()
+
+                })
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'coupon failed',
+                text: result.message || 'coupon applied failed'
+              })
+            }
+          })
+          .catch(error => {
+            console.log('errror while applying coupon', error);
+            Swal.fire({
+              icon: 'error',
+              title: error,
+              text: 'An erro occured in coupon applying'
+
+            })
+          })
+
+
+
+      }
+
+      function removeCoupon() {
+      
+
+        const selectedCouponId = document.getElementById('coupons').value;
+
+        console.log(selectedCouponId);
+
+
+        const data = {
+          couponCode: selectedCouponId
+        }
+
+        fetch('/removeCoupon', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+          .then(response => response.json())
+          .then(result => {
+            if (result.status === 'success') {
+              Swal.fire(({
+                icon: 'success',
+                title: 'Coupon removed',
+                text: result.message || 'Coupon removed successfully'
+              })).then(() => {
+                window.location.reload()
+              })
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Coupon remove failed',
+                text: result.message
+
+              })
+            }
+          })
+          .catch(error => {
+            console.log('error while removing coupon : ', error);
+            Swal.fire({
+              icon: 'error',
+              title: "server error",
+              text: error
+            })
+
+
+
+          })
+
+      }
         function placeOrder(addressIndex, paymentMethod) {
             const URL = `/place-order/${addressIndex}/${paymentMethod}`;
             fetch(URL, {

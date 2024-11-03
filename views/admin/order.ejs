@@ -231,8 +231,7 @@
                         ${item.productCount}
                     </td>
                     <td class="px-6 py-4 text-sm text-gray-700">
-                        ₹${(item.
-productDiscountPrice * item.productCount).toFixed(2) }
+                        ₹${(order.totalPrice).toFixed(2) }
                     </td>
                     <td class="px-6 py-4">
                         <span class="px-3 py-1 text-xs font-medium rounded-full ${getStatusClass(item.productStatus)}">

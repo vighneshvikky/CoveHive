@@ -124,7 +124,9 @@ user_route.get('/conform-order',userAuth.isLogin,checkOutController.orderConform
 user_route.post('/payment-render/:amount',checkOutController.paymentRender)
 //--------------------------------------Coupon----------------------------------
 
-user_route.post('/applycoupon',checkOutController.coupon)
+user_route.post('/applyCoupon',checkOutController.applyCoupon)
+user_route.post('/removeCoupon',checkOutController.removeCoupon)
+user_route.get('/coupons',userAuth.isLogin,checkOutController.userCoupons)
 
 user_route.get('/wishList',userAuth.isLogin,wishlistController.getWishlist)
 user_route.post('/addWishList',userAuth.isLogin,wishlistController.postWishlist)

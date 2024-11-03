@@ -88,14 +88,18 @@ exports.addToCart = async (req, res) => {
       }
 
       // Calculate total prices
-      cart.totalPrice = cart.items.reduce((total, item) => {
-          const itemTotalPrice = item.productCount * (item.productPrice || 0); // Fallback to 0 if productPrice is undefined
-          return total + itemTotalPrice;
-      }, 0);
-
+    //   cart.totalPrice = cart.items.reduce((total, item) => {
+    //       const itemTotalPrice = item.productCount * (item.productPrice || 0); // Fallback to 0 if productPrice is undefined
+    //       return total + itemTotalPrice;
+    //   }, 0);
+    cart.totalPrice = cart.items.reduce(
+        (acc, item) => acc + item.productPrice,
+        0
+      );
+cart.totalPrice = cart.items.reduce((acc,item)=> acc+item.productDiscountPrice,0)
       // Calculate payable amount if necessary
       cart.payableAmount = cart.totalPrice;
-
+    
       // Log the cart before saving
       console.log('Cart before saving:', JSON.stringify(cart, null, 2));
     //   req.session.cart = cart
@@ -160,6 +164,7 @@ exports.increment = async (req, res) => {
       // Update the product count in cart
       cart.items[index].productCount = newCount;
       cart.payableAmount =  cart.items.reduce((total, item) => total + (item.productDiscountPrice * item.productCount), 0);
+      console.log(`payableAmout = ${cart.payableAmount}`)
       // Calculate the updated total price
       const updatedPrice = cart.items[index].productDiscountPrice * cart.items[index].productCount;
 
