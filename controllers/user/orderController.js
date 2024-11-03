@@ -7,7 +7,7 @@ exports.placeOrder = async(req,res) => {
             req.flash('error', "User not found. Please login again.");
             return res.redirect("/login");
         }
-        console.log(`user = ${user}`)
+      
 
         const orderDetails = await Order.find({userId:user}).populate({path:'items.productId',select:"name"}).sort({ createdAt:-1})
         console.log(orderDetails); 
@@ -56,3 +56,20 @@ exports.cancelOrder = async (req,res) => {
         res.redirect('/orders');
     }
 }
+
+exports.viewOrderDetails = async (req, res) => {
+    try {
+        const orderId = req.params.id;
+        const order = await Order.findById(orderId).populate('items.productId').exec();
+
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+    
+     
+        res.json(order);
+    } catch (error) {
+        console.error(`Error from viewOrderDetails: ${error}`);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};

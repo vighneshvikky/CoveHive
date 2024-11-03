@@ -94,6 +94,8 @@ user_route.post('/change-password',forgetPass.postChangePass)
 
 user_route.get('/orders',userAuth.isLogin,orderController.placeOrder)
 
+user_route.get('/orders/:id',userAuth.isLogin,orderController.viewOrderDetails)
+
 //----------------------------------cancel orders ---------------------------------------
 
 user_route.get('/cancelOrder/:id',orderController.cancelOrder)
@@ -125,7 +127,7 @@ user_route.post('/payment-render/:amount',checkOutController.paymentRender)
 user_route.post('/applycoupon',checkOutController.coupon)
 
 user_route.get('/wishList',userAuth.isLogin,wishlistController.getWishlist)
-user_route.post('/addWishList',wishlistController.postWishlist)
+user_route.post('/addWishList',userAuth.isLogin,wishlistController.postWishlist)
 user_route.delete('/removeWishListItem',wishlistController.removeWishlist)
 
 //--------------------------------------user logout ----------------------------------
