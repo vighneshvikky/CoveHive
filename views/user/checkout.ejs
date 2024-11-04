@@ -4,14 +4,15 @@
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
         <!-- Shipping and Payment Information -->
         <div class="bg-white shadow-lg rounded-lg p-6 border border-[#14213d]">
+            <button onclick="toggleModal(true)" class="bg-blue-500 text-white font-bold py-2 px-4 rounded">
+                Add Address
+            </button>
             <form action="/place-order" method="POST" id="orderForm" class="max-w-3xl mx-auto px-4 py-8">
                 <ol class="space-y-8">
                     <!-- Shipping Info -->
                     <li class="relative">
                         <div class="flex items-center mb-6">
-                            <div class="w-10 h-10 bg-[#14213d] rounded-full flex items-center justify-center">
-                                <i class="bx bxs-truck text-xl text-white"></i>
-                            </div>
+                
                             <h5 class="text-xl font-semibold text-[#14213d] ml-4">Shipping Information</h5>
                         </div>
                         
@@ -144,13 +145,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th>Total</th>
-                            <th></th>
-                            <th></th>
-                            <!-- <th class="total-payable-amount">
-                                 <%= //cartDetails.payableAmount %>
-                            </th> -->
                         <% cartDetails.items.forEach(item => { %>
                             <tr>
                                 <td><img src="/uploads/<%= item.productImage %>" alt="<%= item.productId.name %>" class="w-16 h-16 rounded-lg"></td>
@@ -158,23 +152,30 @@
                                     <h5 class="text-sm font-semibold text-[#14213d]"><%= item.productId.name %></h5>
                                     <p class="text-gray-500 text-sm"><%= item.productDiscountPrice.toFixed(2) %> x <%= item.productCount %></p>
                                 </td>
-                                <td class="text-[#14213d]">$<%= (item.productDiscountPrice * item.productCount).toFixed(2) %></td>
+                                <td class="text-[#14213d]"><i class="fa-solid fa-indian-rupee-sign"></i><%= (item.productDiscountPrice * item.productCount).toFixed(2) %></td>
                             </tr>
                         <% }) %>
+                    
+                        <!-- New row for Discount -->
+                        <tr class="bg-gray-100">
+                            <td colspan="2" class="text-right text-[#14213d] font-semibold py-2">Discount:</td>
+                            <td class="text-[#14213d] font-semibold">-<%= cartDetails.totalPrice - cartDetails.payableAmount%></td>
+                        </tr>
+                    
+                        <!-- Existing Total row -->
                         <tr class="bg-gray-100">
                             <td colspan="2" class="total-payable-amount text-right text-[#14213d] font-semibold py-2">Total:</td>
-                             <td class="text-[#14213d] font-semibold"><%= cartDetails.payableAmount.toFixed(2)%></td> 
+                            <td class="text-[#14213d] font-semibold"><i class="fa-solid fa-indian-rupee-sign"></i><%= cartDetails.payableAmount.toFixed(2) %></td>
                         </tr>
                     </tbody>
+                    
                 </table>
             </div>
         </div>
     </div>          
 </div>
 <!-- Button to Open the Modal -->
-<button onclick="toggleModal(true)" class="bg-blue-500 text-white font-bold py-2 px-4 rounded">
-    Add Address
-</button>
+
 
 <!-- Modal Structure -->
 <div id="addressModal" class="fixed inset-0 z-50 hidden overflow-y-auto">

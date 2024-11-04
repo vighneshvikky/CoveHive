@@ -4,63 +4,102 @@
   <%}else{%>
     <%- include('../layouts/landingNav.ejs') %>
   <%} %>
-  <div class="bg-gray-900 min-h-screen flex items-center justify-center">
-    <div class="bg-gray-800 p-6 rounded-lg w-full max-w-4xl">
-      <h2 class="text-center text-2xl font-bold text-white mb-6">My Wishlist</h2>
-      <div class="space-y-4">
-        <!-- Wishlist Item -->
-         
+  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6 md:p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-slate-800 text-center mb-8">My Wishlist</h1>
         
-         <% if(wishlist.products.length > 0){%>
+        <div class="space-y-4">
+            <% if(wishlist.products.length > 0) { %>
+                <% wishlist.products.forEach(product => { %>
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden border border-slate-200">
+                        <div class="p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <!-- Product Info Section -->
+                            <div class="flex items-center space-x-4 w-full sm:w-auto">
+                                <div class="relative w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
+                                    <img 
+                                        src="/uploads/<%= product.productId.image[0] %>" 
+                                        alt="<%= product.productId.name %>"
+                                        class="w-full h-full object-cover"
+                                    >
+                                </div>
+                                
+                                <div class="flex-grow">
+                                    <h3 class="text-lg font-semibold text-slate-800 mb-1">
+                                        <%= product.productId.name %>
+                                    </h3>
+                                    <% let discountPrice = Math.ceil(product.productId.price - (product.productId.price * product.productId.discount/100)) %>
+                                    <div class="flex items-baseline gap-2">
+                                        <span class="text-lg font-bold text-slate-800">₹<%= discountPrice %></span>
+                                        <% if(product.productId.discount > 0) { %>
+                                            <span class="text-sm text-slate-500 line-through">₹<%= product.productId.price %></span>
+                                            <span class="text-sm font-medium text-green-600">
+                                                <%= product.productId.discount %>% off
+                                            </span>
+                                        <% } %>
+                                    </div>
+                                    <div class="mt-1">
+                                        <% if(product.productId.stock > 0) { %>
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                In Stock
+                                            </span>
+                                        <% } else { %>
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                Out of Stock
+                                            </span>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
 
-            <% wishlist.products.forEach(product=>{ %>
+                            <!-- Actions Section -->
+                            <div class="flex flex-wrap gap-2 w-full sm:w-auto justify-center sm:justify-end">
+                                <button 
+                                    onclick="removeFromWishlist('<%= product.productId._id %>')"
+                                    class="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition duration-150 ease-in-out"
+                                >
+                                    Remove
+                                </button>
 
-             <div class="bg-gray-700 p-4 rounded-lg flex flex-col md:flex-row items-center justify-between">
-               <div class="flex items-center space-x-4">
-                 <img src="/uploads/<%= product. productId.image[0] %>" alt="FIFA 23 - PS5" class="w-20 h-20 rounded-lg">
-                 <div class="text-white">
-                   <h3 class="text-lg font-semibold"><%= product. productId.name %></h3>
-                   <% let discountPrice = Math.ceil(product.productId.price - (product.productId.price * product.productId.discount/100))  %>
-                   <p class="text-sm text-gray-300">₹ <%= discountPrice %></p>
-                   <% if(product.productId.stock>0){ %>
-                   <p class="text-sm text-green-500">Status: in stock</p>
-                   <% }else{ %>
-                    <p class="text-sm text-red-500">Status: out of stock</p>
-                    <% } %>
-                 </div>
-               </div>
-               <div class="mt-4 md:mt-0 flex space-x-2">
-                 <button class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg" onclick="removeFromWishlist('<%= product.productId._id %>')">Remove</button>
-
-                 <% if(product.productId.stock>0){ %>
-
-
-                    <form action="/cart/add/<%=product.productId._id%>/<%= product.productId.price %>" method="POST" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-blue-500">
-                        <button type="submit" class="btn btn-success">Add to Cart</button>
-                    </form>
-
-                 <% }else{ %>
-                    <button class=" bg-gray-500 text-gray-400 font-semibold py-2 px-6 rounded-lg cursor-not-allowed" disabled>
-                        Add to cart
-                      </button>
-
-                <% } %>
-               </div>
-             </div>
-             <% }) %>
-             <!-- Wishlist Item -->
-         <% }else{ %>
-            <div class="ml-28">
-                <svg class="h-8 w-8 text-red-500"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />  <polyline points="7.5 4.21 12 6.81 16.5 4.21" />  <polyline points="7.5 19.79 7.5 14.6 3 12" />  <polyline points="21 12 16.5 14.6 16.5 19.79" />  <polyline points="3.27 6.96 12 12.01 20.73 6.96" />  <line x1="12" y1="22.08" x2="12" y2="12" /></svg>
-            </div>
-            <h1 class="text-2xl text-center text-white font-semibold">Wishlist empty</h1>
-
-        <% } %>
-        
-      </div>
+                                <% if(product.productId.stock > 0) { %>
+                                    <form action="/cart/add/<%= product.productId._id %>/<%= product.productId.price %>" method="POST">
+                                        <button 
+                                            type="submit"
+                                            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition duration-150 ease-in-out"
+                                        >
+                                            Add to Cart
+                                        </button>
+                                    </form>
+                                <% } else { %>
+                                    <button 
+                                        disabled
+                                        class="px-4 py-2 text-sm font-medium text-slate-400 bg-slate-100 rounded-lg cursor-not-allowed"
+                                    >
+                                        Add to Cart
+                                    </button>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div class="bg-white rounded-lg shadow-lg p-8 text-center">
+                    <div class="flex justify-center mb-4">
+                        <svg class="h-16 w-16 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                            <polyline points="7.5 4.21 12 6.81 16.5 4.21" />
+                            <polyline points="7.5 19.79 7.5 14.6 3 12" />
+                            <polyline points="21 12 16.5 14.6 16.5 19.79" />
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                            <line x1="12" y1="22.08" x2="12" y2="12" />
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-semibold text-slate-800 mb-2">Your Wishlist is Empty</h2>
+                    <p class="text-slate-600">Add items to your wishlist to keep track of products you love.</p>
+                </div>
+            <% } %>
+        </div>
     </div>
-  </div>
-
+</div>
   
   
   

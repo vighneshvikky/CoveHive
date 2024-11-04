@@ -194,6 +194,8 @@
                         <p id="paymentMethod" class="text-gray-700"></p>
                     </div>
                 </div>
+                <div>
+              </div>
             </div>
             
             <!-- Items Table -->
@@ -208,6 +210,7 @@
                                 <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Quantity</th>
                                 <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Price</th>
                                 <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Status</th>
+                               
                               
                             </tr>
                         </thead>
@@ -278,8 +281,7 @@
                         ${item.productCount}
                     </td>
                     <td class="px-6 py-4 text-sm text-gray-700">
-                        ₹${(item.
-productDiscountPrice * item.productCount).toFixed(2) }
+                        ₹${order.totalPrice.toFixed(2) }
                     </td>
                     <td class="px-6 py-4">
                         <span class="px-3 py-1 text-xs font-medium rounded-full ${getStatusClass(item.productStatus)}">
@@ -287,6 +289,7 @@ productDiscountPrice * item.productCount).toFixed(2) }
                         </span>
                         ${getStatusTimeline(item.productStatus)}
                     </td>
+             
             
                 `;
                 itemsTable.appendChild(row);

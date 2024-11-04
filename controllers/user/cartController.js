@@ -96,9 +96,9 @@ exports.addToCart = async (req, res) => {
         (acc, item) => acc + item.productPrice,
         0
       );
-cart.totalPrice = cart.items.reduce((acc,item)=> acc+item.productDiscountPrice,0)
+const payableAmount  = cart.items.reduce((acc,item)=> acc+item.productDiscountPrice,0)
       // Calculate payable amount if necessary
-      cart.payableAmount = cart.totalPrice;
+      cart.payableAmount = payableAmount;
     
       // Log the cart before saving
       console.log('Cart before saving:', JSON.stringify(cart, null, 2));

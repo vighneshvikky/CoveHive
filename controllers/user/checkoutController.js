@@ -184,7 +184,9 @@ try {
     const paymentMode = parseInt(req.params.payment);
     let couponDiscount = 0 ;
    let paymentId = '';
-   const { razorpay_payment_id, razorpay_order_id, razorpay_signature, payment_status , couponCode } = req.body;
+   const { razorpay_payment_id, razorpay_order_id, razorpay_signature, payment_status , couponCode ,selectedAddress} = req.body;
+//    console.log(`address = ${selectedAddress}`)
+   //console.log(`coupon code = ${couponCode}`)
    if(couponCode){
     const coupon = await Coupon.findOne({couponCode:couponCode });
     if (coupon && coupon.isActive) {
@@ -245,7 +247,7 @@ const newOrder = new Order({
     isCancelled: false
 });
 await newOrder.save();
- console.log(`newOrder = ${newOrder}`)
+//  console.log(`newOrder = ${newOrder}`)
 
  for(let item of cartItems.items){
              const product = await Product.findById(item.productId);
