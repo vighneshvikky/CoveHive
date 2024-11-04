@@ -180,13 +180,12 @@ exports.placeOrder = async (req,res) =>{
     console.log('hai from placeOrder')
 try {
     const userId = req.session.user_id;
-    //const addressIndex = parseInt(req.params.address);
+    const addressIndex = parseInt(req.params.address);
     const paymentMode = parseInt(req.params.payment);
     let couponDiscount = 0 ;
    let paymentId = '';
    const { razorpay_payment_id, razorpay_order_id, razorpay_signature, payment_status , couponCode ,selectedAddress} = req.body;
-//    console.log(`address = ${selectedAddress}`)
-   //console.log(`coupon code = ${couponCode}`)
+
    if(couponCode){
     const coupon = await Coupon.findOne({couponCode:couponCode });
     if (coupon && coupon.isActive) {
@@ -208,38 +207,34 @@ if (!cartItems || !cartItems.items || cartItems.items.length === 0) {
 }
 
 const paymentDetails = ["Cash on delivery", "Wallet", "razorpay"];
-// if(paymentDetails[paymentMode] === 'Cash on delivery'){
-//     if(cartItems.payableAmount > 1000){
-//         return res.status(400).json({ success: false, message: 'COD below 1000 only.' });
-//     }
-// }
+
 const products = [];
 let totalPrices = cartItems.payableAmount;
 let totalQuantity = 0;
-// cartItems.items.forEach((item) => {
-//     products.push({
-//         productId: item.productId._id,
-//         productName: item.productId.productName,
-//         productCategory: item.productId.productCollection,
-//         productCount: item.productCount,
-//         productPrice: item.productId.productPrice,
-//         productDiscount:item.productId.productDiscount,
-//         productImage: item.productId.productImage[0],
-//         productStatus: 'Pending'
-//     });
-//     totalQuantity += item.productCount;
-// });
-
-
+const user = await User.findById(req.session.user_id).populate('addresses')
+if (!user || !user.addresses|| !user.addresses[addressIndex]) {
+    return res.status(400).json({ success: false, message: 'Selected address is not valid.' });
+}
+ console.log(`user address = ${user.addresses[addressIndex].fullName}`)
 const newOrder = new Order({
-    userId: req.session.user,
+     userId: req.session.user,
     orderId: Math.floor(Math.random() * 1000000),
     items: cartItems.items,
     totalQuantity: totalQuantity,
     totalPrice: totalPrices,    
     couponCode : couponCode,
     couponDiscount: couponDiscount,
+    address:{
+        contactName:user.addresses[addressIndex].fullName,
+        street:user.addresses[addressIndex].street,
+        city:user.addresses[addressIndex].city,
+        pincode:user.addresses[addressIndex].pincode,
+        state:user.addresses[addressIndex].state,
+        country:user.addresses[addressIndex].country
+    },
+    
     // productDiscountPrice:val,
+    
     paymentMethod: paymentDetails[paymentMode],
     orderStatus: payment_status === "Pending" ? "Pending" : "Confirmed",
     paymentId: paymentId,

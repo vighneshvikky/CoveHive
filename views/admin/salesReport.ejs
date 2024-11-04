@@ -1,0 +1,249 @@
+<%- include('../layouts/header.ejs') %>
+<%- include('../layouts/sidebar.ejs') %>
+        <!-- Filter Dropdown using <select> -->
+            <div class="relative">
+                <select id="filterOption" class="bg-blue-600 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300">
+                  <option value="">Filter</option>
+                  <option value="day">This Day</option>
+                  <option value="week">This Week</option>
+                  <option value="month">This Month</option>
+                  <option value="year">This Year</option>
+                </select>
+              </div>
+              <!-- Export Dropdown using <select> -->
+              <div class="relative">
+                <select id="export" class="bg-green-600 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-300">
+                  <option value="">Export Report</option>
+                  <option value="excel">Excel Sheet</option>
+                  <option value="pdf">PDF</option>
+                </select>
+              </div>
+            </div>
+    
+          </div>
+        </div>
+        <div class="bg-gray-800 h-28 flex justify-evenly my-3 space-x-4 p-4 shadow-lg rounded-lg">
+          <div class="w-auto px-7 h-20 bg-gray-700 rounded-lg flex flex-col justify-center items-center text-white font-semibold shadow-md hover:bg-gray-600 transition duration-300 ease-in-out">
+            <span class="text-sm uppercase tracking-wide">Overall Sales Count</span>
+            <span id="overallSalesCount" class="text-lg font-bold"><%= overallSalesCount %></span>
+          </div>
+          <div class="w-auto px-7 h-20 bg-gray-700 rounded-lg flex flex-col justify-center items-center text-white font-semibold shadow-md hover:bg-gray-600 transition duration-300 ease-in-out">
+            <span class="text-sm uppercase tracking-wide">Overall Order Amount</span>
+            <span id="overallOrderAmount" class="text-lg font-bold">₹ <%= overallOrderAmount.toFixed() %></span>
+          </div>
+          <div class="w-auto px-7 h-20 bg-gray-700 rounded-lg flex flex-col justify-center items-center text-white font-semibold shadow-md hover:bg-gray-600 transition duration-300 ease-in-out">
+            <span class="text-sm uppercase tracking-wide">Overall Coupon Discoutn</span>
+            <span id="totalCouponDiscount" class="text-lg font-bold">₹ <%= totalCouponDiscount.toFixed() %></span>
+          </div>
+        </div>
+    
+        <!-- Sales Report Table -->
+        <div class="overflow-x-auto bg-gray-800 rounded-lg shadow-lg max-w-full">
+          <table class="min-w-full divide-y divide-gray-700">
+            <thead class="bg-gray-700">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Order ID</th>
+                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">User ID</th>
+                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Order Date</th>
+                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Order Amount</th>
+                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Coupon Deduction</th>
+                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Payment Status</th>
+                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Payment Method</th>
+                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Order Summary</th>
+              </tr>
+            </thead>
+            <tbody class="bg-gray-800 divide-y divide-gray-700">
+              <% data.forEach(data =>{ %>
+              <tr>
+                <td class="px-4 py-4 text-sm text-gray-400"><%= data.orderId %></td>
+                <td class="px-4 py-4 text-sm text-gray-400"><%= data.userId.toString().substring(0, 4) + '...' + data.userId.toString().slice(-5) %></td>
+                <td class="px-4 py-4 text-sm text-gray-400"><%= new Date(data.createdAt).toLocaleDateString('en-GB') %></td>
+                <td class="px-4 py-4 text-sm text-gray-400">₹ <%= data.totalPrice.toFixed(2) %></td>
+                <td class="px-4 py-4 text-sm text-gray-400">₹ <%= data.couponDiscount.toFixed(2) %></td>
+                <td class="px-4 py-4 text-sm <%= data.paymentStatus === 'Paid' ? 'text-green-500' : 'text-yellow-500' %>"><%= data.paymentStatus %></td>
+                <td class="px-4 py-4 text-sm text-gray-400"><%= data.paymentMethod %></td>
+                <td class="px-4 py-4 text-sm text-gray-400"><a href="/admin/salesReoprtView?orderId=<%= data._id %>" class="text-blue-400 hover:underline">View</a></td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+    
+        <!-- Pagination -->
+        <div class="flex justify-between items-center mt-4">
+          <div class="text-sm text-gray-400">
+            Showing <span class="font-medium" id="currentPage"><%= currentPage %></span> to <span class="font-medium" id="totalPages"><%= totalPages %></span> of <span class="font-medium" id="totalRecords"><%= totalRecordsCount %></span> results
+          </div>
+          <div class="inline-flex">
+            <button id="prevPage" class="px-3 py-1 rounded-l-md bg-gray-700 text-gray-400 hover:bg-gray-600">Previous</button>
+            <button id="nextPage" class="px-3 py-1 rounded-r-md bg-gray-700 text-gray-400 hover:bg-gray-600">Next</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <script>
+     let currentPage = parseInt(document.getElementById('currentPage').innerHTML);
+      let totalPages = parseInt(document.getElementById('totalPages').innerHTML);
+      let overallSalesCount = document.getElementById('overallSalesCount');
+      let overallOrderAmount = document.getElementById('overallOrderAmount');
+      let totalCouponDiscount = document.getElementById('totalCouponDiscount');
+    
+      
+      
+    
+    
+      console.log("current ", currentPage);
+      console.log("Total ", totalPages);
+      
+    
+      // Fetch Sales Report
+      function fetchSalesReport(page, filterOption = '') {
+        console.log("page in fetchSalesReport = ",page);
+        
+        const URL = `/admin/salesReport?page=${page}&filter=${filterOption}`;
+    
+        fetch(URL, {
+          headers: {
+            'Accept': 'application/json',
+          },
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          overallSalesCount.innerHTML = ''
+          overallSalesCount.innerHTML = data.overallSalesCount
+          overallOrderAmount.innerHTML = ''
+          overallOrderAmount.innerHTML = data.overallOrderAmount.toFixed()
+          totalCouponDiscount.innerHTML = ''
+          totalCouponDiscount.innerHTML = data.totalCouponDiscount.toFixed()
+          
+          
+    
+          updateReportTable(data.data);
+          updatePagination(data.currentPage, data.totalPages, data.totalRecordsCount);
+        })
+        .catch(error => console.error('Error fetching sales report:', error));
+      }
+    
+      // Event listener for Filter dropdown
+      document.getElementById('filterOption').addEventListener('change', function (event) {
+        const selectedFilter = event.target.value;
+        fetchSalesReport(1, selectedFilter);
+      });
+    
+      // Update the table rows
+      function updateReportTable(data) {
+        const tBody = document.querySelector('tbody');
+        tBody.innerHTML = '';  // Clear previous rows
+    
+        data.forEach(order => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td class="px-4 py-4 text-sm text-gray-400">${order.order_id}</td>
+            <td class="px-4 py-4 text-sm text-gray-400">${order.customer_id.substring(0, 4) + '...' + order.customer_id.slice(-5)}</td>
+            <td class="px-4 py-4 text-sm text-gray-400">${new Date(order.createdAt).toLocaleDateString('en-GB')}</td>
+            <td class="px-4 py-4 text-sm text-gray-400">₹${order.priceAfterCouponDiscount.toFixed(2)}</td>
+            <td class="px-4 py-4 text-sm text-gray-400">₹${order.couponDiscount.toFixed(2)}</td>
+            <td class="px-4 py-4 text-sm ${order.paymentStatus === 'Paid' ? 'text-green-500' : 'text-yellow-500'}">${order.paymentStatus}</td>
+            <td class="px-4 py-4 text-sm text-gray-400">${order.paymentMethod}</td>
+            <td class="px-4 py-4 text-sm text-gray-400"><a href="#" class="text-blue-400 hover:underline">View</a></td>
+          `;
+          tBody.appendChild(row);
+        });
+      }
+    
+      // Update pagination buttons and info
+      function updatePagination(current, total, totalRecords) {
+        currentPage = current;
+        totalPages = total;
+    
+        document.getElementById('currentPage').innerText = current;
+        document.getElementById('totalPages').innerText = total;
+        document.getElementById('totalRecords').innerText = totalRecords;
+    
+        document.getElementById('prevPage').disabled = currentPage === 1;
+        document.getElementById('nextPage').disabled = currentPage === totalPages;
+      }
+    
+      document.getElementById('prevPage').addEventListener('click', function () {
+        if (currentPage > 1) {
+          fetchSalesReport(currentPage - 1);
+        }
+      });
+    
+      document.getElementById('nextPage').addEventListener('click', function () {
+        console.log("Ima next");
+        console.log("tottal pages = ",totalPages);
+        console.log("currentPage page = ",currentPage);
+        
+        
+        
+        if (currentPage < totalPages) {
+          fetchSalesReport(currentPage + 1);
+        }
+      });
+    
+    
+      
+    //--------------Report generation -------------------
+    
+    document.getElementById('export').addEventListener('change',function(event){
+        const selectedExport = event.target.value;
+    
+        if(selectedExport){
+            const filterOption = document.getElementById('filterOption').value;
+    
+           exportReport(selectedExport,filterOption)
+            
+    
+        }
+    })
+    
+    
+    function exportReport(format,filterOption){
+    
+    
+        const URL = `/admin/exportReport?format=${format}&filter=${filterOption}`
+    
+        fetch(URL,{
+            headers:{
+                'Accept':'application/json'
+            }
+        })
+        .then(response=>response.blob())
+        .then(blob=>{
+    
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url
+    
+            //file name
+    
+            a.download = `sales_report.${format === 'excel' ? 'xlsx' : 'pdf'}`;
+    
+            document.body.appendChild(a)
+            a.click();
+            a.remove()
+    
+        })
+        .catch(error=  console.error('Error exporting report:', error))
+    
+    
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    </script>
+<%- include('../layouts/footer.ejs') %>

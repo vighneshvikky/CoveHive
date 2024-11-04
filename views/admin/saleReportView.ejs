@@ -1,0 +1,107 @@
+<%- include('../layouts/header.ejs') %>
+<%- include('../layouts/sidebar.ejs') %>
+<div class="min-h-screen bg-gray-900 text-white p-5 flex justify-center items-center">
+    <div class="order-details bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-3xl">
+      <!-- Order Details -->
+      <h1 class="text-3xl font-semibold mb-6 text-center">Orders Details</h1>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div>
+          <p><strong>Order ID:</strong> <%= order.orderId%></p>
+          <p><strong>Ordered date:</strong> <%= new Date(order.createdAt).toLocaleDateString('en-GB') %></p>
+          <% if(order.orderStatus !== 'Delivered'){ %>
+            <p><strong>Delivered date:</strong> Not deliverd yet</p>
+          <% }else{ %>
+          <p><strong>Delivered date:</strong><%= new Date(order.deliveredDate).toLocaleDateString('en-GB') %></p>
+          <% } %>
+          <p><strong>Order status:</strong> <span class=" <%= order.orderStatus === 'Delivered' ? 'text-green-500' : order.orderStatus === 'Cancelled' ? 'text-red-500' : 'text-yellow-500' %> "><%= order.orderStatus %></span> </p>
+        </div>
+      </div>
+  
+      <!-- Delivery Address -->
+      <div class="mb-8">
+        <h2 class="text-xl font-semibold mb-2">Delivery Address</h2>
+        <p><%= order.address.contactName %>,</p>
+        <p><%= order.address.building %>,</p>
+        <p><%= order.address.city %>,</p>
+        <p> <%= order.address.district %>,  <%= order.address.state %></p>
+        <p> pincode: <%= order.address.pincode %></p>
+        <p><strong>Mobile:</strong> <%= order.address.phonenumber %></p>
+      </div>
+  
+      <!-- Payment Method -->
+      <div class="mb-8">
+        <h2 class="text-xl font-semibold mb-2">Payment Method</h2>
+        <p><%= order.paymentMethod %></p>
+      </div>
+  
+      <!-- Product Details -->
+      <div class="mb-8">
+        <% order.items.forEach(product=>{ %>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center bg-gray-700 p-4 rounded-lg">
+          <img class="w-1/2 h-3/4 object-cover rounded-lg" src="/uploads<%= product.image[0] %>" alt="FIFA 23 - PS5">
+          <div class="sm:col-span-2">
+            <p class="text-lg font-semibold"><%= product.name %></p>
+            <p><strong>QTY:</strong> <%=order.productCount%></p>
+            <p><strong>Price:</strong> ₹ <%= product.price.toFixed(2) %></p>
+          </div>
+        </div>
+        <% }) %>
+        <div class="flex justify-end mt-2">
+          <p class="font-semibold text-xl">Total: ₹ <%= order.totalPrice.toFixed(2) %></p>
+        </div>
+      </div>
+  
+      <!-- Order Summary -->
+      <div class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
+        <div class="grid grid-cols-2">
+          <p class="font-semibold">Subtotal:</p>
+          <p class="text-right">₹ <%= order.totalPrice.toFixed(2) %></p>
+          <p class="font-semibold">Coupon Discount:</p>
+          <p class="text-right">₹ -<%= order.couponDiscount.toFixed(2) %></p>
+        </div>
+        <div class="flex justify-end mt-4">
+          <p class="font-semibold text-xl">Total: ₹ <%= order.totalPrice.toFixed(2) - order.couponDiscount.toFixed(2) %></p>
+        </div>
+      </div>
+  
+      <!-- Download Invoice Button -->
+     
+    </div>
+    
+  </div>
+  
+  <div class="bg-gray-900 py-8 p-2 text-center">
+    <a href="#" id="downloadInvoice" class="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-4  rounded-lg">Download Invoice</a>
+  </div>
+
+  <script>
+    document.getElementById('downloadInvoice').addEventListener('click', function(event) {
+      event.preventDefault();  // Prevent the default anchor behavior
+  
+      // Get the order-details div
+      const orderDetails = document.querySelector('.order-details');
+  
+      // Use html2canvas to capture the order details as a canvas
+      html2canvas(orderDetails, { scale: 2 }).then(canvas => {
+        // Initialize jsPDF
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');  // p for portrait, mm for millimeters, a4 paper size
+  
+        // Convert the canvas to image format
+        const imgData = canvas.toDataURL('image/png');
+  
+        // Calculate image size and position for A4 page (210mm x 297mm)
+        const imgWidth = 210;  // Full width of A4
+        const pageHeight = 297;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width; // Maintain aspect ratio
+  
+        // Add the image to the PDF
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+  
+        // Save the PDF as "invoice.pdf"
+        pdf.save('invoice.pdf');
+      });
+    });
+  </script>
+<%- include('../layouts/Footer.ejs') %>

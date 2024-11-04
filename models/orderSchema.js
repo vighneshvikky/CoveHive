@@ -51,16 +51,18 @@ const orderSchema =new mongoose.Schema({
         type: Number,
         required: true
     },
+    priceAfterCouponDiscount:{
+     type:Number,
+     default:0
+    },
     address: {
-        customer_name: String,
-        customer_email: String,
-        building: String,
+        contactName: String,
         street: String,
         city: String,
+        state:String,
         country: String,
         pincode: Number,
-        phonenumber:Number,
-        landMark:String
+
     },
     paymentId: {
         type: String,

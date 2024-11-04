@@ -31,8 +31,10 @@
     "passport": "^0.7.0",
     "passport-google-oauth2": "^0.2.0",
     "passport-google-oauth20": "^2.0.0",
+    "pdfkit": "^0.15.1",
     "razorpay": "^2.9.5",
-    "sharp": "^0.33.5"
+    "sharp": "^0.33.5",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "tailwindcss": "^3.4.10"

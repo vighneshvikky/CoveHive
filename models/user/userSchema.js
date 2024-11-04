@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date }, // Add default value for createdAt
-    addresses: [{type:mongoose.Schema.Types.ObjectId,ref:'Address'}], // Add an array of addresses for multiple address management
+    addresses: [{type:mongoose.Schema.Types.ObjectId,ref:'Address'}],    // Add an array of addresses for multiple address management
     orders: [
         {
             orderId: { type: mongoose.Schema.Types.ObjectId, ref: 'Orders' }, // Reference to an Order collection

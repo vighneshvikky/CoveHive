@@ -5,7 +5,8 @@ const customerController = require('../../controllers/admin/customerController')
 const categoryController = require('../../controllers/admin/categoryController');
 const productController = require('../../controllers/admin/productController');
 const orderController = require('../../controllers/admin/orderController');
-const couponController = require('../../controllers/admin/couponController')
+const couponController = require('../../controllers/admin/couponController');
+const salesController = require('../../controllers/admin/salesController')
 //const work = require('../../middlewares/multer')
 const load = require('../../middlewares/multer')
 
@@ -82,6 +83,18 @@ admin_routes.post('/addCouponPost',couponController.postAddCoupon);
 admin_routes.patch('/removeCoupon/:couponId',adminAuth.auth,couponController.removeCoupon);
 admin_routes.get('/editCoupon',adminAuth.auth,couponController.editCoupon);
 admin_routes.post('/editCouponPost',couponController.editCouponPost)
+
+
+//------------------------------------------sales-----------------------------------------------------
+
+admin_routes.get('/salesReport',adminAuth.auth,salesController.sales)
+admin_routes.get('/salesReoprtView',adminAuth.auth,salesController.salesReoprtView);
+admin_routes.get('/exportReport',adminAuth.auth,salesController.exportReport)
+
+
+// adminRouter.get('/salesReport',isAdmin,sales)
+// adminRouter.get('/salesReoprtView',isAdmin,salesReoprtView)
+// adminRouter.get('/exportReport',isAdmin,exportReport)
 
 //----------------------------------------Logout ------------------------------------------------------------------------
 
