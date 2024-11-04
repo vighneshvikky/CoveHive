@@ -1,5 +1,4 @@
 <%- include('../layouts/header.ejs') %>
-<%- include('../layouts/sidebar.ejs') %>
         <!-- Filter Dropdown using <select> -->
             <div class="relative">
                 <select id="filterOption" class="bg-blue-600 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300">
@@ -22,21 +21,7 @@
     
           </div>
         </div>
-        <div class="bg-gray-800 h-28 flex justify-evenly my-3 space-x-4 p-4 shadow-lg rounded-lg">
-          <div class="w-auto px-7 h-20 bg-gray-700 rounded-lg flex flex-col justify-center items-center text-white font-semibold shadow-md hover:bg-gray-600 transition duration-300 ease-in-out">
-            <span class="text-sm uppercase tracking-wide">Overall Sales Count</span>
-            <span id="overallSalesCount" class="text-lg font-bold"><%= overallSalesCount %></span>
-          </div>
-          <div class="w-auto px-7 h-20 bg-gray-700 rounded-lg flex flex-col justify-center items-center text-white font-semibold shadow-md hover:bg-gray-600 transition duration-300 ease-in-out">
-            <span class="text-sm uppercase tracking-wide">Overall Order Amount</span>
-            <span id="overallOrderAmount" class="text-lg font-bold">₹ <%= overallOrderAmount.toFixed() %></span>
-          </div>
-          <div class="w-auto px-7 h-20 bg-gray-700 rounded-lg flex flex-col justify-center items-center text-white font-semibold shadow-md hover:bg-gray-600 transition duration-300 ease-in-out">
-            <span class="text-sm uppercase tracking-wide">Overall Coupon Discoutn</span>
-            <span id="totalCouponDiscount" class="text-lg font-bold">₹ <%= totalCouponDiscount.toFixed() %></span>
-          </div>
-        </div>
-    
+
         <!-- Sales Report Table -->
         <div class="overflow-x-auto bg-gray-800 rounded-lg shadow-lg max-w-full">
           <table class="min-w-full divide-y divide-gray-700">
@@ -60,7 +45,7 @@
                 <td class="px-4 py-4 text-sm text-gray-400"><%= new Date(data.createdAt).toLocaleDateString('en-GB') %></td>
                 <td class="px-4 py-4 text-sm text-gray-400">₹ <%= data.totalPrice.toFixed(2) %></td>
                 <td class="px-4 py-4 text-sm text-gray-400">₹ <%= data.couponDiscount.toFixed(2) %></td>
-                <td class="px-4 py-4 text-sm <%= data.paymentStatus === 'Paid' ? 'text-green-500' : 'text-yellow-500' %>"><%= data.paymentStatus %></td>
+                <td class="px-4 py-4 text-sm <%= data.orderStatus === 'Paid' ? 'text-green-500' : 'text-yellow-500' %>"><%= data.orderStatus %></td>
                 <td class="px-4 py-4 text-sm text-gray-400"><%= data.paymentMethod %></td>
                 <td class="px-4 py-4 text-sm text-gray-400"><a href="/admin/salesReoprtView?orderId=<%= data._id %>" class="text-blue-400 hover:underline">View</a></td>
               </tr>
@@ -144,10 +129,10 @@
         data.forEach(order => {
           const row = document.createElement('tr');
           row.innerHTML = `
-            <td class="px-4 py-4 text-sm text-gray-400">${order.order_id}</td>
-            <td class="px-4 py-4 text-sm text-gray-400">${order.customer_id.substring(0, 4) + '...' + order.customer_id.slice(-5)}</td>
+            <td class="px-4 py-4 text-sm text-gray-400">${order.orderId}</td>
+            <td class="px-4 py-4 text-sm text-gray-400">${order.userId.substring(0, 4) + '...' + order.userId.slice(-5)}</td>
             <td class="px-4 py-4 text-sm text-gray-400">${new Date(order.createdAt).toLocaleDateString('en-GB')}</td>
-            <td class="px-4 py-4 text-sm text-gray-400">₹${order.priceAfterCouponDiscount.toFixed(2)}</td>
+            <td class="px-4 py-4 text-sm text-gray-400">₹${order.totalPrice.toFixed(2)}</td>
             <td class="px-4 py-4 text-sm text-gray-400">₹${order.couponDiscount.toFixed(2)}</td>
             <td class="px-4 py-4 text-sm ${order.paymentStatus === 'Paid' ? 'text-green-500' : 'text-yellow-500'}">${order.paymentStatus}</td>
             <td class="px-4 py-4 text-sm text-gray-400">${order.paymentMethod}</td>

@@ -21,11 +21,11 @@
       <div class="mb-8">
         <h2 class="text-xl font-semibold mb-2">Delivery Address</h2>
         <p><%= order.address.contactName %>,</p>
-        <p><%= order.address.building %>,</p>
+        <p><%= order.address.street %>,</p>
         <p><%= order.address.city %>,</p>
-        <p> <%= order.address.district %>,  <%= order.address.state %></p>
+        <p> <%= order.address.state %>,  <%= order.address.country %></p>
         <p> pincode: <%= order.address.pincode %></p>
-        <p><strong>Mobile:</strong> <%= order.address.phonenumber %></p>
+   
       </div>
   
       <!-- Payment Method -->
@@ -38,11 +38,11 @@
       <div class="mb-8">
         <% order.items.forEach(product=>{ %>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center bg-gray-700 p-4 rounded-lg">
-          <img class="w-1/2 h-3/4 object-cover rounded-lg" src="/uploads<%= product.image[0] %>" alt="FIFA 23 - PS5">
+          <img class="w-1/2 h-3/4 object-cover rounded-lg" src="/uploads/<%= product.productId.image[0] %>" alt="<%=product.productId.name %>"> 
           <div class="sm:col-span-2">
-            <p class="text-lg font-semibold"><%= product.name %></p>
-            <p><strong>QTY:</strong> <%=order.productCount%></p>
-            <p><strong>Price:</strong> ₹ <%= product.price.toFixed(2) %></p>
+            <p class="text-lg font-semibold"><%= product.productId.name %></p>
+            <p><strong>QTY:</strong> <%=product.productCount%></p>
+            <p><strong>Price:</strong> ₹ <%= product.productId.price.toFixed(2) %></p> 
           </div>
         </div>
         <% }) %>

@@ -13,6 +13,7 @@ const searchController = require('../../controllers/user/searchController')
 const checkOutController= require('../../controllers/user/checkoutController')
 const orderController = require('../../controllers/user/orderController');
 const wishlistController = require('../../controllers/user/wishlistController');
+const walletController = require('../../controllers/user/walletController');
 
  //user_route.get('/',userAuth.isLogout,userController.loadHome);
 user_route.get('/',userAuth.isLogout,userController.loadHome)
@@ -131,6 +132,9 @@ user_route.get('/coupons',userAuth.isLogin,checkOutController.userCoupons)
 user_route.get('/wishList',userAuth.isLogin,wishlistController.getWishlist)
 user_route.post('/addWishList',userAuth.isLogin,wishlistController.postWishlist)
 user_route.delete('/removeWishListItem',wishlistController.removeWishlist)
+
+user_route.get('/wallet',userAuth.isLogin,walletController.walletPage)
+
 
 //--------------------------------------user logout ----------------------------------
 

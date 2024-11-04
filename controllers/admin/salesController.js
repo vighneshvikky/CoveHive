@@ -144,15 +144,17 @@ exports.exportReport = async(req,res)=>{
 
         const salesData = await Order.find(queryCondition).sort({createdAt:-1})
 
+        console.log(`salesData = ${salesData}`)
+
         if(format === 'excel'){
 
             const worksheetData = salesData.map(data => ({
-                OrderID: data.order_id,
-                UserID: data.customer_id,
+                OrderID: data.orderId,
+                UserID: data.userId,
                 OrderDate: new Date(data.createdAt).toLocaleDateString('en-GB'),
-                OrderAmount: `₹${data.priceAfterCouponDiscount.toFixed(2)}`,
-                CouponDeduction: `₹${data.couponDiscount.toFixed(2)}`,
-                PaymentStatus: data.paymentStatus,
+                OrderAmount: `₹${data.totalPrice.toFixed(2)}`,
+                 CouponDeduction: `₹${data.couponDiscount.toFixed(2)}`,
+                 PaymentStatus: data.orderStatus,
                 PaymentMethod: data.paymentMethod,
               }));
 
@@ -223,17 +225,17 @@ exports.exportReport = async(req,res)=>{
 
     salesData.forEach((data) => {
         x = startX; // Reset x position for each row
-        const truncatedUserId = `${data.customer_id.toString().substring(0, 6)}....${data.customer_id.toString().substring(data.customer_id.toString().length - 6)}`;
+        const truncatedUserId = `${data.userId.toString().substring(0, 6)}....${data.userId.toString().substring(data.userId.toString().length - 6)}`;
 
 
         // Draw each column cell for the current row
         const rowData = [
-            data.order_id,
+            data.orderId,
             truncatedUserId,
             new Date(data.createdAt).toLocaleDateString('en-GB'),
-            `₹${data.priceAfterCouponDiscount.toFixed(2)}`,
+            `₹${data.totalPrice.toFixed(2)}`,
             `₹${data.couponDiscount.toFixed(2)}`,
-            data.paymentStatus,
+            data.orderStatus,
             data.paymentMethod
         ];
 
@@ -261,15 +263,12 @@ exports.exportReport = async(req,res)=>{
 
 exports.salesReoprtView = async (req, res) => {
     try {
+     
       const { orderId } = req.query;
-  
-      const order = await Order.findOne({ _id: orderId }).populate({
-        path: "items.productId",
-        select: "name category price discount stock image",
-        model: 'Product',
-        options: { strictPopulate: false },
-      });
-
+       console.log(req.query);
+        
+      const order = await Order.findOne({ _id: orderId }).populate("items.productId");
+     console.log(`order from hhere = ${order}`)
       console.log(`order = ${order}`)
   
       res.render("admin/saleReportView", {

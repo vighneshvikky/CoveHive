@@ -1,5 +1,6 @@
 const Order = require('../../models/orderSchema');
 const Product = require('../../models/admin/productModel')
+const Wallet = require('../../models/walletSchema')
 exports.placeOrder = async(req,res) => {
     try {
         const user = req.session.user_id;
@@ -24,6 +25,7 @@ exports.placeOrder = async(req,res) => {
 
 exports.cancelOrder = async (req,res) => {
     try {
+console.log('hai');
 
         const orderId = req.params.id;
  
@@ -36,6 +38,30 @@ exports.cancelOrder = async (req,res) => {
         if (!order) {
             req.flash('error', 'Order not found');
             return res.redirect('/orders');
+        }
+        if (order.paymentMethod === 'razorpay' || order.paymentMethod === 'Wallet' ) {
+            const userWallet = await Wallet.findOne({ userID: order.userId });
+            if (userWallet) {
+                userWallet.balance = (userWallet.balance || 0) + order.totalPrice;
+                userWallet.transaction.push({
+                    wallet_amount: order.totalPrice,
+                    order_id: order.orderId,
+                    transactionType: 'Credited',
+                    transaction_date: new Date()
+                });
+                await userWallet.save();
+            } else {
+                await Wallet.create({
+                    userID: order.userId,
+                    balance: order.totalPrice,
+                    transaction: [{
+                        wallet_amount: order.totalPrice,
+                        order_id: order.orderId,
+                        transactionType: 'Credited',
+                        transaction_date: new Date()
+                    }]
+                });
+            }
         }
 
         for(const item of order.items){

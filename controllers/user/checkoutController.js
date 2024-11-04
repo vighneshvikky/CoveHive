@@ -4,6 +4,7 @@ const Cart = require('../../models/user/cartSchema');
 const Order = require('../../models/orderSchema');
 const Product = require('../../models/admin/productModel');
 const Coupon = require('../../models/couponSchema')
+const Wallet = require('../../models/walletSchema')
 
 const  Razorpay = require('razorpay');
 const { concurrency } = require('sharp');
@@ -53,6 +54,12 @@ const eligibleCoupons = availableCoupons.filter((coupon) =>{
    }
    return true
 });
+let wallet = await Wallet.findOne({ userID: userId });
+
+if (!wallet) {
+    wallet = { balance: 0, transaction: [] };
+}
+
 
     const addresses = user.addresses;
 
@@ -199,6 +206,8 @@ try {
 
 const cartItems = await Cart.findOne({userId}).populate('items.productId');
  
+let discountPrice = cartItems.totalPrice - cartItems.payableAmount;
+
 
 
 
@@ -223,7 +232,7 @@ const newOrder = new Order({
     totalQuantity: totalQuantity,
     totalPrice: totalPrices,    
     couponCode : couponCode,
-    couponDiscount: couponDiscount,
+    couponDiscount: discountPrice,
     address:{
         contactName:user.addresses[addressIndex].fullName,
         street:user.addresses[addressIndex].street,
@@ -243,6 +252,21 @@ const newOrder = new Order({
 });
 await newOrder.save();
 //  console.log(`newOrder = ${newOrder}`)
+
+if(paymentDetails[paymentMode] === 'Wallet'){
+    const wallet = await Wallet.findOne({ userID: userId });
+    if (!wallet || wallet.balance < cartItems.payableAmount) {
+        return res.status(400).json({ success: false, message: 'Insufficient wallet balance.' });
+    }
+    wallet.balance -= cartItems.payableAmount;
+    wallet.transaction.push({
+        wallet_amount: cartItems.payableAmount,
+        transactionType: 'Debited',
+        transaction_date: new Date(),
+        order_id: newOrder.order_id,
+    });
+await wallet.save();
+}
 
  for(let item of cartItems.items){
              const product = await Product.findById(item.productId);

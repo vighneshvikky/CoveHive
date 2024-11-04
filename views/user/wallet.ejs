@@ -1,0 +1,180 @@
+<style>
+    .wallet-page {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 3rem;
+    }
+
+    .card {
+        background-color: #232323;
+        border: none;
+    }
+
+    .user-profile-div {
+        margin-bottom: 20px;
+        height: 95%;
+    }
+
+    .card-sidebar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100%;
+    }
+
+    .card-sidebar h2 {
+        padding: 1.5rem;
+        color: #fefeeb;
+        display: flex;
+        gap: 1rem;
+    }
+
+    .list-group {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .list-group-item {
+        background: transparent;
+        border: none;
+        font-size: 1.1rem;
+        border-radius: 5px;
+    }
+
+    .list-group-item:hover {
+        background: #DB4444;
+    }
+
+    .list-group-item a {
+        color: #fefeeb;
+        text-decoration: none;
+        display: flex;
+        gap: 1rem;
+    }
+
+    .wallet-box {
+        background: #232323;
+        color: #fefeeb;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+        height: 100%;
+    }
+
+    .transaction {
+        display: flex;
+        justify-content: center;
+    }
+
+    .transaction-history {
+        background: #232323;
+        color: #fefeeb;
+        border-radius: 5px;
+    }
+
+    .transaction-history h1 {
+        display: flex;
+        justify-content: center;
+        padding: 4rem;
+    }
+
+    .history-icon {
+        font-size: 5rem;
+    }
+
+    .transaction-history {
+        margin: 20px 0;
+    }
+
+    .transaction-head,
+    .transaction-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .flex-row {
+        flex: 1;
+        text-align: center;
+    }
+
+    .transaction-head .flex-row {
+        font-weight: bold;
+    }
+
+    .transaction-row {
+        padding: 10px;
+        margin-top: 10px;
+    }
+    .no-history{
+        padding: 5rem;
+        display: flex;
+        justify-content: center;
+    }
+</style>
+
+
+    <div class="container wallet-page">
+
+        <div class="col-lg-8">
+            <div class="wallet-box">
+                <i class="bi bi-wallet-fill history-icon"></i>
+                <h1>Your wallet</h1>
+                <p>Available Balance
+                <h3 class="text-danger">₹ <%= (wallet.balance).toFixed(2) %>
+                </h3>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="transaction">
+        <div class="col-lg-10">
+            <div class="transaction-history">
+                <h1>Transaction History</h1>
+                <% if(wallet.transaction.length> 0) { %>
+                    <div class="transaction-head">
+                        <div class="flex-row text-center">
+                            <h6>Date</h6>
+                        </div>
+                        <div class="flex-row text-center">
+                            <h6>Type</h6>
+                        </div>
+                        <div class="flex-row text-center">
+                            <h6>Order Id</h6>
+                        </div>
+                        <div class="flex-row text-center">
+                            <h6>Amount</h6>
+                        </div>
+                    </div>
+                    <% wallet.transaction.forEach(element=> {%>
+                        <div class="transaction-row">
+                            <div class="flex-row text-center">
+                                <p>
+                                    <%= element.transaction_date.toDateString() %>
+                                </p>
+                            </div>
+                            <div class="flex-row text-center">
+                                <p>
+                                    <%= element.transactionType %>
+                                </p>
+                            </div>
+                            <div class="flex-row text-center">
+                                <h6>#<%= element.order_id %>
+                                </h6>
+                            </div>
+                            <div class="flex-row text-center">
+                                <h5>₹ <%= element.wallet_amount %>
+                                </h5>
+                            </div>
+                        </div>
+                        <% }); %>
+                            <% } else { %>
+                                <h3 class="no-history">No Transactions Yet</h3>
+                                <% } %>
+            </div>
+        </div>
+    </div>
