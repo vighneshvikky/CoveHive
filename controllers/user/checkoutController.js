@@ -322,16 +322,21 @@ exports.applyCoupon = async (req,res) =>{
             message:'Coupon expired'
         })
        }
+
        console.log(`couponId = ${coupon._id}`)
-       const couponUsage = user.couponUsed.find((usage) => {
+
+
+    const couponUsage = user.couponUsed.find((usage) =>{
         return usage.couponId.toString() === coupon._id.toString();
-       });
+    })
 
        console.log(`this is the applied coupon ${couponUsage}`);
 
+
        if(couponUsage && couponUsage.usageCount >= coupon.usageCount){
+        console.log('hai')
         return res.status(400).json({
-            status:error,
+            status:'error',
             message:"You've hit the limit for coupon usage."
         })
        }

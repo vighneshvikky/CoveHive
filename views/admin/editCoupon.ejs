@@ -3,125 +3,125 @@
     <%- include('../layouts/sidebar.ejs') %>
     
     <main class="flex-1 p-6 lg:p-8">
-        <div class="max-w-4xl mx-auto bg-indigo-900 rounded-xl shadow-2xl p-6 lg:p-8">
-            <!-- Header -->
-            <div class="mb-8">
-                <h2 class="text-2xl font-bold text-white">Edit Coupon</h2>
-                <p class="text-gray-400 text-sm mt-2">Update coupon details</p>
+      <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-2xl p-6 lg:p-8">
+        <!-- Header -->
+        <div class="mb-8">
+          <h2 class="text-2xl font-bold text-gray-800">Edit Coupon</h2>
+          <p class="text-gray-500 text-sm mt-2">Update coupon details</p>
+        </div>
+
+        <!-- Form -->
+        <form class="space-y-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <!-- Coupon Code -->
+            <div class="space-y-2">
+              <label for="couponCode" class="block text-sm font-medium text-gray-600">Coupon Code</label>
+              <input 
+                id="couponCode" 
+                value="<%= coupon.couponCode %>" 
+                type="text" 
+                class="w-full px-4 py-2.5 rounded-lg bg-gray-100 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                placeholder="Enter coupon code" 
+              />
+              <p id="couponCodeError" class="text-red-500 text-sm hidden"></p>
             </div>
 
-            <!-- Form -->
-            <form class="space-y-6">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <!-- Coupon Code -->
-                    <div class="space-y-2">
-                        <label for="couponCode" class="block text-sm font-medium text-gray-300">Coupon Code</label>
-                        <input 
-                            id="couponCode" 
-                            value="<%= coupon.couponCode %>" 
-                            type="text" 
-                            class="w-full px-4 py-2.5 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition duration-200"
-                            placeholder="Enter coupon code" 
-                        />
-                        <p id="couponCodeError" class="text-red-500 text-sm hidden"></p>
-                    </div>
+            <!-- Min Amount -->
+            <div class="space-y-2">
+              <label for="minAmount" class="block text-sm font-medium text-gray-600">Min Amount</label>
+              <input 
+                id="minAmount" 
+                value="<%= coupon.minimumOrderAmount %>" 
+                type="number" 
+                class="w-full px-4 py-2.5 rounded-lg bg-gray-100 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                placeholder="Enter the amount" 
+              />
+              <p id="minAmountError" class="text-red-500 text-sm hidden"></p>
+            </div>
 
-                    <!-- Min Amount -->
-                    <div class="space-y-2">
-                        <label for="minAmount" class="block text-sm font-medium text-gray-300">Min Amount</label>
-                        <input 
-                            id="minAmount" 
-                            value="<%= coupon.minimumOrderAmount %>" 
-                            type="number" 
-                            class="w-full px-4 py-2.5 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition duration-200"
-                            placeholder="Enter the amount" 
-                        />
-                        <p id="minAmountError" class="text-red-500 text-sm hidden"></p>
-                    </div>
+            <!-- Discount -->
+            <div class="space-y-2">
+              <label for="discount" class="block text-sm font-medium text-gray-600">Discount</label>
+              <input 
+                id="discount" 
+                value="<%= coupon.discountValue%>" 
+                type="number" 
+                class="w-full px-4 py-2.5 rounded-lg bg-gray-100 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+              />
+              <p id="discountValueError" class="text-red-500 text-sm hidden"></p>
+            </div>
 
-                    <!-- Discount -->
-                    <div class="space-y-2">
-                        <label for="discount" class="block text-sm font-medium text-gray-300">Discount</label>
-                        <input 
-                            id="discount" 
-                            value="<%= coupon.discountValue%>" 
-                            type="number" 
-                            class="w-full px-4 py-2.5 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition duration-200"
-                        />
-                        <p id="discountValueError" class="text-red-500 text-sm hidden"></p>
-                    </div>
+            <!-- Discount Type -->
+            <div class="space-y-2">
+              <label for="discountType" class="block text-sm font-medium text-gray-600">Discount Type</label>
+              <select 
+                id="discountType" 
+                class="w-full px-4 py-2.5 rounded-lg bg-gray-100 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+              >
+                <% if(coupon.discountType === 'Percentage'){ %>
+                  <option selected value="Percentage">Percentage</option>
+                  <option value="Fixed">Fixed</option>
+                <% } else { %>
+                  <option value="Percentage">Percentage</option>
+                  <option selected value="Fixed">Fixed</option>
+                <% } %>
+              </select>
+              <p id="discountTypeError" class="text-red-500 text-sm hidden"></p>
+            </div>
 
-                    <!-- Discount Type -->
-                    <div class="space-y-2">
-                        <label for="discountType" class="block text-sm font-medium text-gray-300">Discount Type</label>
-                        <select 
-                            id="discountType" 
-                            class="w-full px-4 py-2.5 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition duration-200"
-                        >
-                            <% if(coupon.discountType === 'Percentage'){ %>
-                                <option selected value="Percentage">Percentage</option>
-                                <option value="Fixed">Fixed</option>
-                            <% } else { %>
-                                <option value="Percentage">Percentage</option>
-                                <option selected value="Fixed">Fixed</option>
-                            <% } %>
-                        </select>
-                        <p id="discountTypeError" class="text-red-500 text-sm hidden"></p>
-                    </div>
+            <!-- Start Date -->
+            <div class="space-y-2">
+              <label for="startDate" class="block text-sm font-medium text-gray-600">Start Date</label>
+              <input 
+                id="startDate" 
+                value="<%= new Date(coupon.startDate).toISOString().split('T')[0] %>" 
+                type="date" 
+                class="w-full px-4 py-2.5 rounded-lg bg-gray-100 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+              />
+              <p id="startDateError" class="text-red-500 text-sm hidden"></p>
+            </div>
 
-                    <!-- Start Date -->
-                    <div class="space-y-2">
-                        <label for="startDate" class="block text-sm font-medium text-gray-300">Start Date</label>
-                        <input 
-                            id="startDate" 
-                            value="<%= new Date(coupon.startDate).toISOString().split('T')[0] %>" 
-                            type="date" 
-                            class="w-full px-4 py-2.5 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition duration-200"
-                        />
-                        <p id="startDateError" class="text-red-500 text-sm hidden"></p>
-                    </div>
+            <!-- Expiry Date -->
+            <div class="space-y-2">
+              <label for="expiryDate" class="block text-sm font-medium text-gray-600">Expiry Date</label>
+              <input 
+                id="expiryDate" 
+                value="<%= new Date(coupon.endDate).toISOString().split('T')[0] %>" 
+                type="date" 
+                class="w-full px-4 py-2.5 rounded-lg bg-gray-100 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+              />
+              <p id="expiryDateError" class="text-red-500 text-sm hidden"></p>
+            </div>
 
-                    <!-- Expiry Date -->
-                    <div class="space-y-2">
-                        <label for="expiryDate" class="block text-sm font-medium text-gray-300">Expiry Date</label>
-                        <input 
-                            id="expiryDate" 
-                            value="<%= new Date(coupon.endDate).toISOString().split('T')[0] %>" 
-                            type="date" 
-                            class="w-full px-4 py-2.5 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition duration-200"
-                        />
-                        <p id="expiryDateError" class="text-red-500 text-sm hidden"></p>
-                    </div>
+            <!-- Usage Count -->
+            <div class="space-y-2">
+              <label for="usageCount" class="block text-sm font-medium text-gray-600">Usage Count</label>
+              <input 
+                id="usageCount" 
+                value="<%= coupon.usageCount %>" 
+                type="number" 
+                class="w-full px-4 py-2.5 rounded-lg bg-gray-100 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+                placeholder="Number of uses" 
+              />
+              <p id="usageCountError" class="text-red-500 text-sm hidden"></p>
+            </div>
+          </div>
 
-                    <!-- Usage Count -->
-                    <div class="space-y-2">
-                        <label for="usageCount" class="block text-sm font-medium text-gray-300">Usage Count</label>
-                        <input 
-                            id="usageCount" 
-                            value="<%= coupon.usageCount %>" 
-                            type="number" 
-                            class="w-full px-4 py-2.5 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition duration-200"
-                            placeholder="Number of uses" 
-                        />
-                        <p id="usageCountError" class="text-red-500 text-sm hidden"></p>
-                    </div>
-                </div>
+          <!-- Hidden Input -->
+          <input value="<%= coupon._id %>" class="hidden" id="coupon_id" type="text">
 
-                <!-- Hidden Input -->
-                <input value="<%= coupon._id %>" class="hidden" id="coupon_id" type="text">
-
-                <!-- Submit Button -->
-                <button 
-                    type="submit" 
-                    onclick="submitForm(event)" 
-                    class="w-full py-3 px-4 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition duration-200 mt-8"
-                >
-                    Update Coupon
-                </button>
-            </form>
-        </div>
+          <!-- Submit Button -->
+          <button 
+            type="submit" 
+            onclick="submitForm(event)" 
+            class="w-full py-3 px-4 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 mt-8"
+          >
+            Update Coupon
+          </button>
+        </form>
+      </div>
     </main>
-</div>
+  </div>
 <!-- Search box -->
 
 
