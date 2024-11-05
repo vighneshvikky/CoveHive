@@ -92,7 +92,7 @@ exports.viewOrderDetails = async (req, res) => {
             return res.status(404).json({ message: 'Order not found' });
         }
     
-     
+       
         res.json(order);
     } catch (error) {
         console.error(`Error from viewOrderDetails: ${error}`);

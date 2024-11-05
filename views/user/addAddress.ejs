@@ -62,74 +62,76 @@
   
 </div>
 <script>
-    function validateForm() {
-    let isValid = true;
-
-    // Validate Name (Minimum 3 characters)
+    document.addEventListener("DOMContentLoaded", function () {
     const nameInput = document.getElementById('name');
-    const nameError = document.getElementById('nameError');
-    if (nameInput.value.trim().length < 3) {
-      nameError.classList.remove('hidden');
-      isValid = false;
-    } else {
-      nameError.classList.add('hidden');
-    }
-
-    // Validate Street (Cannot be empty)
     const streetInput = document.getElementById('street');
-    const streetError = document.getElementById('streetError');
-    if (streetInput.value.trim() === '') {
-      streetError.classList.remove('hidden');
-      isValid = false;
-    } else {
-      streetError.classList.add('hidden');
-    }
-
-    // Validate City (Cannot be empty)
     const cityInput = document.getElementById('city');
-    const cityError = document.getElementById('cityError');
-    if (cityInput.value.trim() === '') {
-      cityError.classList.remove('hidden');
-      isValid = false;
-    } else {
-      cityError.classList.add('hidden');
-    }
-
-    // Validate Pincode (Must be a 6-digit number)
     const pincodeInput = document.getElementById('pincode');
-    const pincodeError = document.getElementById('pincodeError');
-    const pincodeRegex = /^\d{6}$/; // Regex for 6-digit pincode
-    if (!pincodeRegex.test(pincodeInput.value.trim())) {
-      pincodeError.classList.remove('hidden');
-      isValid = false;
-    } else {
-      pincodeError.classList.add('hidden');
-    }
-
-    // Validate State (Cannot be empty)
     const stateInput = document.getElementById('state');
-    const stateError = document.getElementById('stateError');
-    if (stateInput.value.trim() === '') {
-      stateError.classList.remove('hidden');
-      isValid = false;
-    } else {
-      stateError.classList.add('hidden');
-    }
-
-    // Validate Country (Cannot be empty)
     const countryInput = document.getElementById('country');
+    const submitButton = document.getElementById('submitButton');
+
+    const nameError = document.getElementById('nameError');
+    const streetError = document.getElementById('streetError');
+    const cityError = document.getElementById('cityError');
+    const pincodeError = document.getElementById('pincodeError');
+    const stateError = document.getElementById('stateError');
     const countryError = document.getElementById('countryError');
-    if (countryInput.value.trim() === '') {
-      countryError.classList.remove('hidden');
-      isValid = false;
-    } else {
-      countryError.classList.add('hidden');
+
+    // Regex patterns
+    const pincodeRegex = /^\d{6}$/;
+    const nameRegex = /^[A-Z][a-zA-Z]*$/; // First letter capitalized, no spaces
+
+    // Helper function to validate and show/hide error
+    function validateInput(input, error, validationFn) {
+        if (validationFn(input.value.trim())) {
+            error.classList.add('hidden');
+            return true;
+        } else {
+            error.classList.remove('hidden');
+            return false;
+        }
     }
 
-    // Enable or disable submit button based on form validity
-    const submitButton = document.getElementById('submitButton');
-    submitButton.disabled = !isValid;
-  }
+    // Specific validation functions
+    function validateName(value) {
+        return nameRegex.test(value) && value.length >= 3;
+    }
+
+    function validateNotEmpty(value) {
+        return value !== '';
+    }
+
+    function validatePincode(value) {
+        return pincodeRegex.test(value);
+    }
+
+    // Real-time validation event listeners
+    nameInput.addEventListener("input", () => validateForm());
+    streetInput.addEventListener("input", () => validateForm());
+    cityInput.addEventListener("input", () => validateForm());
+    pincodeInput.addEventListener("input", () => validateForm());
+    stateInput.addEventListener("input", () => validateForm());
+    countryInput.addEventListener("input", () => validateForm());
+
+    function validateForm() {
+        let isValid = true;
+
+        // Validate each field
+        isValid &= validateInput(nameInput, nameError, validateName);
+        isValid &= validateInput(streetInput, streetError, validateNotEmpty);
+        isValid &= validateInput(cityInput, cityError, validateNotEmpty);
+        isValid &= validateInput(pincodeInput, pincodeError, validatePincode);
+        isValid &= validateInput(stateInput, stateError, validateNotEmpty);
+        isValid &= validateInput(countryInput, countryError, validateNotEmpty);
+
+        // Enable or disable submit button based on form validity
+        submitButton.disabled = !isValid;
+    }
+
+    // Initial validation call to set submit button state
+    validateForm();
+});
 </script>
 
 <%- include('../layouts/userFooter.ejs') %>

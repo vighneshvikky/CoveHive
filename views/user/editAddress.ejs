@@ -78,76 +78,77 @@
 
     // Real-time validation functions
     const validateName = () => {
-      if (nameInput.value.trim().length >= 3) {
-        nameError.classList.add('hidden');
-        nameInput.classList.remove('border-red-500');
-        return true;
-      } else {
-        nameError.classList.remove('hidden');
-        nameInput.classList.add('border-red-500');
-        return false;
-      }
+        const nameRegex = /^[A-Z][a-zA-Z]*$/; // Starts with uppercase, no spaces, letters only
+        if (nameRegex.test(nameInput.value.trim()) && nameInput.value.trim().length >= 3) {
+            nameError.classList.add('hidden');
+            nameInput.classList.remove('border-red-500');
+            return true;
+        } else {
+            nameError.classList.remove('hidden');
+            nameInput.classList.add('border-red-500');
+            return false;
+        }
     };
 
     const validateStreet = () => {
-      if (streetInput.value.trim().length > 0) {
-        streetError.classList.add('hidden');
-        streetInput.classList.remove('border-red-500');
-        return true;
-      } else {
-        streetError.classList.remove('hidden');
-        streetInput.classList.add('border-red-500');
-        return false;
-      }
+        if (streetInput.value.trim().length > 0) {
+            streetError.classList.add('hidden');
+            streetInput.classList.remove('border-red-500');
+            return true;
+        } else {
+            streetError.classList.remove('hidden');
+            streetInput.classList.add('border-red-500');
+            return false;
+        }
     };
 
     const validateCity = () => {
-      if (cityInput.value.trim().length > 0) {
-        cityError.classList.add('hidden');
-        cityInput.classList.remove('border-red-500');
-        return true;
-      } else {
-        cityError.classList.remove('hidden');
-        cityInput.classList.add('border-red-500');
-        return false;
-      }
+        if (cityInput.value.trim().length > 0) {
+            cityError.classList.add('hidden');
+            cityInput.classList.remove('border-red-500');
+            return true;
+        } else {
+            cityError.classList.remove('hidden');
+            cityInput.classList.add('border-red-500');
+            return false;
+        }
     };
 
     const validatePincode = () => {
-      const pinRegex = /^\d{6}$/; // 6-digit pincode
-      if (pinRegex.test(pincodeInput.value.trim())) {
-        pincodeError.classList.add('hidden');
-        pincodeInput.classList.remove('border-red-500');
-        return true;
-      } else {
-        pincodeError.classList.remove('hidden');
-        pincodeInput.classList.add('border-red-500');
-        return false;
-      }
+        const pinRegex = /^\d{6}$/; // 6-digit pincode
+        if (pinRegex.test(pincodeInput.value.trim())) {
+            pincodeError.classList.add('hidden');
+            pincodeInput.classList.remove('border-red-500');
+            return true;
+        } else {
+            pincodeError.classList.remove('hidden');
+            pincodeInput.classList.add('border-red-500');
+            return false;
+        }
     };
 
     const validateState = () => {
-      if (stateInput.value.trim().length > 0) {
-        stateError.classList.add('hidden');
-        stateInput.classList.remove('border-red-500');
-        return true;
-      } else {
-        stateError.classList.remove('hidden');
-        stateInput.classList.add('border-red-500');
-        return false;
-      }
+        if (stateInput.value.trim().length > 0) {
+            stateError.classList.add('hidden');
+            stateInput.classList.remove('border-red-500');
+            return true;
+        } else {
+            stateError.classList.remove('hidden');
+            stateInput.classList.add('border-red-500');
+            return false;
+        }
     };
 
     const validateCountry = () => {
-      if (countryInput.value.trim().length > 0) {
-        countryError.classList.add('hidden');
-        countryInput.classList.remove('border-red-500');
-        return true;
-      } else {
-        countryError.classList.remove('hidden');
-        countryInput.classList.add('border-red-500');
-        return false;
-      }
+        if (countryInput.value.trim().length > 0) {
+            countryError.classList.add('hidden');
+            countryInput.classList.remove('border-red-500');
+            return true;
+        } else {
+            countryError.classList.remove('hidden');
+            countryInput.classList.add('border-red-500');
+            return false;
+        }
     };
 
     // Event listeners for real-time validation
@@ -160,10 +161,10 @@
 
     // Final form validation on submit
     editAddressForm.addEventListener('submit', function (event) {
-      if (!validateName() || !validateStreet() || !validateCity() || !validatePincode() || !validateState() || !validateCountry()) {
-        event.preventDefault(); // Prevent form submission if validation fails
-      }
+        if (!validateName() || !validateStreet() || !validateCity() || !validatePincode() || !validateState() || !validateCountry()) {
+            event.preventDefault(); // Prevent form submission if validation fails
+        }
     });
-  });
+});
 </script>
 <%- include('../layouts/userFooter.ejs') %>

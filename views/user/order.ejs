@@ -258,7 +258,13 @@
                // Populate basic order details
                document.getElementById('orderId').textContent = order.orderId || order._id;
             document.getElementById('orderDate').textContent = new Date(order.createdAt).toLocaleDateString();
-            document.getElementById('shippingAddress').textContent = order.address;
+            document.getElementById('shippingAddress').textContent = `
+    ${order.address.contactName}
+    ${order.address.street}, 
+    ${order.address.city}, 
+    ${order.address.state}, 
+    ${order.address.country} - ${order.address.pincode}
+`;
             document.getElementById('paymentMethod').textContent = order.paymentMethod;
             document.getElementById('totalPrice').textContent = order.totalPrice.toLocaleString();
 

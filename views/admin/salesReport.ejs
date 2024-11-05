@@ -1,72 +1,106 @@
 <%- include('../layouts/header.ejs') %>
-        <!-- Filter Dropdown using <select> -->
-            <div class="relative">
-                <select id="filterOption" class="bg-blue-600 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300">
-                  <option value="">Filter</option>
-                  <option value="day">This Day</option>
-                  <option value="week">This Week</option>
-                  <option value="month">This Month</option>
-                  <option value="year">This Year</option>
-                </select>
-              </div>
-              <!-- Export Dropdown using <select> -->
-              <div class="relative">
-                <select id="export" class="bg-green-600 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-300">
-                  <option value="">Export Report</option>
-                  <option value="excel">Excel Sheet</option>
-                  <option value="pdf">PDF</option>
-                </select>
-              </div>
-            </div>
-    
-          </div>
-        </div>
 
-        <!-- Sales Report Table -->
-        <div class="overflow-x-auto bg-gray-800 rounded-lg shadow-lg max-w-full">
-          <table class="min-w-full divide-y divide-gray-700">
-            <thead class="bg-gray-700">
-              <tr>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Order ID</th>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">User ID</th>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Order Date</th>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Order Amount</th>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Coupon Deduction</th>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Payment Status</th>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Payment Method</th>
-                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Order Summary</th>
-              </tr>
-            </thead>
-            <tbody class="bg-gray-800 divide-y divide-gray-700">
-              <% data.forEach(data =>{ %>
-              <tr>
-                <td class="px-4 py-4 text-sm text-gray-400"><%= data.orderId %></td>
-                <td class="px-4 py-4 text-sm text-gray-400"><%= data.userId.toString().substring(0, 4) + '...' + data.userId.toString().slice(-5) %></td>
-                <td class="px-4 py-4 text-sm text-gray-400"><%= new Date(data.createdAt).toLocaleDateString('en-GB') %></td>
-                <td class="px-4 py-4 text-sm text-gray-400">₹ <%= data.totalPrice.toFixed(2) %></td>
-                <td class="px-4 py-4 text-sm text-gray-400">₹ <%= data.couponDiscount.toFixed(2) %></td>
-                <td class="px-4 py-4 text-sm <%= data.orderStatus === 'Paid' ? 'text-green-500' : 'text-yellow-500' %>"><%= data.orderStatus %></td>
-                <td class="px-4 py-4 text-sm text-gray-400"><%= data.paymentMethod %></td>
-                <td class="px-4 py-4 text-sm text-gray-400"><a href="/admin/salesReoprtView?orderId=<%= data._id %>" class="text-blue-400 hover:underline">View</a></td>
-              </tr>
-              <% }) %>
-            </tbody>
-          </table>
+<div class="container mx-auto px-4 py-8">
+  <div class="mb-6">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-semibold text-gray-800">Sales Report</h1>
+      
+      <div class="flex gap-4">
+        <!-- Filter Dropdown -->
+        <div class="relative">
+          <select id="filterOption" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <option value="">Filter</option>
+            <option value="day">This Day</option>
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+            <option value="year">This Year</option>
+          </select>
         </div>
-    
-        <!-- Pagination -->
-        <div class="flex justify-between items-center mt-4">
-          <div class="text-sm text-gray-400">
-            Showing <span class="font-medium" id="currentPage"><%= currentPage %></span> to <span class="font-medium" id="totalPages"><%= totalPages %></span> of <span class="font-medium" id="totalRecords"><%= totalRecordsCount %></span> results
-          </div>
-          <div class="inline-flex">
-            <button id="prevPage" class="px-3 py-1 rounded-l-md bg-gray-700 text-gray-400 hover:bg-gray-600">Previous</button>
-            <button id="nextPage" class="px-3 py-1 rounded-r-md bg-gray-700 text-gray-400 hover:bg-gray-600">Next</button>
-          </div>
+        
+        <!-- Export Dropdown -->
+        <div class="relative">
+          <select id="export" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <option value="">Export Report</option>
+            <option value="excel">Excel Sheet</option>
+            <option value="pdf">PDF</option>
+          </select>
         </div>
       </div>
     </div>
-    
+  </div>
+
+  <div class="bg-white h-28 flex justify-between items-center my-6 px-4 py-5 shadow-lg rounded-lg space-x-6">
+    <div class="flex-1 px-5 py-3 bg-gray-100 rounded-md flex flex-col justify-center items-center text-gray-700 font-medium shadow-sm hover:bg-gray-200 transition duration-300 ease-in-out">
+      <span class="text-xs uppercase tracking-wider text-gray-500">Overall Sales Count</span>
+      <span id="overallSalesCount" class="text-2xl font-semibold mt-1"><%= overallSalesCount %></span>
+    </div>
+    <div class="flex-1 px-5 py-3 bg-gray-100 rounded-md flex flex-col justify-center items-center text-gray-700 font-medium shadow-sm hover:bg-gray-200 transition duration-300 ease-in-out">
+      <span class="text-xs uppercase tracking-wider text-gray-500">Overall Order Amount</span>
+      <span id="overallOrderAmount" class="text-2xl font-semibold mt-1">₹ <%= overallOrderAmount.toFixed() %></span>
+    </div>
+    <!-- <div class="flex-1 px-5 py-3 bg-gray-100 rounded-md flex flex-col justify-center items-center text-gray-700 font-medium shadow-sm hover:bg-gray-200 transition duration-300 ease-in-out">
+      <span class="text-xs uppercase tracking-wider text-gray-500">Overall Coupon Discount</span>
+      <span id="totalCouponDiscount" class="text-2xl font-semibold mt-1">₹ <%= //totalCouponDiscount.toFixed() %></span>
+    </div> -->
+  </div>
+
+  <!-- Sales Report Table -->
+  <div class="bg-white rounded-lg shadow-md overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User ID</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order Date</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order Amount</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Coupon Deduction</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Status</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Method</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order Summary</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <% data.forEach(data =>{ %>
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4 text-sm text-gray-600"><%= data.orderId %></td>
+            <td class="px-6 py-4 text-sm text-gray-600"><%= data.userId.toString().substring(0, 4) + '...' + data.userId.toString().slice(-5) %></td>
+            <td class="px-6 py-4 text-sm text-gray-600"><%= new Date(data.createdAt).toLocaleDateString('en-GB') %></td>
+            <td class="px-6 py-4 text-sm text-gray-600">₹ <%= data.totalPrice.toFixed(2) %></td>
+            <td class="px-6 py-4 text-sm text-gray-600">₹ <%= data.couponDiscount.toFixed(2) %></td>
+            <td class="px-6 py-4 text-sm">
+              <span class="<%= data.orderStatus === 'Paid' ? 'text-green-600 bg-green-100' : 'text-yellow-600 bg-yellow-100' %> px-2 py-1 rounded-full text-xs font-medium">
+                <%= data.orderStatus %>
+              </span>
+            </td>
+            <td class="px-6 py-4 text-sm text-gray-600"><%= data.paymentMethod %></td>
+            <td class="px-6 py-4 text-sm">
+              <a href="/admin/salesReoprtView?orderId=<%= data._id %>" class="text-blue-600 hover:text-blue-800 hover:underline">View</a>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="flex justify-between items-center mt-6">
+    <div class="text-sm text-gray-600">
+      Showing <span class="font-medium" id="currentPage"><%= currentPage %></span> to 
+      <span class="font-medium" id="totalPages"><%= totalPages %></span> of 
+      <span class="font-medium" id="totalRecords"><%= totalRecordsCount %></span> results
+    </div>
+    <div class="inline-flex gap-2">
+      <button id="prevPage" class="px-4 py-2 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        Previous
+      </button>
+      <button id="nextPage" class="px-4 py-2 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        Next
+      </button>
+    </div>
+  </div>
+</div>
     <script>
      let currentPage = parseInt(document.getElementById('currentPage').innerHTML);
       let totalPages = parseInt(document.getElementById('totalPages').innerHTML);
@@ -100,6 +134,7 @@
           return response.json();
         })
         .then(data => {
+          console.log(data)
           overallSalesCount.innerHTML = ''
           overallSalesCount.innerHTML = data.overallSalesCount
           overallOrderAmount.innerHTML = ''
@@ -118,6 +153,7 @@
       // Event listener for Filter dropdown
       document.getElementById('filterOption').addEventListener('change', function (event) {
         const selectedFilter = event.target.value;
+        
         fetchSalesReport(1, selectedFilter);
       });
     
@@ -213,10 +249,11 @@
     
             document.body.appendChild(a)
             a.click();
-            a.remove()
+            a.remove();
+         
     
         })
-        .catch(error=  console.error('Error exporting report:', error))
+        .catch(error=>console.error('Error exporting report:', error))
     
     
     }

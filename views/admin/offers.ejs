@@ -1,0 +1,311 @@
+<%- include('../layouts/header.ejs') %>
+<div class="flex min-h-screen">
+    <main class="flex-1 bg-gray-50 dark:bg-gray-900">
+        <div class="container mx-auto px-6 py-8">
+            <!-- Page Header -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Offer Management</h1>
+                <p class="mt-2 text-gray-600 dark:text-gray-400">Create and manage discount offers for different categories</p>
+            </div>
+
+            <!-- Add Offer Form -->
+            <div class="mb-8 bg-white dark:bg-gray-800 rounded-xl shadow-md">
+                <div class="p-6">
+                    <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Add New Offer</h2>
+                    <form id="offerForm" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <!-- Offer Category -->
+                            <div>
+                                <label for="offerCategory" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Offer Category
+                                </label>
+                                <select id="offerCategory" name="offerCategory" 
+                                    class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 
+                                    text-gray-700 dark:text-gray-300 px-4 py-2.5 focus:ring-2 focus:ring-blue-500 
+                                    focus:border-transparent transition-colors duration-200">
+                                    <option value="">Select Category</option>
+                                    <% categories.forEach(category => { %>
+                                        <option value="<%= category._id %>"><%= category.name %></option>
+                                    <% }) %>
+                                </select>
+                                <p id="categoryValueError" class="mt-2 text-sm text-red-600 hidden"></p>
+                            </div>
+
+                            <!-- Offer Name -->
+                            <div>
+                                <label for="offerName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Offer Name
+                                </label>
+                                <input type="text" id="offerName" name="offerName" 
+                                    class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 
+                                    text-gray-700 dark:text-gray-300 px-4 py-2.5 focus:ring-2 focus:ring-blue-500 
+                                    focus:border-transparent transition-colors duration-200"
+                                    placeholder="Enter offer name">
+                                <p id="offerNameError" class="mt-2 text-sm text-red-600 hidden"></p>
+                            </div>
+
+                            <!-- Offer Percentage -->
+                            <div>
+                                <label for="offerPercentage" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Discount Percentage
+                                </label>
+                                <div class="relative">
+                                    <input type="number" id="offerPercentage" name="offerPercentage" 
+                                        class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 
+                                        text-gray-700 dark:text-gray-300 px-4 py-2.5 focus:ring-2 focus:ring-blue-500 
+                                        focus:border-transparent transition-colors duration-200"
+                                        placeholder="Enter percentage">
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                                        <span class="text-gray-500 dark:text-gray-400">%</span>
+                                    </div>
+                                </div>
+                                <p id="offerPercentageError" class="mt-2 text-sm text-red-600 hidden"></p>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="flex justify-end">
+                            <button type="submit" 
+                                class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 
+                                text-white font-medium rounded-lg text-sm transition duration-200 flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                                </svg>
+                                Create Offer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Offer Listing -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md">
+                <div class="p-6">
+                    <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-6">Active Offers</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="bg-gray-50 dark:bg-gray-700 border-b dark:border-gray-600">
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        Category
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        Offer Name
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        Discount
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        Status
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 dark:divide-gray-600">
+                                <% if(offers.length > 0) { %>
+                                    <% offers.forEach(offer => { %>
+                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+                                                <%= offer.offerCategory.name %>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+                                                <%= offer.offerName %>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <span class="px-3 py-1 text-sm font-medium bg-blue-100 text-blue-800 rounded-full">
+                                                    <%= offer.discountPercentage %>%
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <span class="px-3 py-1 text-sm font-medium <%= offer.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %> rounded-full">
+                                                    <%= offer.isActive ? 'Active' : 'Inactive' %>
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <button onclick="toggleDelete('<%= offer._id %>')"
+                                                    class="px-4 py-2 text-sm font-medium rounded-lg <%= offer.isActive ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-green-600 hover:bg-green-700 text-white' %> transition-colors duration-200">
+                                                    <%= offer.isActive ? 'Deactivate' : 'Activate' %>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                                            No offers available
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+
+<script>
+
+
+
+
+
+function toggleDelete(offerId){
+  Swal.fire({
+    title: 'Are you sure?',
+      text: "Do you want to remove this offer?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+  }).then((result)=>{
+    if(result.isConfirmed){
+      fetch('/admin/removeOffer',{
+        method:'POST',
+        headers:{
+          'Content-Type': 'application/json'
+        },
+        body:JSON.stringify({offerId})
+      })
+      .then(response=>response.json())
+      .then(result=>{
+        if(result.status === 'success'){
+          Swal.fire({
+              title: 'Deleted!',
+              text: result.message,
+              icon: 'success',
+              confirmButtonText: 'OK'
+            }).then(()=>{
+              location.reload()
+            })
+        }else{
+          Swal.fire({
+              title: 'Failed!',
+              text: result.message || 'Failed to remove offer.',
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
+        }
+      })
+      .catch(error=>{
+        console.error('Error removing offer:', error);
+          Swal.fire({
+            title: 'Error!',
+            text: 'An error occurred while removing the offer.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+      })
+    }
+  })
+}
+
+
+
+
+
+
+
+
+
+
+  document.getElementById('offerForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const offerCategory = document.getElementById('offerCategory').value.trim()
+    const name = document.getElementById('offerName').value.trim();
+    const percentage = document.getElementById('offerPercentage').value.trim();
+    const categoryValueError = document.getElementById('categoryValueError')
+    const offerNameError = document.getElementById('offerNameError')
+    const offerPercentageError = document.getElementById('offerPercentageError')
+    let isValid = true
+
+    document.querySelectorAll('.text-red-500').forEach(el => el.classList.add('hidden'));
+
+
+    if (!offerCategory) {
+      categoryValueError.innerHTML = "Please select a category";
+      categoryValueError.classList.remove('hidden');
+      isValid = false
+    }
+
+    if (!name) {
+      offerNameError.innerHTML = "please Enter a name"
+      offerNameError.classList.remove('hidden');
+      isValid = false
+
+    }
+
+    if (!percentage) {
+      offerPercentageError.innerHTML = "Please enter a percentage";
+      offerPercentageError.classList.remove('hidden')
+      isValid = false
+    }
+
+    if (percentage < 0 || percentage > 100) {
+      offerPercentageError.innerHTML = 'Percentage must be between 1 to 100';
+      offerPercentageError.classList.remove('hidden');
+      isValid = false
+    }
+
+    if (isValid) {
+      let formDate = {
+        offerCategory,
+        name,
+        percentage
+      }
+
+
+      fetch('/admin/addOffer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formDate)
+
+      })  
+
+      .then(response => response.json())
+        .then((result) => {
+          console.log("---------",result);
+          
+          if (result.message === 'Offer created successfully!') {
+            Swal.fire({
+              icon: 'success',
+              title: 'Offer Created',
+              text: result.message,
+              showConfirmButton: false,
+              timer: 1500
+            }).then(() => {
+
+              window.location.reload();
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Failed to Create Offer',
+              text: result.message || 'Something went wrong!'
+            });
+          }
+        })
+        .catch((error) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while processing your request.'
+          });
+        })
+
+    }
+
+  })
+
+
+
+</script>
+  

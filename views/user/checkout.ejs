@@ -61,7 +61,12 @@
                             <div class="payment-method" onclick="selectPaymentMethod(this, 1)">
                                 <i class="bi bi-wallet-fill" style="font-size: 2rem;"></i>
                                 <span>Wallet</span>
-                                <span>Balance : <%= //wallet.balance %></span>
+                                <span class="inline-flex items-baseline gap-1">
+                                    <span class="text-sm font-medium text-gray-400">₹</span>
+                                    <span class=" font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-emerald-500">
+                                      <%= (wallet.balance).toFixed(2) %>
+                                    </span>
+                                  </span>
                             </div>
                             <div class="payment-method" onclick="selectPaymentMethod(this, 2)">
                                 <i class="bi bi-paypal" style="font-size: 2rem;"></i>
@@ -191,35 +196,40 @@
             <form id="addressForm" onsubmit="submitAddress(event)">
                 <div class="mb-4">
                     <label for="fullName" class="block text-gray-700">Full Name</label>
-                    <input type="text" id="fullName" name="fullName" required class="w-full border border-gray-300 rounded p-2">
-                    <p id="fullNameError" class="text-red-500 text-sm hidden">Full name is required and should be at least 3 characters long.</p>
+                    <input type="text" id="fullName" name="fullName"  class="w-full border border-gray-300 rounded p-2">
+                    <p id="fullNameError" class="text-red-500 text-sm hidden">Full name is required and should start with a capital letter, with at least 3 characters.</p>
                 </div>
+            
                 <div class="mb-4">
                     <label for="street" class="block text-gray-700">Street</label>
-                    <input type="text" id="street" name="street" required class="w-full border border-gray-300 rounded p-2">
+                    <input type="text" id="street" name="street"  class="w-full border border-gray-300 rounded p-2">
                     <p id="streetError" class="text-red-500 text-sm hidden">Street is required and should be at least 5 characters long.</p>
                 </div>
+            
                 <div class="mb-4">
                     <label for="city" class="block text-gray-700">City</label>
-                    <input type="text" id="city" name="city" required class="w-full border border-gray-300 rounded p-2">
+                    <input type="text" id="city" name="city"  class="w-full border border-gray-300 rounded p-2">
                     <p id="cityError" class="text-red-500 text-sm hidden">City is required and should be at least 3 characters long.</p>
                 </div>
+            
                 <div class="mb-4">
                     <label for="pincode" class="block text-gray-700">Pincode</label>
-                    <input type="text" id="pincode" name="pincode" required class="w-full border border-gray-300 rounded p-2">
-                    <p id="pincodeError" class="text-red-500 text-sm hidden">Pincode is required and should be a 5-digit number.</p>
+                    <input type="text" id="pincode" name="pincode"  class="w-full border border-gray-300 rounded p-2">
+                    <p id="pincodeError" class="text-red-500 text-sm hidden">Pincode is required and should be a 6-digit number.</p>
                 </div>
+            
                 <div class="mb-4">
                     <label for="state" class="block text-gray-700">State</label>
-                    <input type="text" id="state" name="state" required class="w-full border border-gray-300 rounded p-2">
-                    <p id="stateError" class="text-red-500 text-sm hidden">State is required.</p>
+                    <input type="text" id="state" name="state"  class="w-full border border-gray-300 rounded p-2">
+                    <p id="stateError" class="text-red-500 text-sm hidden">State is required and should start with a capital letter.</p>
                 </div>
+            
                 <div class="mb-4">
                     <label for="country" class="block text-gray-700">Country</label>
-                    <input type="text" id="country" name="country" required class="w-full border border-gray-300 rounded p-2">
-                    <p id="countryError" class="text-red-500 text-sm hidden">Country is required.</p>
+                    <input type="text" id="country" name="country"  class="w-full border border-gray-300 rounded p-2">
+                    <p id="countryError" class="text-red-500 text-sm hidden">Country is required and should start with a capital letter.</p>
                 </div>
-             
+            
                 <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
                     Save Address
                 </button>
@@ -637,7 +647,12 @@ async function submitAddress(event) {
 
     // Clear previous errors
     clearErrors();
-
+    const fullNameError = document.getElementById('fullNameError');
+    const streetError = document.getElementById('streetError');
+    const cityError = document.getElementById('cityError');
+    const pincodeError = document.getElementById('pincodeError');
+    const stateError = document.getElementById('stateError');
+    const countryError = document.getElementById('countryError');
     // Get form values
     const fullName = document.getElementById("fullName").value.trim();
     const street = document.getElementById("street").value.trim();
@@ -649,49 +664,65 @@ async function submitAddress(event) {
 
     let isValid = true;
 
-    // Validate each field
-    function isFirstLetterCapitalAndNoSpaces(value) {
-    const pattern = /^[A-Za-z\s.,'-]+$/; // Capital letter followed by letters with no spaces
+// Helper validation functions
+function isValidName(value) {
+    const pattern = /^[A-Z][a-zA-Z\s.,'-]{2,}$/; // Starts with uppercase, minimum 3 characters, allows letters & common separators
     return pattern.test(value);
 }
 
-if (fullName.length < 3 || !isFirstLetterCapitalAndNoSpaces(fullName)) {
-    displayError("fullNameError");
+function isValidStreet(value) {
+    return value.length >= 5;
+}
+
+function isValidCity(value) {
+    return value.length >= 3;
+}
+
+function isValidPincode(value) {
+    const pincodePattern = /^[0-9]{6}$/; // 6-digit pincode
+    return pincodePattern.test(value);
+}
+
+function isNonEmpty(value) {
+    return value.length > 0;
+}
+
+// Validation checks
+if (!isValidName(fullName)) {
+    displayError("fullNameError", "Full name is required and should be at least 3 characters.");
     isValid = false;
 }
-if (street.length < 5 || !isFirstLetterCapitalAndNoSpaces(street)) {
-    displayError("streetError");
+if (!isValidStreet(street)) {
+    displayError("streetError", "Street is required and should be at least 5 characters long.");
     isValid = false;
 }
-if (city.length < 3 || !isFirstLetterCapitalAndNoSpaces(city)) {
-    displayError("cityError");
+if (!isValidCity(city)) {
+    displayError("cityError", "City is required and should be at least 3 characters long.");
     isValid = false;
 }
-const pincodePattern = /^[0-9]{6}$/;
-if (!pincodePattern.test(pincode)) {
-    displayError("pincodeError");
+if (!isValidPincode(pincode)) {
+    displayError("pincodeError", "Pincode is required and should be a 6-digit number.");
     isValid = false;
 }
-if (state.length === 0 || !isFirstLetterCapitalAndNoSpaces(state)) {
-    displayError("stateError");
+if (!isNonEmpty(state)) {
+    displayError("stateError", "State is required.");
     isValid = false;
 }
-if (country.length === 0 || !isFirstLetterCapitalAndNoSpaces(country)) {
-    displayError("countryError");
+if (!isNonEmpty(country)) {
+    displayError("countryError", "Country is required.");
     isValid = false;
 }
 
-    // If all fields are valid, proceed to submit the data
-    if (isValid) {
-        const addressData = {
-            fullName,
-            street,
-            city,
-            pincode,
-            state,
-            country,
-           
-        };
+// If all fields are valid, proceed to submit the data
+if (isValid) {
+    const addressData = {
+        fullName,
+        street,
+        city,
+        pincode,
+        state,
+        country,
+    };
 
         try {
             // Send data to the backend route

@@ -12,9 +12,9 @@ exports.walletPage = async (req,res)=>{
         if (!wallet) {
             wallet = { balance: 0, transaction: [] };
         }
-        res.render('user/wallet',{title:'Wallet' , wallet , user:userId })
+        res.render('user/wallet',{title:'Wallet' , wallet})
     }catch(error){
         console.log(`error while render user wallet ${error}`)
-        res.redirect('/profile')
+       
     }
 }

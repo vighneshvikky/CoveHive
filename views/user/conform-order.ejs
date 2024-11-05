@@ -1,108 +1,113 @@
-<style>
-    body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: #1a1a1a;
-        margin: 0;
-        font-family: 'Arial', sans-serif;
-        overflow: hidden;
-    }
-
-    .success-container {
-        text-align: center;
-        background-color: #232323;
-        padding: 3em;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        transform: scale(0);
-        animation: scale-in 0.5s forwards ease-out;
-    }
-
-    @keyframes scale-in {
-        to {
-            transform: scale(1);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        @keyframes scaleIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
-    }
-
-    .checkmark-container {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 1em;
-    }
-
-    .checkmark {
-        width: 100px;
-        height: 100px;
-    }
-
-    .checkmark__circle {
-        stroke: #4caf50;
-        stroke-width: 4;
-        stroke-dasharray: 166;
-        stroke-dashoffset: 166;
-        stroke-linecap: round;
-        animation: draw-circle 1s ease-out forwards;
-    }
-
-    .checkmark__check {
-        stroke: #4caf50;
-        stroke-width: 4;
-        stroke-dasharray: 48;
-        stroke-dashoffset: 48;
-        stroke-linecap: round;
-        animation: draw-check 1s 0.5s ease-out forwards;
-    }
-
-    @keyframes draw-circle {
-        to {
-            stroke-dashoffset: 0;
+        
+        @keyframes drawCircle {
+            to { stroke-dashoffset: 0; }
         }
-    }
-
-    @keyframes draw-check {
-        to {
-            stroke-dashoffset: 0;
+        
+        @keyframes drawCheck {
+            to { stroke-dashoffset: 0; }
         }
-    }
-
-    .success-message {
-        color: #4caf50;
-        margin-bottom: 0.5em;
-        opacity: 0;
-        animation: fade-in 1s 0.5s forwards;
-    }
-
-    .order-details {
-        color: #fefeeb;
-        margin-bottom: 1.5em;
-        opacity: 0;
-        animation: fade-in 1s 1s forwards;
-    }
-
-    @keyframes fade-in {
-        to {
-            opacity: 1;
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-    }
-</style>
 
-<div class="success-container">
-    <div class="checkmark-container">
-        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-            <circle class="checkmark__circle" cx="26" cy="26" r="22" fill="none" />
-            <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-        </svg>
+        .animate-scale-in {
+            animation: scaleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .animate-draw-circle {
+            animation: drawCircle 1s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+        }
+
+        .animate-draw-check {
+            animation: drawCheck 0.8s cubic-bezier(0.65, 0, 0.35, 1) 0.8s forwards;
+        }
+
+        .animate-fade-in {
+            opacity: 0;
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+        .delay-4 { animation-delay: 0.8s; }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-gray-800 rounded-2xl p-8 shadow-xl animate-scale-in">
+        <!-- Success Checkmark -->
+        <div class="flex justify-center mb-8">
+            <svg class="w-24 h-24" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
+                <circle 
+                    class="animate-draw-circle"
+                    cx="26" 
+                    cy="26" 
+                    r="22"
+                    fill="none"
+                    stroke="#10B981"
+                    stroke-width="4"
+                    stroke-linecap="round"
+                    style="stroke-dasharray: 138; stroke-dashoffset: 138;"
+                />
+                <path 
+                    class="animate-draw-check"
+                    d="M14.1 27.2l7.1 7.2 16.7-16.8"
+                    fill="none"
+                    stroke="#10B981"
+                    stroke-width="4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    style="stroke-dasharray: 48; stroke-dashoffset: 48;"
+                />
+            </svg>
+        </div>
+
+        <!-- Content -->
+        <div class="text-center space-y-6">
+            <h1 class="text-2xl font-bold text-white animate-fade-in delay-1">
+                Thank you!
+            </h1>
+            
+            <h2 class="text-xl font-semibold text-emerald-500 animate-fade-in delay-2">
+                Order Successfully Placed!
+            </h2>
+            
+            <div class="space-y-3 animate-fade-in delay-3">
+                <p class="text-gray-300">
+                    Thank you for your purchase.<br>
+                    Your order number is <span class="font-mono font-medium">#ORD-2024-1234</span>
+                </p>
+                
+                <p class="text-gray-400 text-sm">
+                    We will process your order immediately and deliver it within 2-5 business days.
+                </p>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex items-center justify-center gap-4 pt-4 animate-fade-in delay-4">
+                <a href="/orders" class="px-6 py-2.5 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-gray-800">
+                    View Orders
+                </a>
+                
+                <a href="/shop" class="px-6 py-2.5 text-sm font-medium text-emerald-200 bg-emerald-600/10 hover:bg-emerald-600/20 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-gray-800">
+                    Continue Shopping
+                </a>
+            </div>
+        </div>
     </div>
-    <h1 style="color: #Fefeeb;">Thank you.</h1>
-    <h1 class="success-message">Order Successfully Placed!</h1>
-    <p class="order-details">Thank you for your purchase. Your order number is <%= orders.order_id %>.</p>
-    <p style="color: #555;">
-        We will immediatelly process your and it will be delivered in 2 - 5 business days.
-    </p>
-    <div class="d-flex justify-content-center gap-5 mt-5">
-        <a href="/orders" class="btn btn-danger d-flex">My Orders</a>
-        <a href="/home" class="btn btn-danger d-flex">Continue Shopping</a>
-    </div>
-</div>
+</body>
+</html>

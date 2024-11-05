@@ -18,6 +18,7 @@ exports.getCheckoutPage = async (req,res) => {
             req.flash('error', "User not found, please log in again");
             return res.redirect('/login');
         }
+      
       const userId = req.session.user_id;
       const user = await User.findById(userId).populate('addresses');
 
@@ -56,6 +57,8 @@ const eligibleCoupons = availableCoupons.filter((coupon) =>{
 });
 let wallet = await Wallet.findOne({ userID: userId });
 
+
+
 if (!wallet) {
     wallet = { balance: 0, transaction: [] };
 }
@@ -68,7 +71,8 @@ if (!wallet) {
         cartDetails,
         userDetails:user,
         addresses,
-        eligibleCoupons
+        eligibleCoupons,
+        wallet
     })
 
 
