@@ -131,7 +131,7 @@ exports.removeImage = async(req,res) => {
    
        res.json({ success: true });
   } catch (error) {
-    console.log(error.message)
+    console.log(`error from ${error}`)
   }
 }
 
