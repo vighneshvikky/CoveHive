@@ -10,9 +10,8 @@ exports.placeOrder = async(req,res) => {
         }
       
 
-        const orderDetails = await Order.find({userId:user}).populate({path:'items.productId',select:"name"}).sort({ createdAt:-1})
-        console.log(orderDetails); 
-        console.log(`orderDetails = ${orderDetails}`)
+        const orderDetails = await Order.find({userId:user}).populate({path:'items.productId'}).sort({ createdAt:-1})
+         
         res.render('user/order',{
             orderDetails,
             currentRoute:'/home'
@@ -25,19 +24,19 @@ exports.placeOrder = async(req,res) => {
 
 exports.cancelOrder = async (req,res) => {
     try {
-console.log('hai');
 
-        const orderId = req.params.id;
+     const orderId = req.params.id;
+       
+        const {action,reason,productId} = req.body;
  
-        if(!orderId){
-            req.flash('error', 'Invalid order ID');
-            return res.redirect('/orders');
+        console.log(`req.body = ${action}, ${reason}, ${productId}`)
+        if(!productId){
+            return res.json({ success: false, message: 'Invalid order ID' });
         }
         const order = await Order.findById(orderId);
             
         if (!order) {
-            req.flash('error', 'Order not found');
-            return res.redirect('/orders');
+            return res.json({ success: false, message: 'Order not found' });
         }
         if (order.paymentMethod === 'razorpay' || order.paymentMethod === 'Wallet' ) {
             const userWallet = await Wallet.findOne({ userID: order.userId });
@@ -64,22 +63,22 @@ console.log('hai');
             }
         }
 
-        for(const item of order.items){
-            item.productStatus = "Cancelled"
-            const product = await Product.findById(item.productId);
-            if(product){
-                product.stock += item.productCount;
-                await product.save();
-            }
+const item = order.items.find(item => item.productId.toString() === productId);
 
-        }
+if(item){
+    item.productStatus = action === 'return'?'Returned':'Cancelled';
+    item.reasonForCancellation = action ==='cancel'?reason:null;
+    item.reasonForReturn = action === 'return'?reason:null;
+}
+
+
+        
+         console.log(`order = ${order}`)
         await order.save();
-        req.flash('success', 'Order cancelled successfully');
-        res.redirect('/orders');
+        return res.json({ success: true });
     } catch (error) {
      console.log(`error form cancelOrder:${error.message}`)
-     req.flash('error', 'Cannot cancel this order right now, please try again');
-        res.redirect('/orders');
+     res.json({ success: false, message: 'Cannot cancel this order right now, please try again' });
     }
 }
 
