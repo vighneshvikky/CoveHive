@@ -114,6 +114,7 @@ user_route.post('/cart/increment',userCart.increment);
 user_route.post('/cart/decrement',userCart.decrement);
 user_route.get('/cart/remove/:id',userCart.removeFromCart);
 
+
 //--------------------------------------Check out page ----------------------------------
 
 user_route.get('/checkout',userAuth.isload,checkOutController.getCheckoutPage); 
