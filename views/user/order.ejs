@@ -54,7 +54,7 @@
                                       <%=item.productId.name%>
                                   </h5>
                                   <p class="text-lg font-bold text-gray-900">
-                                    <i class="fa-solid fa-indian-rupee-sign"></i><%= order.totalPrice%>
+                                    <i class="fa-solid fa-indian-rupee-sign"></i><%= item.productId.price%>
                                   </p>
                               </div>
 
@@ -95,39 +95,57 @@
                                   Rate & Review Product
                               </a>
 
-                              <!-- Action Buttons -->
-                               <% if(item.productStatus === 'Delivered') { %>
+                              <!-- Cancel and Return button -->
+
+                              <% if(item.productStatus === 'Delivered') { %>
                                 <div class="flex flex-wrap gap-3 pt-4">
-                                  <button class="px-4 py-2 text-sm font-medium text-white bg-red-700 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-offset-2 transition-colors"
-                                          data-toggle="modal" 
-                                          data-target="#cancelModal" 
-                                          data-order-id="<%= order._id %>">
-                                      Return Order
+                                  <button onclick="openModal('<%= order._id %>','<%= item.productId._id%>', 'return')" 
+                                          class="px-4 py-2 text-sm font-medium text-white bg-red-700 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-700 focus:ring-offset-2 transition-colors">
+                                    Return Order
                                   </button>
-                                  <!-- <a href="/prepay/<%= order._id %>" 
-                                     class="px-4 py-2 text-sm font-medium text-white bg-yellow-500 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors">
-                                      Prepay
-                                  </a> -->
-                              </div>
-                               <%}else{ %>
+                                </div>
+                              <% } else { %>
+                                <%if(item.productStatus === 'Cancelled'||item.productStatus === 'Returned'){ %>
+                     <%  }else{ %>
                                 <div class="flex flex-wrap gap-3 pt-4">
-                                  <button class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
-                                          data-toggle="modal" 
-                                          data-target="#cancelModal" 
-                                          data-order-id="<%= order._id %>">
-                                      Cancel Order
+                                  <button onclick="openModal('<%= order._id %>','<%=item.productId._id%>', 'cancel')" 
+                                          class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors">
+                                    Cancel Order
                                   </button>
-                                  <!-- <a href="/prepay/<%= order._id %>" 
-                                     class="px-4 py-2 text-sm font-medium text-white bg-yellow-500 rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors">
-                                      Prepay
-                                  </a> -->
-                              </div>
-                             <%  }%>
+                                </div>
+
+                          <%    } %>
+                   
+                              <% } %>
                      
                           </div>
                       </div>
+                      <div id="cancelModal" class="hidden fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+                        <div class="bg-white rounded-lg w-1/3 p-6">
+                          <h2 class="text-lg font-semibold mb-4" id="modalTitle">Reason for Action</h2>
+                          <form id="cancelForm">
+                         
+                              <input type="hidden" id="orderId" name="orderId" value="<%=order._id%>">
+                              <input type="hidden" id="actionType" name="actionType" value="">
+                              <input type="hidden" id="productId" value="<%=order.items.productId %>">
+                        
+                              <div class="mb-4">
+                                <label for="reason" class="block text-gray-700">Enter Reason:</label>
+                                <textarea id="reason" name="reason" class="w-full p-2 border border-gray-300 rounded-md" rows="3" required></textarea>
+                              </div>
+                              
+                              <div class="flex justify-end gap-3">
+                                <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-500 text-white rounded-md">Cancel</button>
+                                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md">Submit</button>
+                              </div>
+                       
+                      
+                          </form>
+                        </div>
+                      </div>
                   <% }) %>
               </div>
+         
           <% }) %>
 
           <!-- No More Results Message -->
@@ -137,30 +155,9 @@
       </div>
   </div>
 </div>
+<!-- Modal for Reason Input -->
 
-<!-- Cancel Order Modal -->
-<div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel" hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content rounded-lg shadow-lg">
-      <div class="modal-header flex items-center justify-between border-b p-4">
-        <h5 class="modal-title text-xl font-semibold text-gray-800" id="cancelModalLabel">Cancel Order</h5>
-        <button type="button" class="close text-gray-500 hover:text-gray-700 transition duration-150 ease-in-out" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body p-6">
-        <form id="cancelOrderForm">
-          <div class="form-group mb-5">
-            <label for="cancelReason" class="block text-sm font-medium text-gray-700">Reason for cancelling the order:</label>
-            <textarea class="form-control mt-2 block w-full border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-150 ease-in-out" id="cancelReason" rows="3" required></textarea>
-          </div>
-          <input type="hidden" id="orderId">
-          <button type="submit" class="btn w-full bg-red-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition duration-150 ease-in-out">Submit</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+
 
 <!-- Modal -->
 
@@ -228,10 +225,12 @@
                     <span class="ml-2">₹<span id="totalPrice" class="text-gray-900"></span></span>
                 </p>
             </div>
-            
+            <button onclick="downloadInvoice()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
+              Download Invoice as PDF
+          </button>
             <!-- Close Button -->
             <div class="mt-8 flex justify-end">
-                <button onclick="closeModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors duration-200">
+                <button onclick="closeModalOrderDetails()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors duration-200">
                     Close
                 </button>
             </div>
@@ -352,58 +351,117 @@ function getStatusTimeline(currentStatus) {
         </div>
     `;
 }
-  function closeModal() {
+  function closeModalOrderDetails() {
     document.getElementById('modalBackground').classList.add('hidden');
     document.getElementById('orderModal').classList.add('hidden');
 }
 // When the Cancel Order button is clicked, open the modal and set the order ID
-$('#cancelModal').on('show.bs.modal', function (event) {
-var button = $(event.relatedTarget); // Button that triggered the modal
-var orderId = button.data('order-id'); // Extract order ID from data-* attribute
-var modal = $(this);
-modal.find('#orderId').val(orderId); // Set the hidden input value
-});
-
-// Submit cancel order form and show SweetAlert
-$('#cancelOrderForm').on('submit', function (e) {
-e.preventDefault();
-
-var orderId = $('#orderId').val();
-var cancelReason = $('#cancelReason').val();
-
-if (cancelReason.trim() === "") {
-  Swal.fire('Error', 'Please provide a reason for cancellation.', 'error');
-  return;
+function openModal(orderId, productId, action) {
+  console.log(`productId = ${productId}`)
+  console.log(`orderId = ${orderId}`)
+  console.log(`action = ${action}`)
+    document.getElementById('cancelModal').classList.remove('hidden');
+    document.getElementById('orderId').value = orderId;
+    document.getElementById('productId').value = productId; // Set productId
+    document.getElementById('actionType').value = action;
+    document.getElementById('modalTitle').innerText = `Reason for ${action.charAt(0).toUpperCase() + action.slice(1)} Order`;
 }
 
-// Send AJAX request to cancel the order
-$.ajax({
-  url: '/cancelOrder/' + orderId,
-  method: 'GET', // Change to GET since your route is set to GET
-  success: function(response) {
-    // Update delivery status after successful cancellation
-    $('#delivery-status-' + orderId).html(`
-      <p><span>●</span> Cancelled</p>
-      <p>Your order has been cancelled</p>
-    `);
-
-    // Show SweetAlert after successful cancellation
-    Swal.fire({
-      icon: 'success',
-      title: 'Order Cancelled',
-      text: 'Your order has been successfully cancelled.',
-      showConfirmButton: true,
-    }).then(() => {
-      // Close the modal after showing SweetAlert
-      $('#cancelModal').modal('hide');
-    });
-  },
-  error: function(xhr) {
-    // Handle error case
-    Swal.fire('Error', 'There was an issue cancelling your order. Please try again.', 'error');
+  // Close Modal Function
+  function closeModal  () {
+    document.getElementById('cancelModal').classList.add('hidden');
+    document.getElementById('reason').value = '';
   }
+
+// JavaScript for submitting the cancel/return form with reason
+document.getElementById('cancelForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  console.log('prevented')
+  const orderId = document.getElementById('orderId').value;
+  const productId = document.getElementById('productId').value;
+  const actionType = document.getElementById('actionType').value;
+  const reason = document.getElementById('reason').value;
+
+  fetch(`/cancelOrder/${orderId}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: actionType, reason: reason ,productId:productId})
+  })
+  .then(response => response.json())
+  .then(data => {
+    Swal.fire({
+      icon: 'success',  // Change this to 'error' for error messages
+      title: 'Success',
+      text: data.message,  // Display success message from server
+      confirmButtonText: 'OK',
+    }).then(() => {
+      closeModal();  // Close the modal
+      // Optionally refresh the page or update the UI
+      location.reload(); // Uncomment this if you want to refresh the page
+    });
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'An error occurred while processing your request.',
+      confirmButtonText: 'OK'
+    });
+  });
 });
-});
+
+function downloadInvoice() {
+    // Initialize jsPDF
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF();
+
+    // Add title to the PDF
+    pdf.setFontSize(16);
+    pdf.text("Order Invoice", 10, 10);
+
+    // Order Details
+    pdf.setFontSize(12);
+    pdf.text("Order ID: " + document.getElementById("orderId").innerText, 10, 20);
+    pdf.text("Order Date: " + document.getElementById("orderDate").innerText, 10, 30);
+    
+    // Shipping Address
+    pdf.text("Shipping Address:", 10, 40);
+    pdf.text(document.getElementById("shippingAddress").innerText, 10, 50);
+
+    // Payment Method
+    pdf.text("Payment Method:", 10, 60);
+    pdf.text(document.getElementById("paymentMethod").innerText, 10, 70);
+
+    // Table Headers for Items
+    let yPosition = 90;
+    pdf.text("Items Purchased:", 10, yPosition);
+    yPosition += 10;
+    pdf.text("Product", 10, yPosition);
+    pdf.text("Quantity", 80, yPosition);
+    pdf.text("Price", 120, yPosition);
+    yPosition += 10;
+
+    // Table Data for Items Purchased
+    const itemsPurchased = document.querySelectorAll("#itemsPurchased tr");
+    itemsPurchased.forEach(row => {
+        const columns = row.querySelectorAll("td");
+        if (columns.length > 0) {
+            pdf.text(columns[0].innerText, 10, yPosition); // Product Name
+            pdf.text(columns[2].innerText, 80, yPosition); // Quantity
+            pdf.text(columns[3].innerText, 120, yPosition); // Price
+            yPosition += 10;
+        }
+    });
+
+    // Total Price
+    yPosition += 10;
+    pdf.setFontSize(14);
+    pdf.text("Total Price: ₹" + document.getElementById("totalPrice").innerText, 10, yPosition);
+
+    // Save the PDF
+    pdf.save("invoice.pdf");
+}
 </script>
 
 <%- include('../layouts/userFooter.ejs') %>

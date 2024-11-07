@@ -374,7 +374,7 @@ orderPlacementBtn.addEventListener('click', (e) => {
                             }
                         };
                         const rzp1 = new Razorpay(options);
-                        rzp1.on('payment.failed', function (response) {
+                        rzp1.on('payment.failed', function (response) { 
                            
                             const URL = `/place-order/${selectedAddressIndex}/${selectedPaymentMethod}`;
                             fetch(URL, {

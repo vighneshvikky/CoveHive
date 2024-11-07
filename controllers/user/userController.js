@@ -334,7 +334,7 @@ exports.googleAuthCallback = async (req, res) => {
     
         const categoryFilter = req.query.category || "all";
         const sortOption = req.query.sort || "latest";
-        const searchQuery = req.query.search || "";
+        const searchQuery = req.query.q || "";
     
         // Pagination settings
         const limit = 8 ;

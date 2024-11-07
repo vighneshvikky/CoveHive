@@ -99,7 +99,7 @@ user_route.get('/orders/:id',userAuth.isLogin,orderController.viewOrderDetails)
 
 //----------------------------------cancel orders ---------------------------------------
 
-user_route.get('/cancelOrder/:id',orderController.cancelOrder)
+user_route.post('/cancelOrder/:id',orderController.cancelOrder);
 
 //----------------------------------Google Authentication---------------------------------------
 

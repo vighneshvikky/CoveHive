@@ -65,7 +65,7 @@
                                         <button 
                                             onclick="updateStatus('<%= order._id %>', '<%= item.productId._id %>', '<%= status %>')"
                                             class="px-3 py-1 text-xs rounded-md <%= status === item.productStatus ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-800 hover:bg-gray-200' %>"
-                                            <%= index <= currentStatusIndex ? 'disabled' : '' %>>
+                                            <%= index <= currentStatusIndex ? 'hidden' : '' %>>
                                             <%= status %>
                                         </button>
                                     <% }) %>
@@ -181,6 +181,8 @@
                     <span class="ml-2">₹<span id="totalPrice" class="text-gray-900"></span></span>
                 </p>
             </div>
+
+          
             
             <!-- Close Button -->
             <div class="mt-8 flex justify-end">

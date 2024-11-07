@@ -42,6 +42,12 @@ const orderSchema =new mongoose.Schema({
             type: String,
             enum:['Confirmed','Shipped', 'Pending', 'Delivered', 'Returned', 'Cancelled'],
             default:'Pending'
+        },
+        reasonForCancellation:{
+            type:'String'
+        },
+        reasonForReturn:{
+            type:'String'
         }
     }],
     totalQuantity: {
