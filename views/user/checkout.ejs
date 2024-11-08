@@ -333,6 +333,7 @@ orderPlacementBtn.addEventListener('click', (e) => {
                                         razorpay_payment_id: response.razorpay_payment_id,
                                         razorpay_order_id: response.razorpay_order_id,
                                         razorpay_signature: response.razorpay_signature,
+                                        payment_status:'Pending'
                                         // couponCode: couponCode
                                     })
                                 }).then((res) => {
@@ -571,6 +572,7 @@ orderPlacementBtn.addEventListener('click', (e) => {
                 body: JSON.stringify({
                     addressIndex: addressIndex,
                     paymentMode: paymentMethod,
+                    payment_status:'Pending'
                    
                 })
             })

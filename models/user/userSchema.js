@@ -22,10 +22,10 @@ const userSchema = new mongoose.Schema({
     is_varified: { type: Number, default: 0 },
     is_admin: { type: Number, default: 0 },
     googleId: { type: String },
-    couponUsed:{
-        type:[couponUsageSchema],
-        default:[]
-    },
+        couponUsed:{
+            type:[couponUsageSchema],
+            default:[]
+        },
     createdAt: { type: Date, default: Date.now },
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date }, // Add default value for createdAt

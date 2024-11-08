@@ -39,7 +39,7 @@ const applyDateFilter = (filter) => {
       };
     }
   
-    return dateFilter;
+    return dateFilter;  
   };
  exports.sales = async (req, res) => {
     try {

@@ -146,6 +146,8 @@ try {
    let paymentId = '';
    const { razorpay_payment_id, razorpay_order_id, razorpay_signature, payment_status , couponCode ,selectedAddress} = req.body;
 
+   console.log(`payment status = ${payment_status}`)
+
    if(couponCode){
     const coupon = await Coupon.findOne({couponCode:couponCode });
     if (coupon && coupon.isActive) {
@@ -198,7 +200,7 @@ const newOrder = new Order({
     // productDiscountPrice:val,
     
     paymentMethod: paymentDetails[paymentMode],
-    orderStatus: payment_status === "Pending" ? "Pending" : "Confirmed",
+    orderStatus: payment_status === "Pending" ? "Pending" : "Paid",
     paymentId: paymentId,
     paymentStatus: payment_status,
     isCancelled: false

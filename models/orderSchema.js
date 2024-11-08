@@ -40,7 +40,7 @@ const orderSchema =new mongoose.Schema({
         },
         productStatus:{
             type: String,
-            enum:['Confirmed','Shipped', 'Pending', 'Delivered', 'Returned', 'Cancelled'],
+            enum:['Paid','Shipped', 'Pending', 'Delivered', 'Returned', 'Cancelled'],
             default:'Pending'
         },
         reasonForCancellation:{
@@ -96,7 +96,7 @@ const orderSchema =new mongoose.Schema({
     },
     orderStatus: {
         type: String,
-        enum:['Pending', 'Shipped', 'Confirmed', 'Delivered', 'Cancelled', 'Returned']
+        enum:['Pending', 'Shipped', 'Paid', 'Delivered', 'Cancelled', 'Returned']
     },
     createdAt: {
         type: Date,
