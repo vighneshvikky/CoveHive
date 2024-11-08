@@ -111,6 +111,9 @@ exports.loadEditProduct = async (req,res) =>{
 
 exports.removeImage = async(req,res) => {
   try {
+
+    console.log('hiai')
+   const {image, productId}= req.body
        // Find the product by ID
        const product = await Product.findById(req.params.id);
 
@@ -129,7 +132,7 @@ exports.removeImage = async(req,res) => {
          }
        });
    
-       res.json({ success: true });
+       res.json({ success: true ,message:'Image removed sucessfully'});
   } catch (error) {
     console.log(`error from ${error}`)
   }
