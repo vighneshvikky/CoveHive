@@ -63,7 +63,7 @@
         <tbody class="bg-white divide-y divide-gray-200">
           <% data.forEach(data =>{ %>
           <tr class="hover:bg-gray-50">
-            <td class="px-6 py-4 text-sm text-gray-600"><%= data.orderId %></td>
+            <td class="px-6 py-4 text-sm text-gray-600"><%= data._id %></td>
             <td class="px-6 py-4 text-sm text-gray-600"><%= data.userId.toString().substring(0, 4) + '...' + data.userId.toString().slice(-5) %></td>
             <td class="px-6 py-4 text-sm text-gray-600"><%= new Date(data.createdAt).toLocaleDateString('en-GB') %></td>
             <td class="px-6 py-4 text-sm text-gray-600">₹ <%= data.totalPrice.toFixed(2) %></td>
