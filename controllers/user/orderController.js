@@ -2,7 +2,12 @@ const Order = require('../../models/orderSchema');
 const Product = require('../../models/admin/productModel')
 const Wallet = require('../../models/walletSchema')
 exports.placeOrder = async(req,res) => {
+
     try {
+        const page = parseInt(req.query.page)||1;
+        const limit = 4
+      
+        const orderCount = await Order.countDocuments();
         const user = req.session.user_id;
         if (!user) {
             req.flash('error', "User not found. Please login again.");
@@ -10,11 +15,13 @@ exports.placeOrder = async(req,res) => {
         }
       
 
-        const orderDetails = await Order.find({userId:user}).populate({path:'items.productId'}).sort({ createdAt:-1})
+        const orderDetails = await Order.find({userId:user}).populate({path:'items.productId'}).sort({ createdAt:-1}).skip((page-1)*limit).limit(limit);
          
         res.render('user/order',{
             orderDetails,
-            currentRoute:'/home'
+            currentRoute:'/home',
+            currentPage:page,
+            totalPage:Math.ceil(orderCount/limit)
         })
     } catch (error) {
         console.log(`error from placeOrder ${error}`)
