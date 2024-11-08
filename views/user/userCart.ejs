@@ -129,9 +129,9 @@ productDiscountPrice * item.productCount).toFixed(2) %></span></td> <!-- Total f
         <!-- <h4 id="cart-total" class="text-xl font-semibold mt-4">Total Items: <i class="fa-solid fa-indian-rupee-sign"></i><%=cart.item%></h4>  -->
 
         <!-- Button to proceed to checkout -->
-       <a href="/checkout"><button class="btn bg-green-500 text-white hover:bg-green-600 rounded p-2 mt-4 inline-block">
+       <button id="checkoutButton" class="btn bg-green-500 text-white hover:bg-green-600 rounded p-2 mt-4 inline-block">
         Proceed to Checkout
-    </button></a> 
+    </button>
          <!-- <a href="/checkout"><button>proceed to checkout</button></a> -->
 
     <% } else { %>
@@ -142,7 +142,33 @@ productDiscountPrice * item.productCount).toFixed(2) %></span></td> <!-- Total f
 
 <script> 
 
-
+  document.getElementById('checkoutButton').addEventListener('click',async() =>{
+    try {
+        const response = await fetch('/checkout/validate',{
+            method:'Get',
+            headers:{
+                'Content-Type':'application/json',
+            }
+        });
+const data = await response.json();
+if(data.success){
+    window.location.href = '/checkout'
+}else{
+    Swal.fire({
+                    icon: 'error',
+                    title: 'Checkout Error',
+                    text: data.message, // Show the error message from the backend
+                });
+}
+    } catch (error) {
+        console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Unexpected Error',
+                text: 'An unexpected error occurred. Please try again later.',
+            });
+    }
+  })
     // Handle increment and decrement button clicks
     document.querySelectorAll('.increment-quantity, .decrement-quantity').forEach(button => {
         button.addEventListener('click', function() {

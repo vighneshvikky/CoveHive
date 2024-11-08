@@ -11,6 +11,43 @@ const { concurrency } = require('sharp');
 const orderSchema = require('../../models/orderSchema');
 const Category = require('../../models/admin/categoryModel');
 
+exports.validateCheckout = async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.status(401).json({ success: false, message: 'User not found, please log in again.' });
+        }
+
+        const userId = req.session.user_id;
+        const cartDetails = await Cart.findOne({ userId }).populate('items.productId');
+
+        if (!cartDetails) {
+            return res.status(404).json({ success: false, message: 'Cart not found.' });
+        }
+
+        const items = cartDetails.items;
+        if (items.length === 0) {
+            return res.status(400).json({ success: false, message: 'Your cart is empty.' });
+        }
+
+        for (const item of items) {
+            const product = item.productId;
+            if (!product.isAvailable) {
+                return res.status(400).json({ success: false, message: `Product "${product.name}" is not available.` });
+            }
+
+            if (item.productCount > product.stock) {
+                return res.status(400).json({ success: false, message: `The quantity of "${product.name}" exceeds the available stock.` });
+            }
+        }
+
+        // If all checks pass
+        res.status(200).json({ success: true, message: 'Validation successful' });
+    } catch (error) {
+        console.error('Error during checkout validation:', error);
+        res.status(500).json({ success: false, message: 'Server Error. Please try again later.' });
+    }
+};
+
 exports.getCheckoutPage = async (req,res) => {
     try {
         req.session.source = "checkout"
