@@ -129,7 +129,9 @@ productDiscountPrice * item.productCount).toFixed(2) %></span></td> <!-- Total f
         <!-- <h4 id="cart-total" class="text-xl font-semibold mt-4">Total Items: <i class="fa-solid fa-indian-rupee-sign"></i><%=cart.item%></h4>  -->
 
         <!-- Button to proceed to checkout -->
-        <a href="/checkout" class="btn bg-green-500 text-white hover:bg-green-600 rounded p-2 mt-4 inline-block">Proceed to Checkout</a>
+       <a href="/checkout"><button class="btn bg-green-500 text-white hover:bg-green-600 rounded p-2 mt-4 inline-block">
+        Proceed to Checkout
+    </button></a> 
          <!-- <a href="/checkout"><button>proceed to checkout</button></a> -->
 
     <% } else { %>
@@ -139,6 +141,8 @@ productDiscountPrice * item.productCount).toFixed(2) %></span></td> <!-- Total f
 </div>
 
 <script> 
+
+
     // Handle increment and decrement button clicks
     document.querySelectorAll('.increment-quantity, .decrement-quantity').forEach(button => {
         button.addEventListener('click', function() {
