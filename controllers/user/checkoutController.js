@@ -184,7 +184,7 @@ try {
    const { razorpay_payment_id, razorpay_order_id, razorpay_signature, payment_status , couponCode ,selectedAddress} = req.body;
 
    console.log(`payment status = ${payment_status}`)
-
+ 
    if(couponCode){
     const coupon = await Coupon.findOne({couponCode:couponCode });
     if (coupon && coupon.isActive) {
@@ -209,10 +209,20 @@ if (!cartItems || !cartItems.items || cartItems.items.length === 0) {
 
 const paymentDetails = ["Cash on delivery", "Wallet", "razorpay"];
 
+
+
 const products = [];
 let totalPrices = cartItems.payableAmount;
 let totalQuantity = 0;
 const user = await User.findById(req.session.user_id).populate('addresses')
+
+
+if(paymentDetails[paymentMode] === 'Cash on delivery'){
+    if(totalPrices > 1000){
+  return res.status(400).json({sucess:false,message:'Order above Rs 1000 should not be allowed for COD'})
+    }
+}
+
 if (!user || !user.addresses|| !user.addresses[addressIndex]) {
     return res.status(400).json({ success: false, message: 'Selected address is not valid.' });
 }
@@ -244,6 +254,8 @@ const newOrder = new Order({
 });
 await newOrder.save();
 //  console.log(`newOrder = ${newOrder}`)
+
+
 
 if(paymentDetails[paymentMode] === 'Wallet'){
     const wallet = await Wallet.findOne({ userID: userId });
