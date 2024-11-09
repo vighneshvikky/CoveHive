@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes scaleIn {
+            to { transform: scale(1); }
+        }
+        @keyframes drawCircle {
+            to { stroke-dashoffset: 0; }
+        }
+        @keyframes drawCross {
+            to { stroke-dashoffset: 0; }
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        .animate-scale-in {
+            transform: scale(0);
+            animation: scaleIn 0.5s forwards ease-out;
+        }
+        .animate-draw-circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            animation: drawCircle 1s ease-out forwards;
+        }
+        .animate-draw-cross {
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: drawCross 1s 0.5s ease-out forwards;
+        }
+        .animate-fade-in {
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+        .animate-fade-in-delay {
+            opacity: 0;
+            animation: fadeIn 1s 1s forwards;
+        }
+    </style>
+</head>
+<body class="flex justify-center items-center min-h-screen bg-[#1a1a1a] font-sans overflow-hidden m-0">
+    <div class="text-center bg-[#232323] p-12 rounded-lg shadow-lg animate-scale-in">
+        <div class="mb-4">
+            <svg class="w-24 h-24 mx-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <circle class="animate-draw-circle stroke-[#f44336] stroke-[4] fill-none" cx="26" cy="26" r="22"/>
+                <path class="animate-draw-cross stroke-[#f44336] stroke-[4] fill-none" d="M16 16 36 36 M36 16 16 36"/>
+            </svg>
+        </div>
+        
+        <h1 class="text-[#fefeeb] text-2xl font-bold mb-2">Sorry.</h1>
+        <h1 class="text-[#f44336] text-2xl font-bold mb-2 animate-fade-in">Order Failed!</h1>
+        <p class="text-[#fefeeb] mb-6 animate-fade-in-delay">
+            Unfortunately, your order could not be processed. Please try again later.
+        </p>
+        <p class="text-gray-500 mb-8">
+            If you continue to experience issues, please contact our support team for assistance.
+        </p>
+        
+        <div class="flex justify-center gap-4">
+            <a href="/orders" class="px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors duration-300">
+                My Orders
+            </a>
+            <a href="/home" class="px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors duration-300">
+                Continue Shopping
+            </a>
+        </div>
+    </div>
+</body>
+</html>

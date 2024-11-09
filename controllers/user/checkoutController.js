@@ -471,3 +471,16 @@ exports.userCoupons = async (req,res) =>{
         })
     }
 }
+
+exports.failedOrder = async(req,res) =>{
+    try {
+        const userId = req.session.user_id;
+        if(!userId){
+            return res.status(400).json({error:'User not found'})
+        }
+    res.render('user/failedOrder')
+    } catch (error) {
+      console.log(`error from failedOrder ${error}`) 
+      return res.status(400).json({error:"something went wrong"}) 
+    }
+}

@@ -1,8 +1,7 @@
 User side :
-Invoice download (Pdf)
-Order above Rs 1000 should not be allowed for COD
-Delivery charge can be applied according to location / fixed charges (optional)
-Handle error for failed payments (update status as payment pending), 
+Invoice download (Pdf) done 
+Order above Rs 1000 should not be allowed for COD done
+Delivery charge can be applied according to location / fixed charges (optional) done
 Should be able to continue payment from my order page in case of failed payment
 Admin side :
 Admin Dashboard - Chart with filter(yearly,monthly etc.)

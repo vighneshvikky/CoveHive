@@ -119,6 +119,7 @@ user_route.get('/cart/remove/:id',userCart.removeFromCart);
 
 user_route.get('/checkout',userAuth.isload,checkOutController.getCheckoutPage); 
 user_route.get('/checkout/validate',userAuth.isload,checkOutController.validateCheckout)
+user_route.get('/failed-order',userAuth.isload,checkOutController.failedOrder)
 //user_route.post('/place-order',checkOutController.placeOrder)
 user_route.post('/place-order/:address/:payment',checkOutController.placeOrder)
 user_route.get('/conform-order',userAuth.isLogin,checkOutController.orderConformPage)
