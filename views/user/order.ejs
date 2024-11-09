@@ -78,8 +78,20 @@
                                           <span class="w-2.5 h-2.5 rounded-full bg-yellow-500"></span>
                                           <strong class="font-medium text-yellow-600">Pending</strong>
                                       </div>
-                                      <p class="text-gray-600 text-sm">Your order is currently being processed.</p>
-                                  <% } else { %>
+                                      <p class="text-gray-600 text-sm">Your order is Pending.</p>
+                                  <% }else if (item.productStatus === 'Requested') { %>
+                                    <div class="flex items-center gap-2">
+                                      <span class="w-2.5 h-2.5 rounded-full bg-violet-500"></span>
+                                      <strong class="font-medium text-violet-600">Requested</strong>
+                                  </div>
+                                  <p class="text-gray-600 text-sm">Your Request has been send.</p>
+                                   <%}else if (item.prouductStatus === 'Rejected'){%>
+                                    <div class="flex items-center gap-2">
+                                      <span class="w-2.5 h-2.5 rounded-full bg-gray-500"></span>
+                                      <strong class="font-medium text-gray-600">Rejected</strong>
+                                  </div>
+                                  <p class="text-gray-600 text-sm">Your Request has been Rejected</p>
+                                  <%}else { %>
                                       <div class="flex items-center gap-2">
                                           <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
                                           <strong class="font-medium text-blue-600">Status: <%= item.productStatus %></strong>
@@ -95,7 +107,9 @@
                                   Rate & Review Product
                                   
                               </a>
-
+                            
+                    
+                         
                               <!-- Cancel and Return button -->
 
                               <% if(item.productStatus === 'Delivered') { %>
@@ -106,7 +120,7 @@
                                   </button>
                                 </div>
                               <% } else { %>
-                                <%if(item.productStatus === 'Cancelled'||item.productStatus === 'Returned'){ %>
+                                <%if(item.productStatus === 'Cancelled'||item.productStatus === 'Returned'||item.productStatus === 'Requested'||item.productStatus === 'Rejected'){ %>
                      <%  }else{ %>
                                 <div class="flex flex-wrap gap-3 pt-4">
                                   <button onclick="openModal('<%= order._id %>','<%=item.productId._id%>', 'cancel')" 
@@ -377,6 +391,7 @@ function openModal(orderId, productId, action) {
   console.log(`productId = ${productId}`)
   console.log(`orderId = ${orderId}`)
   console.log(`action = ${action}`)
+
     document.getElementById('cancelModal').classList.remove('hidden');
     document.getElementById('orderId').value = orderId;
     document.getElementById('productId').value = productId; // Set productId

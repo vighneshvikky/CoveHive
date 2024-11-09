@@ -1,18 +1,18 @@
 const Order = require('../../models/orderSchema');
 const Product = require('../../models/admin/productModel');
+const Wallet = require('../../models/walletSchema');
+const User = require('../../models/user/userSchema');
 exports.listOrders = async (req,res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = 8;
     try {
 
         const totalOrders = await Order.countDocuments(); 
-         console.log(`totalOrders = ${totalOrders}`)
         const orders = await Order.find().sort({createdAt:-1})
         .skip((page-1)*limit)
         .limit(limit)
         .populate('userId')
         .populate('items.productId')
-        console.log(orders);
         
         res.render('admin/order',{
             orders,
@@ -74,3 +74,77 @@ exports.viewOrderDetails = async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
+
+exports.viewReturnReason = async (req,res) =>{
+    try {
+        const {orderId,productId} = req.params;
+        const order = await Order.findById(orderId).populate('items.productId');
+
+        const item = order.items.find(item => item.productId._id.toString() === productId);
+
+        if(item&&item.reasonForReturn){
+            res.render('admin/returnReason', { order, item, reasonForReturn: item.reasonForReturn });
+        }else{
+            res.status(404).send('Return reason not found or item does not exist.');
+        }
+    } catch (error) {
+       console.log(`error from viewReturnReason ${error}`) 
+       res.status(500).send('Error retrieving order details');
+    }
+}
+
+
+exports.postViewReason = async(req,res) =>{
+    const {orderId,productId} = req.params;
+    const {action} = req.body;
+    console.log(`action = ${action}`)
+    try {
+        const order = await Order.findById(orderId);
+        const userId = await User.findById(order.userId);
+        const item = order.items.find(item => item.productId._id.toString() === productId);
+    console.log(`item = ${item}`)
+        if(item){
+            if(action === 'approve'){
+                item.productStatus = 'Returned';
+                const userWallet = await Wallet.findOne({userId:userId});
+                if(userWallet){
+                    userWallet.balance = (userWallet.balance || 0) + order.totalPrice;
+                    userWallet.transaction.push({
+                        wallet_amount: order.totalPrice,
+                        order_id: order.orderId,
+                        transactionType: 'Credited',
+                        transaction_date: new Date()
+                    });
+                    await userWallet.save();
+                }else{
+                    await Wallet.create({
+                        userID: order.userId,
+                        balance: order.totalPrice,
+                        transaction: [{
+                            wallet_amount: order.totalPrice,
+                            order_id: order.orderId,
+                            transactionType: 'Credited',
+                            transaction_date: new Date()
+                        }]
+                    });   
+                }
+               
+               
+            }else if(action == 'reject'){   
+                item.productStatus = "Rejected"
+        
+      
+            }else{
+                res.status(400).send('Invalid action');
+            }
+        }else{
+            res.status(404).send('Item not found');
+        }
+
+        await order.save();
+
+        res.redirect('/admin/orders')
+    } catch (error) {
+        console.log(`error from postViewReason ${error}`)
+    }
+}

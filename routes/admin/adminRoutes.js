@@ -73,6 +73,8 @@ admin_routes.post('/product/remove-image/:id',productController.removeImage)
 
 admin_routes.get('/orders',adminAuth.auth,orderController.listOrders);
 admin_routes.post('/orders/status',orderController.changeOrderStatus);
+admin_routes.get('/viewReason/:orderId/:productId',adminAuth.auth,orderController.viewReturnReason);
+admin_routes.post('/processReturn/:orderId/:productId',orderController.postViewReason)
 //admin_routes.post('/orders/cancel',orderController.cancelOrder);
 admin_routes.get('/orders/:id',orderController.viewOrderDetails)
 

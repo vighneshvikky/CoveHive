@@ -21,7 +21,8 @@ exports.placeOrder = async(req,res) => {
             orderDetails,
             currentRoute:'/home',
             currentPage:page,
-            totalPage:Math.ceil(orderCount/limit)
+            totalPage:Math.ceil(orderCount/limit),
+            returnMessage: req.session.returnMessage || ''
         })
     } catch (error) {
         console.log(`error from placeOrder ${error}`)
@@ -36,7 +37,6 @@ exports.cancelOrder = async (req,res) => {
        
         const {action,reason,productId} = req.body;
  
-        console.log(`req.body = ${action}, ${reason}, ${productId}`)
         if(!productId){
             return res.json({ success: false, message: 'Invalid order ID' });
         }
@@ -73,10 +73,11 @@ exports.cancelOrder = async (req,res) => {
 const item = order.items.find(item => item.productId.toString() === productId);
 
 if(item){
-    item.productStatus = action === 'return'?'Returned':'Cancelled';
+    item.productStatus = action === 'return'?'Requested':'Cancelled';
     item.reasonForCancellation = action ==='cancel'?reason:null;
     item.reasonForReturn = action === 'return'?reason:null;
 }
+
 
 
         

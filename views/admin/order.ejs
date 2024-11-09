@@ -35,8 +35,11 @@
                             Status
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Actions
+                           Details
                         </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Actions
+                         </th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
@@ -62,13 +65,16 @@
                                     <% const currentStatusIndex = statusOptions.indexOf(item.productStatus); %>
                                     
                                     <% statusOptions.forEach((status, index) => { %>
-                                        <button 
-                                            onclick="updateStatus('<%= order._id %>', '<%= item.productId._id %>', '<%= status %>')"
-                                            class="px-3 py-1 text-xs rounded-md <%= status === item.productStatus ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-800 hover:bg-gray-200' %>"
-                                            <%= index <= currentStatusIndex ? 'hidden' : '' %>>
-                                            <%= status %>
-                                        </button>
+                                        <% if (item.productStatus !== 'Cancelled' && item.productStatus !== 'Requested' && item.productStatus !== 'Rejected') { %> <!-- Add this check -->
+                                            <button 
+                                                onclick="updateStatus('<%= order._id %>', '<%= item.productId._id %>', '<%= status %>')"
+                                                class="px-3 py-1 text-xs rounded-md <%= status === item.productStatus ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-800 hover:bg-gray-200' %>"
+                                                <%= index <= currentStatusIndex ? 'hidden' : '' %>>
+                                                <%= status %>
+                                            </button>
+                                        <% } %>
                                     <% }) %>
+                                    
                                 <% }) %>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -79,7 +85,8 @@
                                         'Confirmed': 'bg-green-100 text-green-800',
                                         'Delivered': 'bg-purple-100 text-purple-800',
                                         'Cancelled': 'bg-red-100 text-red-800',
-                                        'Returned': 'bg-gray-100 text-gray-800'
+                                        'Returned': 'bg-gray-100 text-gray-800',
+                                        'Requested': 'bg-violet-100 text-violet-800'
                                     } %>
                                     <span class="px-3 py-1 text-xs rounded-full <%= statusColors[item.productStatus] %>">
                                         <%= item.productStatus %>
@@ -92,7 +99,21 @@
                                     View
                                 </button>
                             </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+    <% order.items.forEach(item => { %>
+        <% if (item.productStatus === 'Requested') { %>
+            <a href="/admin/viewReason/<%=order._id%>/<%=item.productId._id%>"><button 
+                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-500">
+                View Return Reason
+            </button></a>
+        <% } %>
+    <% }) %>
+</td>
+
+
+                 
                         </tr>
+                        
                     <% }) %>
                 </tbody> 
             </table>
@@ -198,6 +219,13 @@
 
 
 <script>
+
+    function showReasonModal (orderId,productId,reason){
+        console.log('hai')
+        console.log(`orderId = ${orderId}`)
+        console.log(`productID = ${productId}`);
+        console.log(`reason = ${reason}`)
+    }
     function viewOrder(orderId) {
     // Show modal
     document.getElementById('modalBackground').classList.remove('hidden');  
@@ -352,7 +380,11 @@ function updateStatus(orderId, productId, newStatus) {
         });
     }
     
- 
+
+
+
+
+
     </script>
     <style>
         /* Modal background */
