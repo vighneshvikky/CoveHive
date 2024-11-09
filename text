@@ -1,24 +1,12 @@
-
-Next Week
 User side :
-Integrate online payment method(Razorpay or Paypal). The integration of multiple payment gateways will be an add-on..
-Change order status(cancel,return etc.)
-Coupon Management (Apply Coupon, Remove Coupon) 
-Search, Category filtering
-Wishlist (Add, Remove)
-Wallet (for canceled orders)
-
-Admin side : 
-Offer module(Product offer, Category offer, Referral offer).
-Coupon Management (Create, Delete)
-Sales report(Daily, Weekly, Yearly, Custom date)
-Generate sales report 
-Should be able to filter based on  
-Custom date range 
-1 Day / week / month 
-Show discount and coupons deduction in sales report 
-Overall sales count  
-Overall order amount 
-Overall discount
-
-Report download (Pdf, Excel)
+Invoice download (Pdf)
+Order above Rs 1000 should not be allowed for COD
+Delivery charge can be applied according to location / fixed charges (optional)
+Handle error for failed payments (update status as payment pending), 
+Should be able to continue payment from my order page in case of failed payment
+Admin side :
+Admin Dashboard - Chart with filter(yearly,monthly etc.)
+Best selling product (top 10) 
+Best selling category (top 10) 
+Best selling brands (top 10) 
+Generate ledger book (optional) i want to complete this task within 7 days how to do it

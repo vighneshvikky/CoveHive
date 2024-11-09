@@ -42,6 +42,10 @@ exports.changeOrderStatus = async (req, res) => {
         }
         
         item.productStatus = status;
+       if(item.productStatus == 'Delivered'){
+        order.orderStatus = 'Paid'
+       }    
+
         console.log(`product Status = ${item.productStatus}`)
         await order.save();
         
