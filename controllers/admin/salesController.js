@@ -52,18 +52,20 @@ const applyDateFilter = (filter) => {
       console.log("limit = ",limit);
       
   
-      let queryCondition = {};
-  
+
+      let queryCondition = {orderStatus:"Paid"}; // Ensure initial condition for paid orders
+
+      // If a filter is provided, apply it to the query condition
       if (filter) {
         const dateFilter = applyDateFilter(filter);
         queryCondition = { ...queryCondition, ...dateFilter };
       }
-  
+      
+      // Fetch the filtered sales data
       const salesData = await Order.find(queryCondition)
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit);
-  
         
         
         
