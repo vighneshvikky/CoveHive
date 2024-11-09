@@ -59,7 +59,7 @@ const applyDateFilter = (filter) => {
         queryCondition = { ...queryCondition, ...dateFilter };
       }
   
-      const salesData = await Order.find({orderStatus:'Paid'})
+      const salesData = await Order.find(queryCondition)
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit);

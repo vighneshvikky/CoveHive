@@ -38,11 +38,11 @@
       </div>
       <div class="flex-1 px-5 py-3 bg-gray-100 rounded-md flex flex-col justify-center items-center text-gray-700 font-medium shadow-sm hover:bg-gray-200 transition duration-300 ease-in-out">
         <span class="text-xs uppercase tracking-wider text-gray-500">Overall Order Amount</span>
-        <span id="overallOrderAmount" class="text-2xl font-semibold mt-1">₹ <%= overallOrderAmount.toFixed() %></span>
+        <span id="overallOrderAmount" class="text-2xl font-semibold mt-1">₹ <%= overallOrderAmount.toFixed(2) %></span>
       </div>
       <div class="flex-1 px-5 py-3 bg-gray-100 rounded-md flex flex-col justify-center items-center text-gray-700 font-medium shadow-sm hover:bg-gray-200 transition duration-300 ease-in-out">
         <span class="text-xs uppercase tracking-wider text-gray-500">Overall Coupon Discount</span>
-        <span id="totalCouponDiscount" class="text-2xl font-semibold mt-1">₹ <%= totalCouponDiscount.toFixed() %></span>
+        <span id="totalCouponDiscount" class="text-2xl font-semibold mt-1">₹ <%= totalCouponDiscount.toFixed(2) %></span>
       </div>
     </div>
 
@@ -63,13 +63,13 @@
         <tbody class="bg-white divide-y divide-gray-200">
           <% data.forEach(data =>{ %>
           <tr class="hover:bg-gray-50">
-            <td class="px-6 py-4 text-sm text-gray-600"><%= data._id %></td>
+            <td class="px-6 py-4 text-sm text-gray-600"><%= data.orderId %></td>
             <td class="px-6 py-4 text-sm text-gray-600"><%= data.userId.toString().substring(0, 4) + '...' + data.userId.toString().slice(-5) %></td>
             <td class="px-6 py-4 text-sm text-gray-600"><%= new Date(data.createdAt).toLocaleDateString('en-GB') %></td>
             <td class="px-6 py-4 text-sm text-gray-600">₹ <%= data.totalPrice.toFixed(2) %></td>
             <td class="px-6 py-4 text-sm text-gray-600">₹ <%= data.couponDiscount.toFixed(2) %></td>
             <td class="px-6 py-4 text-sm">
-              <span class="<%= data.orderStatus === 'Paid' ? 'text-green-600 bg-green-100' : 'text-yellow-600 bg-yellow-100' %> px-2 py-1 rounded-full text-xs font-medium">
+              <span class="<%= data.orderStatus === 'Paid'%>px-6 py-4 text-sm text-gray-600">
                 <%= data.orderStatus %>
               </span>
             </td>
@@ -136,9 +136,9 @@
           overallSalesCount.innerHTML = ''
           overallSalesCount.innerHTML = data.overallSalesCount
           overallOrderAmount.innerHTML = ''
-          overallOrderAmount.innerHTML = data.overallOrderAmount.toFixed()
+          overallOrderAmount.innerHTML = `₹${data.overallOrderAmount.toFixed(2)}`;
           totalCouponDiscount.innerHTML = ''
-          totalCouponDiscount.innerHTML = data.totalCouponDiscount.toFixed()
+          totalCouponDiscount.innerHTML = `₹${data.totalCouponDiscount.toFixed(2)}`;
           
           
     
