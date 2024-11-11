@@ -406,6 +406,7 @@ exports.googleAuthCallback = async (req, res) => {
     
       } catch (error) {
         console.log("Error in all products page", error);
+        res.status(400).json({})
         
       }
     }

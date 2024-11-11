@@ -1,0 +1,242 @@
+constroller start
+
+const home = async (req, res) => {
+    try {
+        const orderCount = await orderSchema.countDocuments();
+        const userCount = await userSchema.countDocuments();
+
+        const revenueResult = await orderSchema.aggregate([
+            {
+                $match: {
+                    orderStatus: { $in: ['Shipped', 'Delivered'] }
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    total: { $sum: "$totalPrice" }
+                }
+            }
+        ]);
+        const Revenue = revenueResult.length > 0 ? revenueResult[0].total : 0;
+
+        const product = await orderSchema.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    total: { $sum: "$totalQuantity" }
+                }
+            }
+        ]);
+        const productCount = product.length > 0 ? product[0].total : 0;
+        // const productCount = await orderSchema.find({
+        //     orderStatus: { $in: ['Pending', 'Shipped', 'Delivered'] }
+        // }).count();
+        
+
+        // Find the best seller
+        const productSale = await orderSchema.aggregate([
+            { $unwind: "$products" },
+            { $group: { _id: '$products.product_id', totalQuantity: { $sum: "$products.product_quantity" } } },
+            { $sort: { totalQuantity: -1 } }
+        ]);
+
+        const productId = productSale.map(sale => sale._id);
+
+        const products = await productSchema.find({ _id: { $in: productId } });
+
+        const bestProducts = productId.map(id => products.find(product => product._id.toString() === id.toString()));
+
+        const bestCategory = new Map();
+        bestProducts.forEach(element => {
+            if (element && element.productCollection) {
+                if (bestCategory.has(element.productCollection)) {
+                    bestCategory.set(element.productCollection, bestCategory.get(element.productCollection) + 1);
+                } else {
+                    bestCategory.set(element.productCollection, 1);
+                }
+            }
+        });
+
+        res.render('admin/home', {
+            title: "Home",
+            orderCount,
+            userCount,
+            Revenue,
+            productCount,
+            bestProducts,
+            bestCategory
+        });
+    } catch (error) {
+        console.log(`error from home ${error}`);
+    }
+};
+
+const salesChart = async (req,res)=>{
+    try {
+        const orders = await orderSchema.find({
+            orderStatus: { $in: ['Pending','Shipped','Delivered'] }
+        });
+
+        let salesData = Array.from({ length: 12 }, () => 0);
+        let revenueData = Array.from({ length: 12 }, () => 0);
+        let productsData = Array.from({ length: 12 }, () => 0);
+
+        orders.forEach(order => {
+            const month = order.createdAt.getMonth();
+            revenueData[month] += order.totalPrice;
+            for(product of order.products){
+                productsData[month] += order.totalQuantity;
+            }
+        });
+
+        const Orders = await orderSchema.find({})
+
+        Orders.forEach(order => {
+            const month = order.createdAt.getMonth();
+            salesData[month]++
+        })
+
+        res.json({
+            salesData,
+            revenueData,
+            productsData
+        });
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+controller end
+
+
+
+<%- include('navbar') %>
+
+    <!----------------------------------------- Admin Menu ---------------------------------------------------->
+
+
+
+        <!----------------------------------------- Admin Dashboard ---------------------------------------------------->
+
+        <div class="main-content">
+            <div class="sidebar-header">
+                <h1 class="text-white">Sales Summary</h1>
+            </div>
+            <div class="stats">
+                <div class="stat-item">
+                    <p>Revenue</p>
+                    <h2>
+                        <i class="fa-solid fa-indian-rupee-sign "></i>
+                        <%= Revenue %>
+                    </h2>
+                    <!-- <span class="stat-change negative">-25%</span> -->
+                </div>
+                <div class="stat-item">
+                    <p>Orders</p>
+                    <h2>
+                        <%= orderCount %>
+                    </h2>
+                    <!-- <span class="stat-change negative">-25%</span> -->
+                </div>
+                <div class="stat-item">
+                    <p>Products Sold</p>
+                    <h2>
+                        <%= productCount %>
+                    </h2>
+                    <!-- <span class="stat-change positive">+49%</span> -->
+                </div>
+                <div class="stat-item">
+                    <p>Total Customers</p>
+                    <h2>
+                        <%= userCount %>
+                    </h2>
+                    <!-- <span class="stat-change positive">+4%</span> -->
+                </div>
+            </div>
+            <div class="container chart-container my-5">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" id="chartTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders"
+                            type="button" role="tab" aria-controls="orders" aria-selected="true">Total Sales
+                            Count</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="revenue-tab" data-bs-toggle="tab" data-bs-target="#revenue"
+                            type="button" role="tab" aria-controls="revenue" aria-selected="false">Total
+                            Revenue</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="products-tab" data-bs-toggle="tab" data-bs-target="#products"
+                            type="button" role="tab" aria-controls="products" aria-selected="false">TotalProducts
+                            Sold</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="chartTabsContent">
+                    <div class="tab-pane fade show active" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+                        <canvas id="ordersChart"></canvas>
+                    </div>
+                    <div class="tab-pane fade" id="revenue" role="tabpanel" aria-labelledby="revenue-tab">
+                        <div class="d-flex justify-content-end my-3">
+                        </div>
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                    <div class="tab-pane fade" id="products" role="tabpanel" aria-labelledby="products-tab">
+                        <div class="d-flex justify-content-end my-3">
+                        </div>
+                        <canvas id="productsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- best seller -->
+    <%- include ('bestSelling') %>
+
+        <%- include('footer') %>
+
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script>
+                function createChart(ctx, type, data, label) {
+                    return new Chart(ctx, {
+                        type: type,
+                        data: {
+                            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                            datasets: [{
+                                label: label,
+                                data: data,
+                                backgroundColor: '#D5D2FF',
+                                borderColor: '#2b0a5a',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                }
+                // Fetch data from backend and update charts
+                async function fetchDataAndRenderCharts() {
+                    try {
+                        const response = await fetch('/admin/charts');
+                        const data = await response.json();
+
+                        // Create charts with fetched data
+                        createChart(document.getElementById('ordersChart'), 'line', data.salesData, 'Total Sales Count');
+                        createChart(document.getElementById('revenueChart'), 'bar', data.revenueData, 'Total Revenue');
+                        createChart(document.getElementById('productsChart'), 'polarArea', data.productsData, 'Total Products Sold');
+                    } catch (error) {
+                        console.error('Error fetching data:', error);
+                    }
+                }
+
+                // Initial data fetch and rendering
+                fetchDataAndRenderCharts();
+            </script>

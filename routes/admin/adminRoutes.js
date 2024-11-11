@@ -35,7 +35,7 @@ admin_routes.get('/login',adminController.getLoginPage);
 admin_routes.post('/login', adminController.loginAdmin);
 
 
-admin_routes.get('/adminDashboard',adminAuth.auth,adminController.loadDashboard)
+
 
 //-------------------------------------------customers management------------------------------------------------------------
 
@@ -101,11 +101,13 @@ admin_routes.get('/offers',adminAuth.auth,offerController.offers);
 admin_routes.post('/addOffer',offerController.addOfferPost);
 admin_routes.post('/removeOffer',offerController.removeOffer);
 
+//------------------------------------------dashboard-----------------------------------------------------
+// adminRouter.post('/dashboard',isAdmin,dashboard)
+// adminRouter.get('/dashboardFilter',dashboardFilter)
+ admin_routes.get('/dashboard',adminAuth.auth,adminController.dashboard);
+ admin_routes.post('/dashboard',adminAuth.auth,adminController.dashboard);
+ admin_routes.get('dasboardFilter',adminAuth.auth,adminController.dashboardFilter)
 
-
-// adminRouter.get('/offers',isAdmin,offers)
-// adminRouter.post('/addOffer',isAdmin,addOfferPost)
-// adminRouter.post('/removeOffer',isAdmin,removeOffer)
 
 //----------------------------------------Logout ------------------------------------------------------------------------
 
