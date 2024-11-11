@@ -112,6 +112,7 @@
                          
                               <!-- Cancel and Return button -->
 
+    
                               <% if(item.productStatus === 'Delivered') { %>
                                 <div class="flex flex-wrap gap-3 pt-4">
                                   <button onclick="openModal('<%= order._id %>','<%= item.productId._id%>', 'return')" 
@@ -132,6 +133,25 @@
                           <%    } %>
                    
                               <% } %>
+
+                              <% if(item.productStatus === 'Pending'){ %>
+                                <% if(!order.paid ) { %>
+                                  <div class="flex flex-col items-center p-4 bg-red-100 rounded-lg shadow-lg space-y-4">
+                                    <p class="text-xl font-medium text-red-600">Oops! Payment Failed</p>
+                                    <p class="text-gray-700 text-center">
+                                      There was an issue with your payment. Please try again to complete your purchase.
+                                    </p>
+                                    <button 
+                                      type="button" 
+                                      onclick="retryPayment('<%=order._id%>')" 
+                                      class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                                    >
+                                      Pay Now
+                                    </button>
+                                  </div>
+                                <% } %>
+                              <% } %>
+
                      
                           </div>
                       </div>
@@ -268,6 +288,7 @@
 </div>
 
 <!-- Include SweetAlert2 Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
@@ -493,6 +514,86 @@ function downloadInvoice() {
 
     // Save the PDF
     pdf.save("invoice.pdf");
+}
+function showError(message) {
+  // You can customize this to show the error on the UI
+  alert(message);
+  console.error(message);
+}
+async function retryPayment(orderId){
+  console.log(`orderId = ${orderId}`)
+  try {
+                    const res = await fetch('/retryRazorPay', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ orderId })
+                    });
+
+                    if (res.ok) {
+                        const retryPaymentData = await res.json();
+                        const options = {
+                            key: 'rzp_test_KDYrLJHnu3O9Ip',
+                            amount: retryPaymentData.amount,
+                            currency: "INR",
+                            name: "CoveHive",
+                            order_id: retryPaymentData.razorpayOrderId.id,
+                            handler: async function (response) {
+                                try {
+                                    const resData = {
+                                        orderId,
+                                        razorpayOrderId: response.razorpay_order_id,
+                                        paymentId: response.razorpay_payment_id,
+                                    };
+                                    const payment = await fetch('/retryPayment', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify(resData)
+                                    });
+
+                                    if (payment.ok) {
+                                        const paymentData = await payment.json();
+                                        window.location.href = "/conform-order";
+                                    } else {
+                                        const error = await payment.text();
+                                        showError(error);
+                                    }
+                                } catch (error) {
+                                    console.error(`Handler error: ${error}`);
+                                }
+                            },
+                            prefill: {
+                                name: retryPaymentData.address.contactName,
+                                email: retryPaymentData.address.street,
+                                contact: retryPaymentData.address.pincode
+                            },
+                            notes: {
+                                address: retryPaymentData.address
+                            },
+                            theme: {
+                                color: "#3399cc"
+                            },
+                            "modal": {
+                                "ondismiss": function () {
+                                    window.location.href = '/orders';
+                                }
+                            }
+                        };
+                        const rzp1 = new Razorpay(options);
+                        rzp1.on('payment.failed', function (response) {
+                            showError('Payment Failure');
+                        });
+                        rzp1.open();
+                    } else {
+                        const error = await res.text();
+                        showError(error);
+                    }
+                } catch (error) {
+                    console.error(`Error from retry payment fetch: ${error}`);
+                }
 }
 </script>
 

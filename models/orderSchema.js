@@ -101,6 +101,10 @@
         createdAt: {
             type: Date,
             default: Date.now
+        },
+        paid:{
+            type:Boolean,
+            default:false
         }
     })
 

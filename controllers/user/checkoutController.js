@@ -174,7 +174,7 @@ exports.paymentRender = async (req,res) =>{
 
 
 exports.placeOrder = async (req,res) =>{
-    console.log('hai from placeOrder')
+
 try {
     const userId = req.session.user_id;
     const addressIndex = parseInt(req.params.address);
@@ -219,7 +219,7 @@ const user = await User.findById(req.session.user_id).populate('addresses')
 
 if(paymentDetails[paymentMode] === 'Cash on delivery'){
     if(totalPrices > 1000){
-  return res.status(400).json({sucess:false,message:'Order above Rs 1000 should not be allowed for COD'})
+  return res.status(400).json({sucess:false,message:'COD below 1000 only.'})
     }
 }
 
@@ -241,7 +241,7 @@ const newOrder = new Order({
         city:user.addresses[addressIndex].city,
         pincode:user.addresses[addressIndex].pincode,
         state:user.addresses[addressIndex].state,
-        country:user.addresses[addressIndex].country
+        country:user.addresses[addressIndex].country,
     },
     
     // productDiscountPrice:val,
@@ -250,7 +250,8 @@ const newOrder = new Order({
     orderStatus: payment_status === "Pending" ? "Pending" : "Paid",
     paymentId: paymentId,
     paymentStatus: payment_status,
-    isCancelled: false
+    isCancelled: false,
+    paid:true
 });
 await newOrder.save();
 //  console.log(`newOrder = ${newOrder}`)
@@ -473,11 +474,47 @@ exports.userCoupons = async (req,res) =>{
 }
 
 exports.failedOrder = async(req,res) =>{
+    const addressIndex = req.query.address;
+    const paymentMethod = req.query.paymentMethod;
+
+    console.log(`addressIndex = ${addressIndex}`);
+    console.log(`paymentMethod = ${paymentMethod}`);    
+    
     try {
         const userId = req.session.user_id;
+        const cartItems = await Cart.findOne({userId}).populate('items.productId')
+        let discountPrice = cartItems.totalPrice - cartItems.payableAmount;
+        let totalPrices = cartItems.payableAmount;
+        const user = await User.findById(userId).populate('addresses')
+     
         if(!userId){
             return res.status(400).json({error:'User not found'})
         }
+const newOrder = new Order({
+    userId:userId,
+    orderId:Math.floor(Math.random()*1000000),
+    paid:false,
+    items:cartItems.items,
+    orderStatus:"Pending",
+    totalPrice:totalPrices,
+    couponCode:null,
+    couponDiscount:discountPrice,
+    address:{
+        contactName:user.addresses[addressIndex].fullName,
+        street:user.addresses[addressIndex].street,
+        city:user.addresses[addressIndex].city,
+        pincode:user.addresses[addressIndex].pincode,
+        state:user.addresses[addressIndex].state,
+        country:user.addresses[addressIndex].country
+
+    },
+    paymentMethod:"razorpay",
+    paymentId:null,
+    isCancelled:false
+});
+
+await newOrder.save();
+
     res.render('user/failedOrder')
     } catch (error) {
       console.log(`error from failedOrder ${error}`) 

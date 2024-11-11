@@ -126,6 +126,8 @@ user_route.get('/conform-order',userAuth.isLogin,checkOutController.orderConform
 //--------------------------------------Razorpay----------------------------------
 
 user_route.post('/payment-render/:amount',checkOutController.paymentRender)
+user_route.post('/retryRazorPay',orderController.retryRazorPay)
+user_route.post('/retryPayment',orderController.retryPayment)
 //--------------------------------------Coupon----------------------------------
 
 user_route.post('/applyCoupon',checkOutController.applyCoupon)

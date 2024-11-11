@@ -1,6 +1,9 @@
 const Order = require('../../models/orderSchema');
 const Product = require('../../models/admin/productModel')
 const Wallet = require('../../models/walletSchema')
+const Razorpay =  require('razorpay');
+const Cart = require('../../models/user/cartSchema')
+require('dotenv').config();
 exports.placeOrder = async(req,res) => {
 
     try {
@@ -94,7 +97,7 @@ exports.viewOrderDetails = async (req, res) => {
     try {
         const orderId = req.params.id;
         const order = await Order.findById(orderId).populate('items.productId').exec();
-
+         
         if (!order) {
             return res.status(404).json({ message: 'Order not found' });
         }
@@ -106,3 +109,67 @@ exports.viewOrderDetails = async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
+
+const razorpay = new Razorpay({
+    key_id:process.env.RAZORPAY_KEY_ID,
+    key_secret:process.env.RAZORPAY_SECRET
+});
+
+
+exports.retryRazorPay = async(req,res) =>{
+    try {
+        console.log(`hi from retryRazorPay`)
+        const { orderId } = req.body;
+        const order = await Order.findById(orderId);
+
+        console.log(`order = ${order}`)
+
+        if (!order) {
+            return res.status(404).send('Order not found');
+        }
+
+        const razorpayOrder = await razorpay.orders.create({
+            amount: Math.round(order.totalPrice * 100),
+            currency: "INR",
+            receipt: `receipt#${orderId}`
+        });
+
+        if (razorpayOrder) {
+            return res.status(200).json({
+                ...order.toObject(),
+                razorpayOrderId: razorpayOrder  
+            });
+        } else {
+            return res.status(500).send('Razorpay order creation failed');
+        } 
+    } catch (error) {
+       console.log(`error from retryRazorPay ${error}`) 
+       res.status(500).send('Internal Server Error');
+    }
+}
+
+exports.retryPayment = async (req,res) =>{
+    try {
+        const { orderId, paymentId, razorpayOrderId } = req.body;
+        const update = {
+            paymentId: paymentId,
+            paymentStatus: 'Success',
+            orderStatus: 'Confirmed',
+            paid:true
+        };
+        const order = await Order.findByIdAndUpdate(orderId, update, { new: true });
+        if (!order) {
+            return res.status(404).send('Order not found');
+        }
+        for (let product of order.items) {
+            await Product.findByIdAndUpdate(product.productId, {
+                $inc: { stock: -product.productCount }
+            });
+        }
+        await Cart.deleteOne({ userId:req.session.user_id});
+        res.status(200).json(order);
+    } catch (error) {
+        console.log(`error from retryPayment ${error}`)
+        res.status(500).send('Internal Server Error');
+    }
+}

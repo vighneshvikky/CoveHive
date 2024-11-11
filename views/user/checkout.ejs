@@ -377,48 +377,10 @@ orderPlacementBtn.addEventListener('click', (e) => {
                         const rzp1 = new Razorpay(options);
                         rzp1.on('payment.failed', function (response) { 
                            
-                            const URL = `/place-order/${selectedAddressIndex}/${selectedPaymentMethod}`;
-                            fetch(URL, {
-                                method: "POST",
-                                headers: {
-                                    'Content-Type': "application/json"
-                                },
-                                body: JSON.stringify({
-                                    razorpay_payment_id: response.error.metadata.payment_id,
-                                    razorpay_order_id: response.error.metadata.order_id,
-                                    razorpay_signature: response.error.metadata.signature,
-                                    payment_status: "Pending",
-                                 
-                                })
-                            })
-                                .then((res) => {
-                                    if (res.redirected) {
-                                        window.location.href = res.url;
-                                    } else if (!res.ok) {
-                                        throw new Error("Order placement failed");
-                                    } else {
-                                        return res.json();
-                                    }
-                                })
-                                .then(data => {
-                                    if (data.success) {
-                                        window.location.href = "/failed-order"; 
-                                    } else {
-                                        Swal.fire({
-                                            icon: "error",
-                                            title: "Order Placement Failed",
-                                            text: data.message
-                                        });
-                                    }
-                                })
-                                .catch(err => {
-                                    console.error("Error on payment failure callback:", err);
-                                    Swal.fire({
-                                        icon: "error",
-                                        title: "Error",
-                                        text: "An error occurred while processing the order."
-                                    });
-                                });
+                            console.error("Payment Failed:", response);
+
+                            const failedOrderUrl = `/failed-order?address=${selectedAddressIndex}&paymentMethod=${selectedPaymentMethod}`;
+                            window.location.href = failedOrderUrl;
                         });
                         rzp1.open();
                     } else {

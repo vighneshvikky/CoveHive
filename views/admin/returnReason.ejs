@@ -1,20 +1,91 @@
-<h2 class="text-2xl font-bold mb-4">Return Reason for Order <%= order._id %></h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+    <title>CoveHive</title>
+</head>
+<body>
+    <!-- Modal Backdrop -->
+    <div class="fixed inset-0 bg-gray-800 bg-opacity-70 flex items-center justify-center p-4">
+        <!-- Modal Content -->
+        <div class="w-full max-w-lg animate-fade-in">
+            <div class="bg-white rounded-lg shadow-2xl border border-gray-200">
+                <!-- Modal Header -->
+                <div class="px-6 py-4 border-b">
+                    <h2 class="text-xl font-semibold text-gray-800">
+                        Return Details for Order: <span class="text-indigo-600"><%= order._id %></span>
+                    </h2>
+                </div>
 
-<div class="bg-white p-6 rounded-lg shadow-md max-w-md w-full">
-  <h3 class="text-xl font-semibold mb-2">Product: <%= item.productId.name %></h3>
-  
-  <!-- Display the return reason -->
-  <p class="mb-4">Reason for Return: <%= reasonForReturn %></p>
+                <!-- Modal Body -->
+                <div class="px-6 py-4">
+                    <div class="space-y-6">
+                        <!-- Product Information -->
+                        <h3 class="text-lg font-medium text-gray-700">
+                            Product: <span class="font-semibold text-indigo-600"><%= item.productId.name %></span>
+                        </h3>
 
-  <!-- Form to approve or reject the return -->
-  <form action="/admin/processReturn/<%= order._id %>/<%= item.productId._id %>" method="POST">
-    <div class="flex justify-end gap-4">
-      <button type="submit" name="action" value="approve" class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-500">
-        Approve
-      </button>
-      <button type="submit" name="action" value="reject" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-500">
-        Reject
-      </button>
+                        <!-- Return Reason -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-2">
+                                Reason for Return:
+                            </label>
+                            <div class="bg-gray-100 rounded-md p-4 text-gray-700 border border-gray-200">
+                                <%= reasonForReturn %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="px-6 py-4 bg-gray-50 rounded-b-lg border-t">
+                    <form action="/admin/processReturn/<%= order._id %>/<%= item.productId._id %>" method="POST">
+                        <div class="flex justify-end gap-4">
+                            <!-- Approve Button -->
+                            <button 
+                                type="submit" 
+                                name="action" 
+                                value="approve" 
+                                class="px-5 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-200"
+                            >
+                                Approve
+                            </button>
+
+                            <!-- Reject Button -->
+                            <button 
+                                type="submit" 
+                                name="action" 
+                                value="reject" 
+                                class="px-5 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-200"
+                            >
+                                Reject
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-  </form>
-</div>
+
+    <!-- Animation Styles -->
+    <style>
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</body>
+</html>
