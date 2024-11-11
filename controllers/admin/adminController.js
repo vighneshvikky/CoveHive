@@ -174,15 +174,23 @@ console.log('started aggregation')
   //Total sale Amount start
 
   const totalSaleAmount = await Order.aggregate([
+    // Match orders with the desired statuses
     {
-      $group:{
-        _id:null,
-        totalAmount:{$sum:"$totalPrice"}
+      $match: {
+        orderStatus: { $in: ["Pending", "Paid", "Delivered", "Shipped"] }
+      }
+    },
+    // Group by null to sum the totalPrice
+    {
+      $group: {
+        _id: null,
+        totalAmount: { $sum: "$totalPrice" }
       }
     }
-  ])
+  ]);
 
-  const finalTotalSaleAmount = (totalSaleAmount.length > 0 ? totalSaleAmount[0].totalAmount : 0).toFixed(2)
+  const finalTotalSaleAmount = (totalSaleAmount.length > 0 ? totalSaleAmount[0].totalAmount : 0).toFixed(2);
+  console.log(`totalAmount = ${totalSaleAmount[0].totalAmount }`)
 
   //Total sale Amount end
 
