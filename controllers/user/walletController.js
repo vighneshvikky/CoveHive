@@ -7,7 +7,12 @@ exports.walletPage = async (req,res)=>{
     try{
         const walletCount = await Wallet.countDocuments();
         const userId = req.session.user_id;
-        let wallet = await Wallet.findOne({ userID: userId }).sort({transaction_date:-1}).skip((page-1)*limit).limit(limit)
+        let wallet = await Wallet.findOne({ userID: userId }).skip((page-1)*limit).limit(limit)
+
+        if (wallet) {
+            // Sorting transactions by `transaction_date` in descending order
+            wallet.transaction.sort((a, b) => b.transaction_date - a.transaction_date);
+          } 
         if (!userId) {
             req.flash('error', 'User Not found . Please login again.')
             return res.redirect('/login')

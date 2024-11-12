@@ -59,21 +59,21 @@
                                 </div>
                             </div>
                         <% }); %>
-                        <div class="mt-4 flex justify-center space-x-4">
-                            <% if (currentPage > 1) { %>
-                              <a href="?page=<%= currentPage - 1 %>&limit=10" class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">Previous</a>
-                            <% } %>
-                            
-                            <% for (let i = 1; i <= totalPages; i++) { %>
-                              <a href="?page=<%= i %>&limit=10" class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300 <%= currentPage === i ? 'bg-gray-400' : '' %>">
-                                <%= i %>
-                              </a>
-                            <% } %>
-                            
-                            <% if (currentPage < totalPages) { %>
-                              <a href="?page=<%= currentPage + 1 %>&limit=10" class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">Next</a>
-                            <% } %>
-                          </div>
+  <div class="mt-4 flex justify-center space-x-4">
+    <% if (currentPage > 1) { %>
+      <a href="?page=<%= currentPage - 1 %>&limit=10" class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">Previous</a>
+    <% } %>
+    
+    <% for (let i = 1; i <= totalPages; i++) { %>
+      <a href="?page=<%= i %>&limit=10" class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300 <%= currentPage === i ? 'bg-gray-400' : '' %>">
+        <%= i %>
+      </a>
+    <% } %>
+    
+    <% if (currentPage < totalPages) { %>
+      <a href="?page=<%= currentPage + 1 %>&limit=10" class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">Next</a>
+    <% } %>
+  </div>
                     <% } else { %>
                         <h3 class="text-xl text-gray-300 text-center py-20">No Transactions Yet</h3>
                     <% } %>
