@@ -291,7 +291,13 @@ exports.googleAuthCallback = async (req, res) => {
   exports.loadProductDetails = async (req,res) => {
     const productId = req.params.id; // Get the product ID from the URL parameters
     try {
-        const product = await Product.findById(productId); // Fetch the product by ID directly
+        const product = await Product.findById(productId);
+        if(!product){
+            res.render('user/500')
+        }
+        
+        
+        // Fetch the product by ID directly
         const relatedProducts = await Product.find({
           isBlocked:false,
           category:product.category,
@@ -308,7 +314,7 @@ exports.googleAuthCallback = async (req, res) => {
            user 
           }); // Render the product details EJS template
     } catch (error) {
-        console.log(error.message)
+        res.render('user/500')
     }
   }
 
