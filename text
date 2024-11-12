@@ -1,11 +1,20 @@
-User side :
-Invoice download (Pdf) done 
-Order above Rs 1000 should not be allowed for COD done
-Delivery charge can be applied according to location / fixed charges (optional) done
-Should be able to continue payment from my order page in case of failed payment
-Admin side :
-Admin Dashboard - Chart with filter(yearly,monthly etc.)
-Best selling product (top 10) 
-Best selling category (top 10) 
-Best selling brands (top 10) 
-Generate ledger book (optional) i want to complete this task within 7 days how to do it
+
+Pendings:
+
+existing images are removed when adding new one[]
+showing incorrect order total in checkout page[]
+latest wallet transaction should be at the top[]
+give pagination for wallet transactions []
+don't credit refund when cancelling payment failed orders[]
+style the invoice[]
+show price breakdown in order details & invoice[]
+implement soft delete[]
+restore stock when cancelling a item []
+incorrect wallet transaction when returning a product[]
+referral offers[]
+setup error pages[]
+
+marks : 
+Theory:5 
+Practical: 5
+
