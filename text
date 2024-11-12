@@ -3,8 +3,8 @@ Pendings:
 
 existing images are removed when adding new one[]
 showing incorrect order total in checkout page[]
-latest wallet transaction should be at the top[]
-give pagination for wallet transactions []
+latest wallet transaction should be at the top[*]
+give pagination for wallet transactions [*]
 don't credit refund when cancelling payment failed orders[]
 style the invoice[]
 show price breakdown in order details & invoice[]

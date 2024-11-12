@@ -48,30 +48,34 @@ exports.cancelOrder = async (req,res) => {
         if (!order) {
             return res.json({ success: false, message: 'Order not found' });
         }
-        if (order.paymentMethod === 'razorpay' || order.paymentMethod === 'Wallet' ) {
-            const userWallet = await Wallet.findOne({ userID: order.userId });
-            if (userWallet) {
-                userWallet.balance = (userWallet.balance || 0) + order.totalPrice;
-                userWallet.transaction.push({
-                    wallet_amount: order.totalPrice,
-                    order_id: order.orderId,
-                    transactionType: 'Credited',
-                    transaction_date: new Date()
-                });
-                await userWallet.save();
-            } else {
-                await Wallet.create({
-                    userID: order.userId,
-                    balance: order.totalPrice,
-                    transaction: [{
+
+        if(order.paid){
+            if (order.paymentMethod === 'razorpay' || order.paymentMethod === 'Wallet' ) {
+                const userWallet = await Wallet.findOne({ userID: order.userId });
+                if (userWallet) {
+                    userWallet.balance = (userWallet.balance || 0) + order.totalPrice;
+                    userWallet.transaction.push({
                         wallet_amount: order.totalPrice,
                         order_id: order.orderId,
                         transactionType: 'Credited',
                         transaction_date: new Date()
-                    }]
-                });
+                    });
+                    await userWallet.save();
+                } else {
+                    await Wallet.create({
+                        userID: order.userId,
+                        balance: order.totalPrice,
+                        transaction: [{
+                            wallet_amount: order.totalPrice,
+                            order_id: order.orderId,
+                            transactionType: 'Credited',
+                            transaction_date: new Date()
+                        }]
+                    });
+                }
             }
         }
+
 
 const item = order.items.find(item => item.productId.toString() === productId);
 
