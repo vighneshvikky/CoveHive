@@ -8,11 +8,11 @@ give pagination for wallet transactions []
 don't credit refund when cancelling payment failed orders[]
 style the invoice[]
 show price breakdown in order details & invoice[]
-implement soft delete[]
-restore stock when cancelling a item []
-incorrect wallet transaction when returning a product[]
+implement soft delete[*]
+restore stock when cancelling a item [*]
+incorrect wallet transaction when returning a product[*]
 referral offers[]
-setup error pages[]
+setup error pages[*]
 
 marks : 
 Theory:5 

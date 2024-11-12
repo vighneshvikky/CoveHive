@@ -81,7 +81,17 @@ if(item){
     item.reasonForReturn = action === 'return'?reason:null;
 }
 
+const product = await Product.findById(productId);
 
+console.log(`product = ${product}`)
+if(product){
+    product.stock += item.productCount;
+    await product.save();
+}else{
+    return res.json({ success: false, message: 'Product not found in inventory' });
+}
+
+console.log(`after = ${product.stock}`)
 
         
          console.log(`order = ${order}`)
