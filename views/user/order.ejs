@@ -150,7 +150,7 @@
                                     </button>
                                   </div>
                                 <% } %>
-                              <% } %>
+                              <% } %> 
 
                      
                           </div>
@@ -488,12 +488,19 @@ function downloadInvoice() {
 
     // Table Headers for Items
     let yPosition = 90;
+    pdf.setFontSize(12);
     pdf.text("Items Purchased:", 10, yPosition);
     yPosition += 10;
+
+    // Drawing table headers
+    pdf.setFontSize(10);
     pdf.text("Product", 10, yPosition);
     pdf.text("Quantity", 80, yPosition);
     pdf.text("Price", 120, yPosition);
-    yPosition += 10;
+    
+    // Drawing table border lines
+    pdf.line(10, yPosition + 2, 190, yPosition + 2);  // top border of the table
+    yPosition += 5; // Moving down to start table data rows
 
     // Table Data for Items Purchased
     const itemsPurchased = document.querySelectorAll("#itemsPurchased tr");
@@ -506,6 +513,9 @@ function downloadInvoice() {
             yPosition += 10;
         }
     });
+
+    // Drawing table bottom border line
+    pdf.line(10, yPosition, 190, yPosition);  // bottom border of the table
 
     // Total Price
     yPosition += 10;
