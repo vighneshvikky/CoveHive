@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found | 404</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+</head>
+<body class="bg-gray-100 h-screen flex items-center justify-center">
+    <div class="text-center px-4">
+        <div class="mb-8">
+            <h1 class="text-9xl font-bold text-gray-800">404</h1>
+            <p class="text-xl md:text-2xl font-light text-gray-600 mb-8">Oops! The page you're looking for doesn't exist.</p>
+        </div>
+        
+        <div class="animate-bounce mb-8">
+            <svg class="mx-auto h-16 w-16 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+            </svg>
+        </div>
+        
+        <p class="text-gray-600 mb-8">Let's get you back on track!</p>
+        
+        <div class="space-x-4">
+            <a href="/" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg inline-block transition duration-200">
+                Go Home
+            </a>
+            <button onclick="window.history.back()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-6 py-3 rounded-lg inline-block transition duration-200">
+                Go Back
+            </button>
+        </div>
+    </div>
+</body>
+</html>

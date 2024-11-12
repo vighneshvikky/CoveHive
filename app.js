@@ -42,6 +42,8 @@ app.use((req, res, next) => {
   next();
 });
 
+
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log('MongoDB connected'))
@@ -65,7 +67,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.use('/admin',adminRoutes);
 // User routes
 app.use('/',userRoutes);
-
+app.get('*',(req,res)=>{
+  res.render('user/404')
+})
 
 // Start server
 const PORT = process.env.PORT;

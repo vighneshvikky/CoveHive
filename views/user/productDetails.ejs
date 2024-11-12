@@ -141,9 +141,7 @@
         <button type="submit" class="btn btn-success">Add to Cart</button>
     </form>
       <!-- Enable buttons when in stock -->
-      <button type="button" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-green-500">
-        Buy Now
-      </button>
+
       
     <% } else { %>
       <!-- Disable buttons and change style when out of stock -->
@@ -153,12 +151,8 @@
         </svg>
         Add to Wishlist
       </button>
-      <form class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-blue-500">
-        <button  class="btn btn-success cursor-not-allowed" disabled>Add to Cart</button>
-    </form>
-    <button type="button" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-md transition duration-200 ease-in-out transform hover:scale-105 focus:ring-2 focus:ring-green-500 cursor-not-allowed" disabled>
-      Buy Now
-    </button>
+
+
     <% } %>
   </div>  
 
