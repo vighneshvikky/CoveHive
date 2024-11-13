@@ -113,7 +113,7 @@ console.log('started aggregation')
       $match: {
         orderStatus: { $in: ["Delivered", "Pending", "Shipped", "Paid"] },
         isCancelled: false,
-       
+        paid:true
       },
     },
     {
@@ -177,7 +177,8 @@ console.log('started aggregation')
     // Match orders with the desired statuses
     {
       $match: {
-        orderStatus: { $in: ["Pending", "Paid", "Delivered", "Shipped"] }
+        orderStatus: { $in: ["Pending", "Paid", "Delivered", "Shipped"] },
+        paid:true
       }
     },
     // Group by null to sum the totalPrice
@@ -208,6 +209,7 @@ console.log('started aggregation')
           orderStatus: { $in: ["Delivered", "Shipped", "Pending","Paid"] },
           isCancelled: false,
           createdAt: dateFilter.createdAt,
+          paid:true
         },
       },
       {
@@ -258,6 +260,7 @@ const productData = await Product.populate(topSellingProducts, {
             orderStatus: { $in: ["Delivered", "Shipped", "Pending", "Paid"] },
             isCancelled: false,
             createdAt: CategoryDateFilter.createdAt,
+            paid:true
           },
         },
         { $unwind: "$items" },
@@ -454,6 +457,7 @@ exports.dashboardFilter = async(req,res) =>{
     const filter = req.query.filter;
     let matchCondition = {
       orderStatus: { $in: ["Delivered", "Pending", "Shipped","Paid"] },
+      paid:true,
       isCancelled: false,
     };
     let startDate, endDate;

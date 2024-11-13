@@ -168,7 +168,7 @@ exports.retryPayment = async (req,res) =>{
         const update = {
             paymentId: paymentId,
             paymentStatus: 'Success',
-            orderStatus: 'Confirmed',
+            orderStatus: 'Pending',
             paid:true
         };
         const order = await Order.findByIdAndUpdate(orderId, update, { new: true });

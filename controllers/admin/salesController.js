@@ -53,7 +53,7 @@ const applyDateFilter = (filter) => {
       
   
 
-      let queryCondition = {orderStatus:{$in:["Pending","Paid","Delivered","Shipped"]}}; // Ensure initial condition for paid orders
+      let queryCondition = {orderStatus:{$in:["Pending","Paid","Delivered","Shipped"]},paid:true}; // Ensure initial condition for paid orders
 
       // If a filter is provided, apply it to the query condition
       if (filter) {
