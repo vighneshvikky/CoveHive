@@ -45,6 +45,7 @@ exports.postAddProduct = async(req,res) => {
       //console.log(JSON.stringify(req.files, null, 2)+'hai')
         const images = req.files.map(file => file.filename);
         const { name, description, price, stock, category, subcategory, compatibleDevices, discount} = req.body;
+        const priceAfterDiscount = (discount / 100) * 100;
     const newProduct = new Product({
       name,
       description,
@@ -54,7 +55,8 @@ exports.postAddProduct = async(req,res) => {
       subcategory,
       compatibleDevices,
       image:images,
-      discount
+      discount,
+      priceAfterDiscount:priceAfterDiscount
     });
 
     //console.log(newProduct)

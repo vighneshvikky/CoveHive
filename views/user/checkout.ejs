@@ -147,6 +147,7 @@
                             <th class="text-left text-[#14213d] py-2">Product</th>
                             <th class="text-left text-[#14213d] py-2">Product Desc</th>
                             <th class="text-left text-[#14213d] py-2">Price</th>
+                            <th class="text-left text-[#14213d] py-2">Discount</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -156,22 +157,31 @@
                                 <td>
                                     <h5 class="text-sm font-semibold text-[#14213d]"><%= item.productId.name %></h5>
                                     <p class="text-gray-500 text-sm"><%= item.productDiscountPrice.toFixed(2) %> x <%= item.productCount %></p>
+                                    
                                 </td>
                                 <td class="text-[#14213d]"><i class="fa-solid fa-indian-rupee-sign"></i><%= (item.productDiscountPrice * item.productCount).toFixed(2) %></td>
+                                <td class="py-3 px-4 text-gray-800 font-medium">
+                                    <span class="inline-flex items-center justify-center bg-green-100 text-green-800 rounded-full px-3 py-1">
+                                        <%=item.productId.discount%>% OFF
+                                    </span>
+                                </td>
                             </tr>
                         <% }) %>
                     
-                        <!-- New row for Discount -->
-                        <tr class="bg-gray-100">
-                            <td colspan="2" class="text-right text-[#14213d] font-semibold py-2">Discount:</td>
-                            <td class="text-[#14213d] font-semibold">-<%= cartDetails.totalPrice - cartDetails.payableAmount%></td>
-                        </tr>
-                    
-                        <!-- Existing Total row -->
-                        <tr class="bg-gray-100">
-                            <td colspan="2" class="total-payable-amount text-right text-[#14213d] font-semibold py-2">Total:</td>
-                            <td class="text-[#14213d] font-semibold"><i class="fa-solid fa-indian-rupee-sign"></i><%= cartDetails.payableAmount.toFixed(2) %></td>
-                        </tr>
+
+                      
+                <!-- Total Amount Row -->
+                <tr class="border-t-2 border-gray-200 bg-slate-50 hover:bg-slate-100 transition-all duration-200">
+                    <td colspan="2" class="py-4 px-6 text-right text-slate-900 font-semibold text-lg whitespace-nowrap">
+                        Total :
+                    </td>
+                    <td class="py-4 px-6 text-red-600 font-semibold text-lg">
+                        <div class="flex items-center gap-2">
+                            <span class="text-base">₹</span>
+                            <span><%= cartDetails.payableAmount.toFixed(2) %></span>
+                        </div>
+                    </td>
+                </tr>    
                     </tbody>
                     
                 </table>
@@ -416,6 +426,8 @@ orderPlacementBtn.addEventListener('click', (e) => {
         console.log('hai')
         const selectedCouponId = document.getElementById('coupons').value;
         const couponError = document.getElementById('couponError')
+         
+
 
 
         let isValid = true
@@ -424,12 +436,14 @@ orderPlacementBtn.addEventListener('click', (e) => {
           couponError.innerHTML = "Please select a coupon"
           return
         }
+ 
 
         const data = {
           couponCode: selectedCouponId
         }
 
         console.log(selectedCouponId);
+       
 
         fetch('/applyCoupon', {
           method: 'POST',

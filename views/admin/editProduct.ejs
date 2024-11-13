@@ -343,7 +343,7 @@ document.getElementById('formSubmit').submit();
   // Retrieve existing images from data attribute
   let existingImages = [];
   try {
-    existingImages = JSON.parse(imagePreviewsContainer.dataset.existingImages);
+    existingImages =  SON.parse(imagePreviewsContainer.dataset.existingImages);
     if (!Array.isArray(existingImages)) {
       existingImages = [];
     } 

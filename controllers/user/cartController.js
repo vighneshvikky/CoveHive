@@ -54,13 +54,6 @@ exports.addToCart = async (req, res) => {
           cart = new Cart({ userId, items: [], payableAmount: 0, totalPrice: 0 });
       }
 
-      // Log the product information
-      console.log('Adding item to cart:', {
-          productId: product._id,
-          productCount: 1,
-          productPrice: product.price, // Use product.price to get the actual price
-          productImage: product.image[0]
-      });
 
       // Check if the item already exists in the cart
       let cartItem = cart.items.find(item => item.productId.equals(product._id));
@@ -87,23 +80,17 @@ exports.addToCart = async (req, res) => {
           });
       }
 
-      // Calculate total prices
-    //   cart.totalPrice = cart.items.reduce((total, item) => {
-    //       const itemTotalPrice = item.productCount * (item.productPrice || 0); // Fallback to 0 if productPrice is undefined
-    //       return total + itemTotalPrice;
-    //   }, 0);
+
     cart.totalPrice = cart.items.reduce(
-        (acc, item) => acc + item.productPrice,
+        (acc, item) => acc + item.productDiscountPrice,
         0
       );
-const payableAmount  = cart.items.reduce((acc,item)=> acc+item.productDiscountPrice,0)
+const payableAmount  = cart.items.reduce((acc,item)=> acc+(item.productDiscountPrice * item.productCount),0)
+// cart.items.reduce((total, item) => total + (item.productDiscountPrice * item.productCount), 0),
       // Calculate payable amount if necessary
       cart.payableAmount = payableAmount;
     
-      // Log the cart before saving
-      console.log('Cart before saving:', JSON.stringify(cart, null, 2));
-    //   req.session.cart = cart
-      // Save the cart
+
       await cart.save();
 
       return res.redirect('/cart');
@@ -115,11 +102,11 @@ const payableAmount  = cart.items.reduce((acc,item)=> acc+item.productDiscountPr
 
 exports.increment = async (req, res) => {
   try {
-      console.log("Increment function called");
+    
       const { productId } = req.body;
-      console.log("Request Body: ", req.body);
+  
       const userId = req.session.user;
-      console.log("User ID: ", userId);
+  
       const maxQuantity = 10;
 
       // Validate request
@@ -138,7 +125,10 @@ exports.increment = async (req, res) => {
       if (!cart) {
           return res.status(404).json({ success: false, message: 'Cart not found' });
       }
-
+      cart.totalPrice = cart.items.reduce(
+        (acc, item) => acc + item.productDiscountPrice,
+        0
+      );
       // Find the product in the cart
       const index = cart.items.findIndex(p => p.productId.toString() === productId);
       if (index === -1) {
@@ -164,7 +154,7 @@ exports.increment = async (req, res) => {
       // Update the product count in cart
       cart.items[index].productCount = newCount;
       cart.payableAmount =  cart.items.reduce((total, item) => total + (item.productDiscountPrice * item.productCount), 0);
-      console.log(`payableAmout = ${cart.payableAmount}`)
+     
       // Calculate the updated total price
       const updatedPrice = cart.items[index].productDiscountPrice * cart.items[index].productCount;
 
@@ -207,6 +197,11 @@ exports.decrement = async (req, res) => {
           if (cart.items[index].productCount <= 0) {
               cart.items[index].productCount = 1;
           }
+          cart.totalPrice = cart.items.reduce(
+            (acc, item) => acc + item.productDiscountPrice,
+            0
+          );
+          cart.payableAmount =  cart.items.reduce((total, item) => total + (item.productDiscountPrice * item.productCount), 0);
           await cart.save();
           res.status(200).json({
               success: true,
@@ -246,7 +241,7 @@ exports.removeFromCart = async (req, res) => {
       cart.items = cart.items.filter(item => item.productId.toString() !== productId);
      
       // Update total price and payable amount
-      cart.totalPrice = cart.items.reduce((total, item) => total + item.productCount * item.productPrice, 0);
+      cart.totalPrice = cart.items.reduce((total, item) => total + item.productDiscountPrice * item.productCount, 0);
       cart.payableAmount = cart.totalPrice;
       await cart.save(); // Save the updated cart
       res.redirect('/cart');

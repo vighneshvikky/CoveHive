@@ -64,6 +64,8 @@ exports.getCheckoutPage = async (req,res) => {
     }
     
     const cartDetails = await Cart.findOne({userId}).populate('items.productId');
+
+    console.log(`cartDetails = ${cartDetails}`)
     if (!cartDetails) {
         return res.status(404).send('Cart not found');
     }
@@ -103,7 +105,7 @@ if (!wallet) {
 
     const addresses = user.addresses;
 
-    res.render('user/checkout',{
+    return res.render('user/checkout',{
         user,
         cartDetails,
         userDetails:user,
@@ -140,7 +142,7 @@ exports.orderConformPage = async (req, res) => {
 
 exports.paymentRender = async (req,res) =>{
     try {
-        console.log(`hai from paymentRender`);
+     
         
         const totalAmount = req.params.amount;
         if(!totalAmount){
@@ -183,7 +185,7 @@ try {
    let paymentId = '';
    const { razorpay_payment_id, razorpay_order_id, razorpay_signature, payment_status , couponCode ,selectedAddress} = req.body;
 
-   console.log(`payment status = ${payment_status}`)
+
  
    if(couponCode){
     const coupon = await Coupon.findOne({couponCode:couponCode });
@@ -226,7 +228,7 @@ if(paymentDetails[paymentMode] === 'Cash on delivery'){
 if (!user || !user.addresses|| !user.addresses[addressIndex]) {
     return res.status(400).json({ success: false, message: 'Selected address is not valid.' });
 }
- console.log(`user address = ${user.addresses[addressIndex].fullName}`)
+
 const newOrder = new Order({
      userId: req.session.user,
     orderId: Math.floor(Math.random() * 1000000),
@@ -254,7 +256,7 @@ const newOrder = new Order({
     paid:true
 });
 await newOrder.save();
-//  console.log(`newOrder = ${newOrder}`)
+
 
 
 
@@ -315,7 +317,7 @@ exports.applyCoupon = async (req,res) =>{
                 message:'Coupon not active'
             });
           }
-       console.log(`coupon endDate = ${coupon.endDate}`);
+
 
        if(!coupon.endDate > new Date()){
         return res.status(400).json({
@@ -324,18 +326,16 @@ exports.applyCoupon = async (req,res) =>{
         })
        }
 
-       console.log(`couponId = ${coupon._id}`)
 
 
     const couponUsage = user.couponUsed.find((usage) =>{
         return usage.couponId.toString() === coupon._id.toString();
     })
 
-       console.log(`this is the applied coupon ${couponUsage}`);
 
 
        if(couponUsage && couponUsage.usageCount >= coupon.usageCount){
-        console.log('hai')
+ 
         return res.status(400).json({
             status:'error',
             message:"You've hit the limit for coupon usage."
@@ -372,9 +372,9 @@ exports.applyCoupon = async (req,res) =>{
        cart.isCouponApplied = true;
        cart.couponDiscount = couponDiscount;
        cart.couponId = couponCode
-       console.log(`cart = ${cart   }`)
+  
        await cart.save();
-       console.log(`coupon usage = ${couponUsage}`);
+
 
        if(couponUsage){
         couponUsage.usageCount += 1;
@@ -459,7 +459,6 @@ exports.userCoupons = async (req,res) =>{
         const categories = await Category.find({isBlocked:false});
         const coupons = await Coupon.find({isActive:true});
 
-        console.log(coupons);
 
         res.render('user/coupons',{
             categories,
@@ -477,9 +476,7 @@ exports.failedOrder = async(req,res) =>{
     const addressIndex = req.query.address;
     const paymentMethod = req.query.paymentMethod;
 
-    console.log(`addressIndex = ${addressIndex}`);
-    console.log(`paymentMethod = ${paymentMethod}`);    
-    
+   
     try {
         const userId = req.session.user_id;
         const cartItems = await Cart.findOne({userId}).populate('items.productId')

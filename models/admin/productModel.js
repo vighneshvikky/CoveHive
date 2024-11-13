@@ -19,6 +19,7 @@ const productSchema = new mongoose.Schema({
       },
     ],
     discount:{type:Number,default:0},
+    priceAfterDiscount:{type:Number},
     isAvailable: { type: Boolean, default: true },
     createdAt: { type: Date, default: Date.now },
     isBlocked: {type:Boolean,default:false}
