@@ -41,11 +41,20 @@
             <div class="grid items-start grid-cols-1 lg:grid-cols-2 gap-6 max-lg:gap-12">
 
                 <div class="w-full lg:sticky top-0 sm:flex gap-2">
-                    <div class="sm:space-y-3 w-16 max-sm:w-12 max-sm:flex max-sm:mb-4 max-sm:gap-4">
-                        <img src="/uploads/<%= product.image[2] %>" alt="<%= product.name %>" class="thumbnail w-full cursor-pointer rounded-md" />
-                        <img src="/uploads/<%= product.image[1] %>" alt="<%= product.name %>" class="thumbnail w-full cursor-pointer rounded-md" />
-                        <img src="/uploads/<%= product.image[0] %>" alt="<%= product.name %>" class="thumbnail w-full cursor-pointer rounded-md" />
-                    </div>
+                  <div class="sm:space-y-3 w-16 max-sm:w-12 max-sm:flex max-sm:mb-4 max-sm:gap-4">
+                    <% if (product.image && product.image.length > 0) { %>
+                        <% product.image.forEach((img, index) => { %>
+                            <img 
+                                src="/uploads/<%= img %>" 
+                                alt="<%= product.name %> - Image <%= index + 1 %>" 
+                                class="thumbnail w-full cursor-pointer rounded-md" 
+                                onclick="changeLargeImage('<%= img %>')" 
+                            />
+                        <% }) %>
+                    <% } else { %>
+                        <p>No images available</p>
+                    <% } %>
+                </div>
                     <div class="relative w-4/5 rounded-md " id="image-container">
                         <img id="largeImage" src="/uploads/<%= product.image[0] %>" alt="<%= product.name %>" class="w-full object-cover" />
                         <div id="magnifier" class="magnifier" style="display: none;"></div>

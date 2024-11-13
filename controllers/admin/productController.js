@@ -166,7 +166,7 @@ exports.postEditProduct = async (req,res) => {
       if (req.files && req.files.length > 0) {
         const newImages = req.files.map(file => file.filename); // New uploaded images
         console.log(`newImages is ${newImages}`)
-        product.image =  newImages// Append new images to the existing ones
+        product.image =  [...product.image,...newImages]// Append new images to the existing ones
       }
 
 

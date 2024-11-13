@@ -246,6 +246,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const cropButton = document.getElementById('cropButton');
   const cancelButton = document.getElementById('cancelButton');
   const productForm = document.querySelector('form');
+  let existingImageCount = <%=product.image.length%>
+  
+
   let cropperInstances = [];
 
   
@@ -318,17 +321,21 @@ if(!validName.test(compatibleDevicesInput)){
   err_compatable.textContent="Enter a valid subcategory"
   valid=false;
 }
-if(imageInput.files.length>=3){
-  err_img.textContent="Enter 3 Images"
-  valid=false;
-}
 
+
+
+
+if ((existingImageCount + imageInput.files.length) < 3) {
+  err_img.textContent = "Enter at least 3 images";
+  valid = false;
+} else {
+  err_img.textContent = ""; // Clear the error message if validation passes
+}
 if(valid){
   console.log('valid sucess')
 document.getElementById('formSubmit').submit();
 
 }
-
 
 
        })
