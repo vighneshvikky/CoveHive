@@ -43,7 +43,7 @@
                                 <% const discountedPrice = item.productId.price - discountAmount; %>
                                 <%= discountedPrice.toFixed(2) %> <!-- Output the discounted price -->
                             <% } else { %>
-                                <%= product.price.toFixed(2) %> <!-- Output the original price if no discount -->
+                         <%= item.productId.price.toFixed(2) %>
                             <% } %>
                         </td> <!-- Product price -->
                         <td class="border border-gray-300 p-2">

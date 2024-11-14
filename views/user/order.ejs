@@ -239,6 +239,10 @@
                         <h3 class="text-lg font-semibold text-gray-900 mb-2">Payment Method</h3>
                         <p id="paymentMethod" class="text-gray-700"></p>
                     </div>
+                    <div class="mb-4">
+                      <h3 class="text-lg font-semibold text-gray-900 mb-2">Coupon discount</h3>
+                      <p id="couponApplied" class="text-gray-700"></p>
+                  </div> 
                 </div>
                 <div>
               </div>
@@ -255,6 +259,7 @@
                                 <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Image</th>
                                 <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Quantity</th>
                                 <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Price</th>
+                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Discount</th>
                                 <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Status</th>
                                
                               
@@ -315,6 +320,7 @@
     ${order.address.country} - ${order.address.pincode}
 `;
             document.getElementById('paymentMethod').textContent = order.paymentMethod;
+            document.getElementById('couponApplied').textContent = `₹${order.couponDiscount}`
             document.getElementById('totalPrice').textContent = order.totalPrice.toLocaleString();
 
             // Clear existing items
@@ -325,28 +331,50 @@
             order.items.forEach(item => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td class="px-6 py-4 text-sm text-gray-700">
-                        ${item.productId.name}
-                    </td>
-                    <td class="px-6 py-4">
-                        <img src="/uploads/${item.productImage}" alt="hai" 
-                             class="w-16 h-16 object-cover rounded-md">
-                    </td>
-                    <td class="px-6 py-4 text-sm text-gray-700">
-                        ${item.productCount}
-                    </td>
-
-                    
-                    <td class="px-6 py-4 text-sm text-gray-700"> 
-                        ₹${item.productDiscountPrice.toFixed(2) }*${item.productCount}
-                    </td>
-                    <td class="px-6 py-4">
-                        <span class="px-3 py-1 text-xs font-medium rounded-full ${getStatusClass(item.productStatus)}">
-                            ${item.productStatus}
-                        </span>
-                        ${getStatusTimeline(item.productStatus)}
-                    </td>
-             
+    <tr class="hover:bg-gray-50 transition-colors">
+    <!-- Product Name -->
+    <td class="px-6 py-4">
+        <p class="text-sm text-gray-700 font-medium">${item.productId.name}</p>
+    </td>
+    
+    <!-- Product Image -->
+    <td class="px-6 py-4">
+        <img src="/uploads/${item.productImage}" 
+             alt="Product image" 
+             class="w-16 h-16 object-cover rounded-lg shadow-sm hover:shadow-md transition-shadow">
+    </td>
+    
+    <!-- Product Count -->
+    <td class="px-6 py-4">
+        <span class="text-sm text-gray-700">${item.productCount}</span>
+    </td>
+    
+    <!-- Product Price -->
+    <td class="px-6 py-4">
+        <span class="text-sm font-medium text-gray-900">
+            ₹${item.productDiscountPrice.toFixed(2)} × ${item.productCount}
+        </span>
+    </td>
+    
+    <!-- Discount -->
+    <td class="px-6 py-4">
+        <span class="text-sm font-medium text-green-600">
+            ${item.productId.discount}%
+        </span>
+    </td>
+    
+    <!-- Status -->
+    <td class="px-6 py-4">
+        <div class="flex flex-col gap-2">
+            <span class="px-3 py-1 text-xs font-medium rounded-full inline-flex items-center justify-center ${getStatusClass(item.productStatus)}">
+                ${item.productStatus}
+            </span>
+            <span class="text-xs text-gray-500">
+                ${getStatusTimeline(item.productStatus)}
+            </span>
+        </div>
+    </td>
+</tr>
             
                 `;
                 itemsTable.appendChild(row);
