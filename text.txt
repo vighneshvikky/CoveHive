@@ -240,3 +240,5 @@ controller end
                 // Initial data fetch and rendering
                 fetchDataAndRenderCharts();
             </script>
+
+these code can help you to dive further into the project and customize it.
