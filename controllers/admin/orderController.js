@@ -4,7 +4,7 @@ const Wallet = require('../../models/walletSchema');
 const User = require('../../models/user/userSchema');
 exports.listOrders = async (req,res) => {
     const page = parseInt(req.query.page) || 1;
-    const limit = 8;
+    const limit = 5;
     try {
 
         const totalOrders = await Order.countDocuments(); 
