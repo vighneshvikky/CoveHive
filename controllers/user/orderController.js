@@ -44,6 +44,7 @@ exports.cancelOrder = async (req,res) => {
             return res.json({ success: false, message: 'Invalid order ID' });
         }
         const order = await Order.findById(orderId);
+        order.orderStatus='Cancelled'
             
         if (!order) {
             return res.json({ success: false, message: 'Order not found' });

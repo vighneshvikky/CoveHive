@@ -43,7 +43,7 @@ exports.changeOrderStatus = async (req, res) => {
         
         item.productStatus = status;
        if(item.productStatus == 'Delivered'){
-        order.orderStatus = 'Paid'
+        order.orderStatus = 'Pending'
        }    
 
         console.log(`product Status = ${item.productStatus}`)
