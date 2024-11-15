@@ -4,34 +4,45 @@ const Wallet = require('../../models/walletSchema')
 const Razorpay =  require('razorpay');
 const Cart = require('../../models/user/cartSchema')
 require('dotenv').config();
-exports.placeOrder = async(req,res) => {
-
+exports.placeOrder = async (req, res) => {
     try {
-        const page = parseInt(req.query.page)||1;
-        const limit = 4
-      
-        const orderCount = await Order.countDocuments();
+        const page = parseInt(req.query.page) || 1;
+        const limit = 3;
+        
+        // Get user from session
         const user = req.session.user_id;
         if (!user) {
             req.flash('error', "User not found. Please login again.");
             return res.redirect("/login");
         }
-      
 
-        const orderDetails = await Order.find({userId:user}).populate({path:'items.productId'}).sort({ createdAt:-1}).skip((page-1)*limit).limit(limit);
-         
-        res.render('user/order',{
+        // Calculate total orders for the specific user
+        const orderCount = await Order.countDocuments({ userId: user });
+
+        // Fetch orders with pagination and populate product details
+        const orderDetails = await Order.find({ userId: user })
+            .populate({ path: 'items.productId' })
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(limit);
+
+        // Render the order page
+        res.render('user/order', {
             orderDetails,
-            currentRoute:'/home',
-            currentPage:page,
-            totalPage:Math.ceil(orderCount/limit),
+            currentRoute: '/home',
+            currentPage: page,
+            totalPage: Math.ceil(orderCount / limit),
             returnMessage: req.session.returnMessage || ''
-        })
-    } catch (error) {
-        console.log(`error from placeOrder ${error}`)
-    }
+        });
 
-}
+        // Clear the return message after rendering
+        req.session.returnMessage = '';
+
+    } catch (error) {
+        console.error(`Error in placeOrder: ${error}`);
+        
+    }
+};
 
 exports.cancelOrder = async (req,res) => {
     try {

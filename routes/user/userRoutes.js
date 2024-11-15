@@ -24,6 +24,17 @@ user_route.get('/home',userAuth.isblocked,userAuth.isLogin,userController.loadHo
 user_route.get('/register',userController.loadSignup);
 user_route.post('/register',userController.insertUser);
 
+//----------------------------------google authentication ---------------------------
+user_route.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+
+//----------------------------------Google Authentication---------------------------------------
+
+user_route.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/' }),
+  userController.googleAuthCallback // Controller function handles the logic
+);
+
 //--------------------------------for login user--------------------------------------
 
 //user_route.get('/',userAuth.isLogout,userController.loginLoad);
@@ -53,8 +64,6 @@ user_route.get('/products/:id',userController.loadProductDetails)
 
 user_route.post('/edit-profile',userProfile.editProfile)
 
-//----------------------------------google authentication ---------------------------
-user_route.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 //----------------------------------category page ---------------------------------
 
@@ -101,12 +110,7 @@ user_route.get('/orders/:id',userAuth.isLogin,orderController.viewOrderDetails)
 
 user_route.post('/cancelOrder/:id',orderController.cancelOrder);
 
-//----------------------------------Google Authentication---------------------------------------
 
-user_route.get('/auth/google/callback', 
-  passport.authenticate('google', { failureRedirect: '/' }),
-  userController.googleAuthCallback // Controller function handles the logic
-);
 //--------------------------------------user cart ----------------------------------
 user_route.post('/cart/add/:id/:productPrice',userCart.addToCart)
 user_route.get('/cart',userAuth.isload,userCart.getCart);

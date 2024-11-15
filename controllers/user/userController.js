@@ -273,6 +273,7 @@ exports.googleAuthCallback = async (req, res) => {
       // Set session data
       req.session.user=user;
       req.session.user_id = user._id;
+      console.log(`user_id = ${req.session.user_id}`)
       req.session.fullName = user.fullName;
   
       // Pass session data to the view
