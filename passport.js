@@ -8,7 +8,7 @@ const User = require('./models/user/userSchema')
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID, // Replace with your Google Client ID
   clientSecret: process.env.GOOGLE_CLIENT_SECRET, // Replace with your Google Client Secret
-  callbackURL: "http://localhost:4000/auth/google/callback"
+  callbackURL: process.env.GOOGLE_CALLBACK_URL
 }, async (accessToken, refreshToken, profile, done) => {
   try {
     // Find or create user in the database
