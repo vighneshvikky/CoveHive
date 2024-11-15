@@ -72,11 +72,6 @@ const applyDateFilter = (filter) => {
         
       const totalRecords = await Order.countDocuments(queryCondition);
   
-      console.log("Total recodrd = ",totalRecords);
-      console.log("sales recodrd = ",salesData);
-  
-      console.log("totalPages = ",Math.ceil(totalRecords / limit));
-  
       const totSalesData = await Order.find(queryCondition)
   
       let orderAmount = totSalesData.reduce((tot,val)=>{
