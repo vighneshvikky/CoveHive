@@ -94,7 +94,7 @@ const applyDateFilter = (filter) => {
 
 ///----------------------------admin Dashboard-----------------
 
-exports.dashboard = async (req,res) =>{
+exports.dashboard = async (req,res) =>{ 
  try {
   const startOfDay = new Date();
   startOfDay.setHours(0, 0, 0, 0);
@@ -189,9 +189,10 @@ console.log('started aggregation')
       }
     }
   ]);
-
-  const finalTotalSaleAmount = (totalSaleAmount.length > 0 ? totalSaleAmount[0].totalAmount : 0).toFixed(2);
-  console.log(`totalAmount = ${totalSaleAmount[0].totalAmount }`)
+  
+  const finalTotalSaleAmount = (totalSaleAmount && totalSaleAmount.length > 0 && totalSaleAmount[0]?.totalAmount !== undefined)
+  ? totalSaleAmount[0].totalAmount.toFixed(2)
+  : "0.00";
 
   //Total sale Amount end
 
@@ -415,42 +416,7 @@ res.render('admin/adminDashboard',{
 }
 
 
-// exports.salesChart = async (req,res) =>{
-//   try {
 
-//     const orders = await Order.find({
-//       orderStatus: { $in: ['Pending','Shipped','Delivered','Paid'] }
-//   });
-
-//   let salesData = Array.from({ length: 12 }, () => 0);
-//   let revenueData = Array.from({ length: 12 }, () => 0);
-//   let productsData = Array.from({ length: 12 }, () => 0);
-
-//   orders.forEach(order => {
-//       const month = order.createdAt.getMonth();
-//       revenueData[month] += order.totalPrice;
-//       for(product of order.items){
-//           productsData[month] += order.totalQuantity;
-//       }
-//   });
-
-//   const Orders = await Order.find({})
-
-//   Orders.forEach(order => {
-//       const month = order.createdAt.getMonth();
-//       salesData[month]++
-//   })
-
-//   res.json({
-//       salesData,
-//       revenueData,
-//       productsData
-//   });
-    
-//   } catch (error) {
-//     console.log(`error from salesChart ${error}`)
-//   }
-// }
 
 exports.dashboardFilter = async(req,res) =>{
   try {

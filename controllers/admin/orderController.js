@@ -106,7 +106,7 @@ exports.postViewReason = async(req,res) =>{
         if(item){
             if(action === 'approve'){
                 item.productStatus = 'Returned';
-                const userWallet = await Wallet.findOne({userId:userId});
+                const userWallet = await Wallet.findOne({userID:userId});
                 if(userWallet){
                     userWallet.balance = (userWallet.balance || 0) + order.totalPrice;
                     userWallet.transaction.push({
