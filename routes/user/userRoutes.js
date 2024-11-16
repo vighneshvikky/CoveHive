@@ -88,7 +88,7 @@ user_route.post('/user-address-edit/:id',userProfile.postEditAddress)
 user_route.get('/user-address-remove/:id',userAuth.isLogin,userProfile.removeAddress)
 
 //----------------------------------All Products---------------------------------------
- user_route.get('/allProducts',userAuth.isLogin,userController.allProducts)
+ user_route.get('/allProducts',userController.allProducts)
 //----------------------------------user Forget pass ---------------------------------------
 user_route.get('/forget-password',forgetPass.loadForgotPassword);
 user_route.post('/forgot-password', forgetPass.forgotPassword);
