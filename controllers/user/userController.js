@@ -171,10 +171,13 @@ exports.loadHome = async (req, res) => {
         const limit = 10; // Number of items per page
         const page = parseInt(req.query.page) || 1; // Current page number
         const skip = (page - 1) * limit; // Number of documents to skip
-        const products = await Product.find({isBlocked:false})  
+        let products = await Product.find({isBlocked:false})
+        .populate('category') 
         .sort({ createdAt: -1 }) // Sort by createdAt in descending order
         .skip(skip) // Skip the previous pages
-        .limit(8); // Limit to 'limit' items
+        .limit(8);
+        
+       products =  products.filter(item => !item.category.isBlocked)// Limit to 'limit' items
         const totalProduct = await Product.countDocuments({ isBlocked: false }); // Get total count of products
         const categories = await Category.find({isBlocked:false}); 
         // console.log(req.session)
@@ -363,12 +366,14 @@ exports.googleAuthCallback = async (req, res) => {
       
          
         // Fetch all products based on the filter
-        const products = await Product
+        let products = await Product
         .find(filterOption)
-        .populate("category", "name")
+        .populate("category")
         .skip(skip)
         .limit(limit)
         .lean();
+
+         products = products.filter(item => !item.category.isBlocked)
         switch (sortOption) {
           case 'discount':
             products.sort((a, b) => {
