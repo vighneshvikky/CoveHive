@@ -14,6 +14,7 @@ const checkOutController= require('../../controllers/user/checkoutController')
 const orderController = require('../../controllers/user/orderController');
 const wishlistController = require('../../controllers/user/wishlistController');
 const walletController = require('../../controllers/user/walletController');
+const pdfController = require('../../controllers/user/pdfController')
 
  //user_route.get('/',userAuth.isLogout,userController.loadHome);
 user_route.get('/',userAuth.isLogout,userController.loadHome)
@@ -105,6 +106,8 @@ user_route.post('/change-password',forgetPass.postChangePass)
 user_route.get('/orders',userAuth.isLogin,orderController.placeOrder)
 
 user_route.get('/orders/:id',userAuth.isLogin,orderController.viewOrderDetails)
+
+user_route.get('/orders/dowload-pdf/:orderId',pdfController.generateOrderPDF)
 
 //----------------------------------cancel orders ---------------------------------------
 

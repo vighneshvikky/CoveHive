@@ -280,7 +280,7 @@
                     <span class="ml-2">₹<span id="totalPrice" class="text-gray-900"></span></span>
                 </p>
             </div>
-            <button onclick="downloadInvoice()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
+            <button onclick="downloadOrderPDF()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
               Download Invoice as PDF
           </button>
             <!-- Close Button -->
@@ -493,71 +493,37 @@ document.getElementById('cancelForm').addEventListener('submit', function(e) {
   });
 });
 
-function downloadInvoice() {
-    // Initialize jsPDF
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF();
 
-    // Add title to the PDF
-    pdf.setFontSize(16);
-    pdf.text("Order Invoice", 10, 10);
-
-    // Order Details
-    pdf.setFontSize(12);
-    pdf.text("Order ID: " + document.getElementById("orderId").innerText, 10, 20);
-    pdf.text("Order Date: " + document.getElementById("orderDate").innerText, 10, 30);
-    
-    // Shipping Address
-    pdf.text("Shipping Address:", 10, 40);
-    pdf.text(document.getElementById("shippingAddress").innerText, 10, 50);
-
-    // Payment Method
-    pdf.text("Payment Method:", 10, 60);
-    pdf.text(document.getElementById("paymentMethod").innerText, 10, 70);
-
-    // Table Headers for Items
-    let yPosition = 90;
-    pdf.setFontSize(12);
-    pdf.text("Items Purchased:", 10, yPosition);
-    yPosition += 10;
-
-    // Drawing table headers
-    pdf.setFontSize(10);
-    pdf.text("Product", 10, yPosition);
-    pdf.text("Quantity", 80, yPosition);
-    pdf.text("Price", 120, yPosition);
-    
-    // Drawing table border lines
-    pdf.line(10, yPosition + 2, 190, yPosition + 2);  // top border of the table
-    yPosition += 5; // Moving down to start table data rows
-
-    // Table Data for Items Purchased
-    const itemsPurchased = document.querySelectorAll("#itemsPurchased tr");
-    itemsPurchased.forEach(row => {
-        const columns = row.querySelectorAll("td");
-        if (columns.length > 0) {
-            pdf.text(columns[0].innerText, 10, yPosition); // Product Name
-            pdf.text(columns[2].innerText, 80, yPosition); // Quantity
-            pdf.text(columns[3].innerText, 120, yPosition); // Price
-            yPosition += 10;
-        }
-    });
-
-    // Drawing table bottom border line
-    pdf.line(10, yPosition, 190, yPosition);  // bottom border of the table
-
-    // Total Price
-    yPosition += 10;
-    pdf.setFontSize(14);
-    pdf.text("Total Price: ₹" + document.getElementById("totalPrice").innerText, 10, yPosition);
-
-    // Save the PDF
-    pdf.save("invoice.pdf");
-}
 function showError(message) {
   // You can customize this to show the error on the UI
   alert(message);
   console.error(message);
+}
+
+
+async function downloadOrderPDF (){
+try {
+  const orderId = document.getElementById('orderId').value
+  const response = await fetch(`/orders/dowload-pdf/${orderId}`,{
+    method:'GET',
+    headers:{
+      'Content-type':'application/json',
+    },
+  });
+
+  if(!response.ok) throw new Error('PDF generation failed')
+  const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = `order-${orderId}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(downloadUrl);
+} catch (error) {
+  console.log(`error dowloading PDf ${error}`)
+}
 }
 async function retryPayment(orderId){
   console.log(`orderId = ${orderId}`)
