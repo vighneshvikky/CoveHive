@@ -46,10 +46,11 @@ exports.placeOrder = async (req, res) => {
 
 exports.cancelOrder = async (req,res) => {
     try {
-
+console.log('hai')
      const orderId = req.params.id;
-       
+    
         const {action,reason,productId} = req.body;
+        console.log(`action = ${action}`)   
  
         if(!productId){
             return res.json({ success: false, message: 'Invalid order ID' });
@@ -60,7 +61,7 @@ exports.cancelOrder = async (req,res) => {
         if (!order) {
             return res.json({ success: false, message: 'Order not found' });
         }
-
+       if(action == 'cancel'){
         if(order.paid){
             if (order.paymentMethod === 'razorpay' || order.paymentMethod === 'Wallet' ) {
                 const userWallet = await Wallet.findOne({ userID: order.userId });
@@ -87,6 +88,8 @@ exports.cancelOrder = async (req,res) => {
                 }
             }
         }
+       }
+ 
 
 
 const item = order.items.find(item => item.productId.toString() === productId);
