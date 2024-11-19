@@ -75,10 +75,10 @@ const applyDateFilter = (filter) => {
       const totSalesData = await Order.find(queryCondition)
   
       let orderAmount = totSalesData.reduce((tot,val)=>{
-         return  tot += val.totalPrice  
+         return tot += val.totalPrice  
       },0)
       let totalCouponDiscount = totSalesData.reduce((tot,val)=>{
-         return  tot += val.couponDiscount
+         return  Math.abs(tot += val.couponDiscount)
       },0)
       
       let totalSalesCount = totSalesData.length;
