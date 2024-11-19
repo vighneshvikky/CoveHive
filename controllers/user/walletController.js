@@ -1,33 +1,53 @@
 const Wallet = require('../../models/walletSchema');
 
 
-exports.walletPage = async (req,res)=>{
-    const page = parseInt(req.query.page) || 1; // Get page from query or default to 1
-    const limit =  8;
-    try{
-        const walletCount = await Wallet.countDocuments();
+exports.walletPage = async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = 4;
+    
+    try {
         const userId = req.session.user_id;
-        let wallet = await Wallet.findOne({ userID: userId }).skip((page-1)*limit).limit(limit)
-
-        if (wallet) {
-            // Sorting transactions by `transaction_date` in descending order
-            wallet.transaction.sort((a, b) => b.transaction_date - a.transaction_date);
-          } 
-        if (!userId) {
-            req.flash('error', 'User Not found . Please login again.')
-            return res.redirect('/login')
+        
+        if (!userId) {  
+            return res.redirect('/login');
         }
+
+        // First, get the wallet document for the user
+        const wallet = await Wallet.findOne({ userID: userId });
+
         if (!wallet) {
-            wallet = { balance: 0, transaction: [] };
+            return res.render('user/wallet', {
+                title: 'Wallet',
+                wallet: { balance: 0, transaction: [] },
+                currentPage: 1,
+                totalPages: 1
+            });
         }
-        res.render('user/wallet',{title:'Wallet' , wallet,
 
-            currentPage:page,
-            totalPages:Math.ceil(walletCount/limit)
+        // Calculate total number of transactions for pagination
+        const totalTransactions = wallet.transaction.length;
+        const totalPages = Math.ceil(totalTransactions / limit);
 
-        })
-    }catch(error){
-        console.log(`error while render user wallet ${error}`)
-       
+        // Sort and paginate transactions
+        const paginatedTransactions = wallet.transaction
+            .sort((a, b) => b.transaction_date - a.transaction_date)
+            .slice((page - 1) * limit, page * limit);
+
+        // Create a new wallet object with paginated transactions
+        const paginatedWallet = {
+            balance: wallet.balance,
+            transaction: paginatedTransactions
+        };
+
+        res.render('user/wallet', {
+            title: 'Wallet',
+            wallet: paginatedWallet,
+            currentPage: page,
+            totalPages: totalPages
+        });
+
+    } catch (error) {
+        console.error(`Error while rendering user wallet: ${error}`);
+        res.redirect('/login'); // or wherever you want to redirect on error
     }
-}
+};
