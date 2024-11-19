@@ -726,6 +726,7 @@ if (isValid) {
 
                     // Add the new address to the address list
                     addAddressToList(addressData);
+                    window.location.reload()
                 });
             } else {
                 // Show SweetAlert error message on failure
@@ -736,6 +737,7 @@ if (isValid) {
                     confirmButtonText: 'OK'
                 });
             }
+    
         } catch (error) {
             console.error("Error:", error);
             Swal.fire({
