@@ -169,7 +169,7 @@ const applyDateFilter = (filter) => {
             doc.pipe(res);
 
             // Document title
-            doc.fontSize(20).font('Helvetica-Bold').text('GameNation Sales Report', { align: 'center' });
+            doc.fontSize(20).font('Helvetica-Bold').text('CoveHive Sales Report', { align: 'center' });
             doc.moveDown(2);
 
             // Table configuration
