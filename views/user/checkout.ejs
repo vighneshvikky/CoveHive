@@ -51,26 +51,72 @@
                     </li>
             
                     <!-- Payment Method -->
-                    <div class="payment-methods mt-4">
-                        <h2>Payment method :</h2>
-                        <div class="payment-options">
-                            <div class="payment-method" onclick="selectPaymentMethod(this, 0)">
-                                <i class="bi bi-cash" style="font-size: 2rem;"></i>
-                                <span>Cash on Delivery</span>
+                    <div class="payment-methods mt-8 max-w-3xl mx-auto">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-4">Payment method</h2>
+                        <div class="payment-options space-y-4">
+                            <div class="payment-method relative overflow-hidden p-6 rounded-xl border-2 border-transparent hover:border-indigo-100 bg-white shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer" onclick="selectPaymentMethod(this, 0)">
+                                <div class="flex items-center space-x-4">
+                                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center">
+                                        <i class="bi bi-cash text-indigo-600" style="font-size: 1.5rem;"></i>
+                                    </div>
+                                    <div class="flex-grow">
+                                        <h3 class="text-lg font-semibold text-gray-900">Cash on Delivery</h3>
+                                        <p class="text-sm text-gray-500">Pay when you receive your order</p>
+                                    </div>
+                                    <div class="payment-check hidden">
+                                        <div class="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="payment-method" onclick="selectPaymentMethod(this, 1)">
-                                <i class="bi bi-wallet-fill" style="font-size: 2rem;"></i>
-                                <span>Wallet</span>
-                                <span class="inline-flex items-baseline gap-1">
-                                    <span class="text-sm font-medium text-gray-400">₹</span>
-                                    <span class=" font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-emerald-500">
-                                      <%= (wallet.balance).toFixed(2) %>
-                                    </span>
-                                  </span>
+                    
+                            <div class="payment-method relative overflow-hidden p-6 rounded-xl border-2 border-transparent hover:border-indigo-100 bg-white shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer" onclick="selectPaymentMethod(this, 1)">
+                                <div class="flex items-center space-x-4">
+                                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center">
+                                        <i class="bi bi-wallet-fill text-indigo-600" style="font-size: 1.5rem;"></i>
+                                    </div>
+                                    <div class="flex-grow">
+                                        <div class="flex items-center space-x-2">
+                                            <h3 class="text-lg font-semibold text-gray-900">Wallet</h3>
+                                            <span class="inline-flex items-baseline gap-1">
+                                                <span class="text-sm font-medium text-gray-400">₹</span>
+                                                <span class="text-lg font-bold text-indigo-600">
+                                                    <%= (wallet.balance).toFixed(2) %>
+                                                </span>
+                                            </span>
+                                        </div>
+                                        <p class="text-sm text-gray-500">Pay using your wallet balance</p>
+                                    </div>
+                                    <div class="payment-check hidden">
+                                        <div class="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="payment-method" onclick="selectPaymentMethod(this, 2)">
-                                <i class="bi bi-paypal" style="font-size: 2rem;"></i>
-                                <span>Razorpay</span>
+                    
+                            <div class="payment-method relative overflow-hidden p-6 rounded-xl border-2 border-transparent hover:border-indigo-100 bg-white shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer" onclick="selectPaymentMethod(this, 2)">
+                                <div class="flex items-center space-x-4">
+                                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center">
+                                        <i class="bi bi-paypal text-indigo-600" style="font-size: 1.5rem;"></i>
+                                    </div>
+                                    <div class="flex-grow">
+                                        <h3 class="text-lg font-semibold text-gray-900">Razorpay</h3>
+                                        <p class="text-sm text-gray-500">Pay securely with Razorpay</p>
+                                    </div>
+                                    <div class="payment-check hidden">
+                                        <div class="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -266,6 +312,22 @@ function toggleModal(show) {
 }
 function selectPaymentMethod(element, method) {
     console.log('hai')
+    document.querySelectorAll('.payment-method').forEach(el => {
+        el.classList.remove('border-indigo-600', 'bg-indigo-50/50');
+        el.querySelector('.payment-check').classList.add('hidden');
+    });
+    
+    // Add active state to selected payment method
+    element.classList.add('border-indigo-600', 'bg-indigo-50/50');
+    element.querySelector('.payment-check').classList.remove('hidden');
+    document.querySelectorAll('.payment-method').forEach(el => {
+        el.classList.remove('border-blue-500', 'bg-blue-50');
+        el.querySelector('i').classList.remove('text-blue-500');
+    });
+    
+    // Add active state to selected payment method
+    element.classList.add('border-blue-500', 'bg-blue-50');
+    element.querySelector('i').classList.add('text-blue-500');
             const methods = document.querySelectorAll('.payment-method');
             methods.forEach(methodElement => methodElement.classList.remove('selected'));
             element.classList.add('selected');
@@ -765,113 +827,6 @@ function clearErrors() {
 <style>
      /*------------------------------- payment option ----------------------------*/
 
-     .payment-methods {
-    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-    border-radius: 12px;
-    padding: 30px;
-    max-width: 800px;
-    margin: 0 auto;
-    box-shadow: 0 10px 25px rgba(0, 123, 255, 0.1);
-    border: 1px solid #e9ecef;
-    transition: all 0.3s ease;
-}
-
-.payment-options {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.payment-method {
-    margin: 1rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 160px;
-    padding: 15px;
-    border: 2px solid #e6e6e6;
-    border-radius: 10px;
-    background-color: #ffffff;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 123, 255, 0.05);
-}
-
-.payment-method::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(45deg, transparent, rgba(0, 123, 255, 0.05), transparent);
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-}
-
-.payment-method:hover::before {
-    transform: translateX(100%);
-}
-
-.payment-method:hover {
-    border-color: #007bff;
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 123, 255, 0.15);
-    background-color: #f0f7ff;
-}
-
-.payment-method img {
-    width: 50px;
-    height: 50px;
-    margin: 10px;
-    object-fit: contain;
-    transition: all 0.3s ease;
-    opacity: 0.7;
-}
-
-.payment-method:hover img {
-    transform: scale(1.1);
-    opacity: 1;
-}
-
-.payment-method.selected {
-    border-color: #007bff;
-    background-color: #e6f2ff;
-    box-shadow: 0 6px 10px rgba(0, 123, 255, 0.1);
-}
-
-.payment-method p {
-    margin-top: 10px;
-    color: #6c757d;
-    font-size: 0.9rem;
-    text-align: center;
-}
-
-@media (max-width: 768px) {
-    .payment-methods {
-        padding: 20px;
-    }
-
-    .payment-options {
-        flex-direction: column;
-    }
-
-    .payment-method {
-        width: 100%;
-        max-width: 300px;
-        margin: 10px 0;
-    }
-}
-
-/* Accessibility and focus states */
-.payment-method:focus-visible {
-    outline: 3px solid #007bff;
-    outline-offset: 2px;
-}
+    
 </style>
 <%- include('../layouts/userFooter.ejs') %>
