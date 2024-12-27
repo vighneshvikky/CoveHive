@@ -31,6 +31,9 @@ exports.validateCheckout = async (req, res) => {
 
         for (const item of items) {
             const product = item.productId;
+            if(product.isBlocked){
+                return res.status(400).json({ success: false, message: `Product "${product.name}" is not available.` });    
+            }
             if (!product.isAvailable) {
                 return res.status(400).json({ success: false, message: `Product "${product.name}" is not available.` });
             }
@@ -65,7 +68,7 @@ exports.getCheckoutPage = async (req,res) => {
     
     const cartDetails = await Cart.findOne({userId}).populate('items.productId');
 
-    console.log(`cartDetails = ${cartDetails}`)
+    // console.log(`cartDetails = ${cartDetails}`)  
     if (!cartDetails) {
         return res.status(404).send('Cart not found');
     }

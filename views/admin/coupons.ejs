@@ -114,12 +114,9 @@ $('#couponsTable').DataTable();
 });
 
 
-
-
 function couponToggle(couponId,status){
-console.log('hai');
 
-fetch(`/admin/removeCoupon/${couponId}`,{
+fetch(`/admin/removeCoupon/${couponId}`,    {
 method:'PATCH',
 headers:{
   'Content-Type':'application/json'
