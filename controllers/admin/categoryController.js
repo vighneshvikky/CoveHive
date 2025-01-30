@@ -92,7 +92,7 @@ exports.updateCategory = async (req,res) => {
   try {
     const { name } = req.body;
     let updateData = { name };
-    console.log(updateData)
+    // console.log(`updateData = ${updateData}`)
 
     // If a new image is uploaded, include it in the update
     if (req.file) {

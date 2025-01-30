@@ -108,6 +108,15 @@
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
 <script>
+
+const elementToRemove = $0;
+const parentElement = elementToRemove.parentElement;
+if (parentElement) {
+  parentElement.removeChild(elementToRemove);
+}
+const data = {
+  removed: true,
+};
 // Initialize DataTables
 $(document).ready(function() {
 $('#couponsTable').DataTable();
