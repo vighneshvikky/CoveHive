@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const dotenv = require('dotenv');
 const adminRoutes = require('./routes/admin/adminRoutes')
-const userRoutes = require('./routes/user/userRoutes')  
+const userRoutes = require('./routes/user/userRoutes')
 const nocache = require('nocache');
 const bodyParser = require('body-parser')
 const flash = require('connect-flash')
@@ -21,17 +21,17 @@ app.use(session({
   saveUninitialized: true,
 
 }));
-app.use(bodyParser.json()); // To parse JSON bodies
-app.use(bodyParser.urlencoded({ extended: true })); 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use((req, res, next) => {
-  res.locals.user = req.session.user || null; // Modify as per how you store the user session
+  res.locals.user = req.session.user || null;
   next();
 });
 app.use((req, res, next) => {
-  res.locals.searchQuery = req.query.q || ''; // Set searchQuery globally
-  next(); // Pass control to the next middleware or route handler
+  res.locals.searchQuery = req.query.q || '';
+  next();
 });
-app.use(flash())  
+app.use(flash())
 app.use(nocache());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static('uploads'));
@@ -44,30 +44,28 @@ app.use((req, res, next) => {
 
 
 
-// Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log('MongoDB connected'))
-.catch((err) => console.error('MongoDB connection error:', err));
+  .then(() => console.log('MongoDB connected'))
+  .catch((err) => console.error('MongoDB connection error:', err));
 
-// Set up session management
 
-//intializing passport
+  
 app.use(passport.initialize());
 app.use(passport.session());
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use('/uploads', express.static('uploads'));  
+app.use('/uploads', express.static('uploads'));
 
 // Set view engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 // Admin routes
-app.use('/admin',adminRoutes);
+app.use('/admin', adminRoutes);
 // User routes
-app.use('/',userRoutes);
-app.get('*',(req,res)=>{
+app.use('/', userRoutes);
+app.get('*', (req, res) => {
   res.render('user/404')
 })
 
