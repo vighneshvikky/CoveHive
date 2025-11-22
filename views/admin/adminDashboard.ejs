@@ -267,32 +267,25 @@
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
   <script>
-// ============================================
-// 1. DECLARE ALL VARIABLES FIRST
-// ============================================
-const categories = <%- categories %>;
+
+
+
+
+    const categories = <%- categories %>;
 const totalSalesData = <%- totalSalesData %>;
 const totalProfitData = <%- totalProfitData %>;
-const initialCategoryLabels = <%- categoryLabels %>;
-const initialCategoryData = <%- categoryData %>;
-
-let chartMain; // Main graph chart instance
-let chart; // Pie chart instance
 
 console.log("Initial categories:", categories);
 console.log("Initial sales data:", totalSalesData);
 console.log("Initial profit data:", totalProfitData);
-console.log("Initial category data:", initialCategoryData);
-console.log("Initial category labels:", initialCategoryLabels);
 
-// ============================================
-// 2. DEFINE ALL FUNCTIONS
-// ============================================
+// -------------------------------------------- Graph section --------------------------------------
+let chartMain; // Declare the chart globally
 
-// Function to render the main area graph
+// Function to render the chart
 function renderGraph(categories, salesData, profitData) {
   console.log("Rendering graph with:", categories, salesData, profitData);
-
+  
   const options = {
     dataLabels: {
       enabled: true,
@@ -315,11 +308,7 @@ function renderGraph(categories, salesData, profitData) {
         data: salesData,
         color: "#1A56DB",
       },
-      {
-        name: "Total Profit",
-        data: profitData,
-        color: "#7E3BF2",
-      },
+
     ],
     chart: {
       height: "100%",
@@ -380,20 +369,49 @@ function renderGraph(categories, salesData, profitData) {
     },
   };
 
-  // Destroy existing chart before creating new one
   if (chartMain) {
     chartMain.destroy();
   }
 
-  // Create new chart instance
+  // Create a new chart instance
   chartMain = new ApexCharts(document.getElementById("data-labels-chart"), options);
   chartMain.render();
 }
 
-// Function to render the donut/pie chart
+// Initial chart rendering
+renderGraph(categories, totalSalesData, totalProfitData);
+
+// Main graph dropdown filter
+document.getElementById('mainGraphData').addEventListener('change', function() {
+  const selectedFilter = this.value;
+  
+  fetch(`/admin/dashboard?filter=${selectedFilter}`, {
+    method: "GET",
+    headers: {
+      'Accept': 'application/json',
+    }
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Received data:", data);
+      // Update the chart with new data
+      renderGraph(data.categories, data.totalSalesData, data.totalProfitData);
+    })
+    .catch((error) => console.error('Error fetching filtered data:', error));
+});
+
+// -------------------------------------------- Pie chart ------------------------------------------
+let chart;
+
+const initialCategoryLabels = <%- categoryLabels %>;
+const initialCategoryData = <%- categoryData %>;
+
+console.log("Initial category data:", initialCategoryData);
+console.log("Initial category labels:", initialCategoryLabels);
+
 function renderChart(labels, data) {
   console.log(`Rendering pie chart - labels: ${labels}, data: ${data}`);
-
+  
   const chartOptions = {
     series: data,
     chart: {
@@ -421,70 +439,15 @@ function renderChart(labels, data) {
     },
   };
 
-  // Destroy existing chart before creating new one
   if (chart) {
     chart.destroy();
   }
-
   chart = new ApexCharts(document.getElementById('donut-chart'), chartOptions);
   chart.render();
 }
 
-// Function to update the products table
-function updateTable(products) {
-  const tbody = document.querySelector('tbody');
-
-  // Clear existing rows
-  tbody.innerHTML = '';
-
-  if (products && products.length > 0) {
-    products.forEach(product => {
-      const row = `
-        <tr class="border-b border-gray-200 hover:bg-gray-50">
-          <td class="py-3 px-4 text-gray-600">${product._id.name}</td>
-          <td class="py-3 px-4 text-gray-600">${product.totalQuantitySold}</td>
-          <td class="py-3 px-4 text-gray-600">${product.totalRevenue.toFixed(2)}</td>
-          <td class="py-3 px-4 text-gray-600">${product._id.discount}%</td>
-        </tr>
-      `;
-      tbody.innerHTML += row;
-    });
-  } else {
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="4" class="py-4 px-4 text-gray-500 text-center">No products found for this filter</td>
-      </tr>
-    `;
-  }
-}
-
-// ============================================
-// 3. INITIAL RENDERING
-// ============================================
-renderGraph(categories, totalSalesData, totalProfitData);
+// Initial pie chart rendering
 renderChart(initialCategoryLabels, initialCategoryData);
-
-// ============================================
-// 4. EVENT LISTENERS
-// ============================================
-
-// Main graph dropdown filter
-document.getElementById('mainGraphData').addEventListener('change', function() {
-  const selectedFilter = this.value;
-
-  fetch(`/admin/dashboard?filter=${selectedFilter}`, {
-    method: "GET",
-    headers: {
-      'Accept': 'application/json',
-    }
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Received data:", data);
-      renderGraph(data.categories, data.totalSalesData, data.totalProfitData);
-    })
-    .catch((error) => console.error('Error fetching filtered data:', error));
-});
 
 // Category dropdown filter
 document.getElementById('categoryDropdown').addEventListener('change', function() {
@@ -506,7 +469,7 @@ document.getElementById('categoryDropdown').addEventListener('change', function(
     .catch(error => console.error('Error fetching filtered data:', error));
 });
 
-// Table filter
+// -------------------------------------------- Table Filter ------------------------------------------
 document.getElementById('filter').addEventListener('change', function() {
   const filterValue = this.value;
 
@@ -530,6 +493,33 @@ document.getElementById('filter').addEventListener('change', function() {
     })
     .catch(error => console.error('Error fetching data:', error));
 });
+
+function updateTable(products) {
+  const tbody = document.querySelector('tbody');
+
+  // Clear the existing rows
+  tbody.innerHTML = '';
+
+  if (products && products.length > 0) {
+    products.forEach(product => {
+      const row = `
+        <tr class="border-b border-gray-200 hover:bg-gray-50">
+          <td class="py-3 px-4 text-gray-600">${product._id.name}</td>
+          <td class="py-3 px-4 text-gray-600">${product.totalQuantitySold}</td>
+          <td class="py-3 px-4 text-gray-600">${product.totalRevenue.toFixed(2)}</td>
+          <td class="py-3 px-4 text-gray-600">${product._id.discount}%</td>
+        </tr>
+      `;
+      tbody.innerHTML += row;
+    });
+  } else {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="4" class="py-4 px-4 text-gray-500 text-center">No products found for this filter</td>
+      </tr>
+    `;
+  }
+}
   </script>
 
   <%- include('../layouts/footer.ejs') %>
