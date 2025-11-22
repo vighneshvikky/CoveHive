@@ -1,6 +1,6 @@
 const session = require('express-session');
 const User = require('../../models/user/userSchema');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
 const Product = require('../../models/admin/productModel');

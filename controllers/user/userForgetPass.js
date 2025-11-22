@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const User = require('../../models/user/userSchema');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { error } = require('console');
 const { PerformanceObserverEntryList } = require('perf_hooks');
 
@@ -12,17 +12,17 @@ let transporter = nodemailer.createTransport({
     secure: true,
     service: 'Gmail',
     auth: {
-        user:process.env.MY_EMAIL,
-       pass:process.env.MY_PASSWORD
+        user: process.env.MY_EMAIL,
+        pass: process.env.MY_PASSWORD
     }
 });
 
-exports.loadForgotPassword = async (req,res) => {
+exports.loadForgotPassword = async (req, res) => {
     try {
         const user = await User.findById(req.session.user_id)
         res.render('user/forgetPassword')
     } catch (error) {
-      console.log(error.message)  
+        console.log(error.message)
     }
 }
 
@@ -56,15 +56,15 @@ exports.forgotPassword = async (req, res) => {
         };
 
         await transporter.sendMail(mailOptions);
-         
-        res.render('user/forgetPassword',{message:"Password reset link sent to your email."})
-       // res.status(200).send('Password reset link sent to your email.');
-    
+
+        res.render('user/forgetPassword', { message: "Password reset link sent to your email." })
+        // res.status(200).send('Password reset link sent to your email.');
+
     } catch (error) {
-        
+
         console.log(error);
         // res.status(500).send('Error sending reset link.');
-        res.render('user/forgetPassword',{message:'Error sending reset link.'})
+        res.render('user/forgetPassword', { message: 'Error sending reset link.' })
     }
 };
 
@@ -76,7 +76,7 @@ exports.getResetPassword = async (req, res) => {
             resetPasswordToken: token,
             resetPasswordExpires: { $gt: Date.now() } // Token should not be expired
         });
-     
+
         if (!user) {
             return res.status(400).send('Password reset token is invalid or has expired.');
         }
@@ -115,16 +115,16 @@ exports.postResetPassword = async (req, res) => {
         //  res.status(200).send('Password has been reset. You can now log in.');
         req.flash('success_msg', 'Password has been reset. You can now log in.');
         return res.redirect('/login');
-        
+
     } catch (error) {
         console.log(error);
         res.status(500).send('Error resetting password.');
     }
 };
 
-exports.getChangePass = async (req,res) => {
+exports.getChangePass = async (req, res) => {
     try {
-       res.render('user/changePassword') 
+        res.render('user/changePassword')
     } catch (error) {
         console.log(`Error from getChangePassword ${error}`)
     }
@@ -137,7 +137,7 @@ exports.postChangePass = async (req, res) => {
         const confirmPassword = req.body['confirm-password'];
 
         // Find user
-        
+
         const user = await User.findById(req.session.user_id)
         console.log(`user is ${user}`)
         if (!user) {
@@ -147,7 +147,7 @@ exports.postChangePass = async (req, res) => {
 
         // Verify current password
         const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
-        
+
         // If current password is wrong
         if (!isCurrentPasswordValid) {
             req.flash('error_msg', 'Current password is incorrect');
@@ -163,7 +163,7 @@ exports.postChangePass = async (req, res) => {
         // Hash and save new password
         const saltRounds = 10;
         const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
-        
+
         await User.findByIdAndUpdate(req.session.user_id, {
             password: hashedNewPassword
         });

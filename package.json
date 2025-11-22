@@ -12,7 +12,6 @@
   "description": "",
   "dependencies": {
     "apexcharts": "^4.0.0",
-    "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
     "connect-flash": "^0.1.1",
