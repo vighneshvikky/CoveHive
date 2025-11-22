@@ -271,310 +271,259 @@
 
 
 
-    const categories =<%-categories%>;
-    const totalSalesData =<%- totalSalesData%> // Sales data for the chart
-    const totalProfitData = <%-totalProfitData%>// Profit data for the chart
+    const categories = <%- categories %>;
+const totalSalesData = <%- totalSalesData %>;
+const totalProfitData = <%- totalProfitData %>;
 
+console.log("Initial categories:", categories);
+console.log("Initial sales data:", totalSalesData);
+console.log("Initial profit data:", totalProfitData);
 
+// -------------------------------------------- Graph section --------------------------------------
+let chartMain; // Declare the chart globally
 
+// Function to render the chart
+function renderGraph(categories, salesData, profitData) {
+  console.log("Rendering graph with:", categories, salesData, profitData);
+  
+  const options = {
+    dataLabels: {
+      enabled: true,
+      style: {
+        cssClass: 'text-xs text-white font-medium',
+      },
+    },
+    grid: {
+      show: false,
+      strokeDashArray: 4,
+      padding: {
+        left: 16,
+        right: 16,
+        top: -26,
+      },
+    },
+    series: [
+      {
+        name: "Total Sales",
+        data: salesData,
+        color: "#1A56DB",
+      },
+      {
+        name: "Total Profit",
+        data: profitData,
+        color: "#7E3BF2",
+      },
+    ],
+    chart: {
+      height: "100%",
+      type: "area",
+      fontFamily: "Inter, sans-serif",
+      dropShadow: {
+        enabled: false,
+      },
+      toolbar: {
+        show: false,
+      },
+    },
+    tooltip: {
+      enabled: true,
+      x: {
+        show: false,
+      },
+      theme: "dark",
+      style: {
+        fontSize: '12px',
+        color: '#FFFFFF'
+      },
+    },
+    legend: {
+      show: true,
+    },
+    fill: {
+      type: "gradient",
+      gradient: {
+        opacityFrom: 0.55,
+        opacityTo: 0,
+        shade: "#1C64F2",
+        gradientToColors: ["#1C64F2"],
+      },
+    },
+    stroke: {
+      width: 6,
+    },
+    xaxis: {
+      categories: categories,
+      labels: {
+        show: true,
+        style: {
+          fontSize: '12px',
+          colors: '#A0AEC0',
+        },
+      },
+      axisTicks: { show: false },
+    },
+    yaxis: {
+      labels: {
+        formatter: (value) => `₹${value.toFixed(2)}`,
+        style: {
+          fontSize: '12px',
+          colors: '#A0AEC0',
+        },
+      },
+    },
+  };
 
+  if (chartMain) {
+    chartMain.destroy();
+  }
 
+  // Create a new chart instance
+  chartMain = new ApexCharts(document.getElementById("data-labels-chart"), options);
+  chartMain.render();
+}
 
-    // -------------------------------------------- Graph section --------------------------------------
-      // Load ApexCharts CDN dynamically
-      let chartMain; // Declare the chart globally
+// Initial chart rendering
+renderGraph(categories, totalSalesData, totalProfitData);
 
-    // Function to render the chart
-    function renderGraph(categories, salesData, profitData) {
-      console.log(categories,totalSalesData,totalProfitData)
-      const options = {
-        dataLabels: {
-          enabled: true,
-          style: {
-            cssClass: 'text-xs text-white font-medium',
-          },
-        },
-        grid: {
-          show: false,
-          strokeDashArray: 4,
-          padding: {
-            left: 16,
-            right: 16,
-            top: -26,
-          },
-        },
-        series: [
-          {
-            name: "Total Sales",
-            data: salesData,
-            color: "#1A56DB",
-          },
-          {
-            name: "Total Profit",
-            data: profitData,
-            color: "#7E3BF2",
-          },
-        ],
-        chart: {
-          height: "100%",
-          type: "area",
-          fontFamily: "Inter, sans-serif",
-          dropShadow: {
-            enabled: false,
-          },
-          toolbar: {
-            show: false,
-          },
-        },
-        tooltip: {
-          enabled: true,
-          x: {
-            show: false,
-          },
-          theme:"dark",
-          style:{
-            fontSize:'12px',
-            color:'#FFFFFF'
-          },
-          fillSeriesColor: false, // Use custom color instead of series color
-          background: {
-          color: "#333333", // Customize tooltip background color
-        },
-        },
-        legend: {
-          show: true,
-        },
-        fill: {
-          type: "gradient",
-          gradient: {
-            opacityFrom: 0.55,
-            opacityTo: 0,
-            shade: "#1C64F2",
-            gradientToColors: ["#1C64F2"],
-          },
-        },
-        stroke: {
-          width: 6,
-        },
-        xaxis: {
-          categories: categories,
-          labels: {
-            show: true,
-            style: {
-              fontSize: '12px',
-              colors: '#A0AEC0',
-            },
-          },
-          axisTicks: { show: false },
-        },
-        yaxis: {
-          labels: {
-            formatter: (value) => `₹${value.toFixed(2)}`,
-            style: {
-              fontSize: '12px',
-              colors: '#A0AEC0',
-            },
-          },
-        },
-      };
-
-      if (chartMain) {
-        chartMain.destroy();
-      }
-
-      // Create a new chart instance
-      chartMain = new ApexCharts(document.getElementById("data-labels-chart"), options);
-      chartMain.render();
+// Main graph dropdown filter
+document.getElementById('mainGraphData').addEventListener('change', function() {
+  const selectedFilter = this.value;
+  
+  fetch(`/admin/dashboard?filter=${selectedFilter}`, {
+    method: "GET",
+    headers: {
+      'Accept': 'application/json',
     }
-
-    // Initial chart rendering
-    renderGraph(categories, totalSalesData, totalProfitData);
-
-
-      document.getElementById('mainGraphData').addEventListener('change', function () {
-        const selectedFilter = this.value;
-      fetch(`/admin/dashboard?filter=${selectedFilter}`,{
-        method:"POST",
-        headers:{
-          'Content-Type': 'application/json',
-        }
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          // Update the chart with new data
-          renderGraph(data.categories, data.totalSalesData, data.totalProfitData);
-        })
-        .catch((error) => console.error('Error fetching filtered data:', error));
-      })
-    // -------------------------------------------- Graph section --------------------------------------
-
-
-
-
-
-    //--------------------------------------------- Pie chart ------------------------------------------
-
-
-    let chart;
-
-    const initialCategoryLabels = <%- categoryLabels %>;
-    const initialCategoryData = <%- categoryData %>
-
-    console.log(initialCategoryData);
-    console.log(`initialCategoryLabels = ${initialCategoryLabels}`)
-
-
-    function renderChart(labels, data) {
-      console.log(`label = ${labels} data = ${data}`)
-        const chartOptions = {
-          series: data,
-          chart: {
-            height: 320,
-            type: 'donut',
-          },
-          colors: ['#1C64F2', '#16BDCA', '#9061F9'],
-          labels: labels,
-          plotOptions: {
-            pie: {
-              donut: {
-                size: '65%',
-              }
-            }
-          },
-          dataLabels: {
-            enabled: true,
-            style: {
-              fontFamily: 'Inter, sans-serif',
-            },
-          },
-          legend: {
-            position: 'bottom',
-            fontFamily: 'Inter, sans-serif',
-          },
-        };
-
-        if (chart) {
-          chart.destroy();  // Destroy the previous chart if it exists
-        }
-        chart = new ApexCharts(document.getElementById('donut-chart'), chartOptions);
-        chart.render();
-
-      }
-
-      renderChart(initialCategoryLabels, initialCategoryData);
-
-
-
-
-
-    document.getElementById('categoryDropdown').addEventListener('change', function() {
-      const selectedFilter = this.value;
-
-      console.log(selectedFilter);
-
-      fetch(`/admin/dashboard?filter=${selectedFilter}`,{
-        method:'POST',
-        headers:{
-          'Content-Type': 'application/json',
-        }
-      })
-      .then(response=>response.json())
-      .then(data=>{
-
-
-        renderChart(data.categoryLabels, data.categoryData);
-
-      })
-    .catch(error => console.error('Error fetching filtered data:', error));
-
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Received data:", data);
+      // Update the chart with new data
+      renderGraph(data.categories, data.totalSalesData, data.totalProfitData);
     })
+    .catch((error) => console.error('Error fetching filtered data:', error));
+});
 
+// -------------------------------------------- Pie chart ------------------------------------------
+let chart;
 
+const initialCategoryLabels = <%- categoryLabels %>;
+const initialCategoryData = <%- categoryData %>;
 
+console.log("Initial category data:", initialCategoryData);
+console.log("Initial category labels:", initialCategoryLabels);
 
-
-
-
-
-    //--------------------------------------------- Pie chart -------------------------------------
-
-
-    // document.getElementById('lastDaysDropdown').addEventListener('change',function(){
-    //   const selectedOption = this.value;
-
-    //   console.log(selectedOption);
-
-
-    //   fetch(`/admin/dashboardFilter?filter=${selectedOption}`)
-    //   .then(response=>response.json())
-    //   .then(data=>{
-    //     updateChart(data)
-    //   })
-    //   .catch(error=>console.error('Error featching data:',error))
-    // })
-
-    function updateChart(data){
-
-    }
-
-
-    document.getElementById('filter').addEventListener('change', function() {
-      const filterValue = this.value;
-
-      console.log(filterValue);
-
-
-      // Fetch the filtered data based on the filter value
-      fetch(`/admin/dashboard?filter=${filterValue}`,{
-        method:'POST',
-        headers:{
-          'Content-Type': 'application/json',
+function renderChart(labels, data) {
+  console.log(`Rendering pie chart - labels: ${labels}, data: ${data}`);
+  
+  const chartOptions = {
+    series: data,
+    chart: {
+      height: 320,
+      type: 'donut',
+    },
+    colors: ['#1C64F2', '#16BDCA', '#9061F9', '#FBBF24', '#F472B6', '#34D399'],
+    labels: labels,
+    plotOptions: {
+      pie: {
+        donut: {
+          size: '65%',
         }
-      })
-        .then(response => {
-
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        })
-        .then(data => {
-          console.log(data);
-          // Call updateTable with the topSellingProducts array from the response
-          updateTable(data.topSellingProducts);
-        })
-        .catch(error => console.error('Error fetching data:', error));
-    });
-
-    function updateTable(products) {
-      const tbody = document.querySelector('tbody');
-
-      // Clear the existing rows
-      tbody.innerHTML = '';
-
-      if (products.length > 0) {
-        // Iterate over products and create rows
-        products.forEach(product => {
-          const row = `
-            <tr class="border-b border-gray-700">
-              <td class="py-3 px-4 text-gray-400">${product._id.name}</td>
-              <td class="py-3 px-4 text-gray-400">${product.totalQuantitySold}</td>
-              <td class="py-3 px-4 text-gray-400">${product.totalRevenue.toFixed(2)}</td>
-              <td class="py-3 px-4 text-gray-400">${product._id.discount}%</td>
-
-            </tr>
-          `;
-          tbody.innerHTML += row; // Append the new row to the table body
-        });
-      } else {
-        // If no products found, show a message
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="5" class="py-3 px-4 text-gray-400">No products found for this filter</td>
-          </tr>
-        `;
       }
+    },
+    dataLabels: {
+      enabled: true,
+      style: {
+        fontFamily: 'Inter, sans-serif',
+      },
+    },
+    legend: {
+      position: 'bottom',
+      fontFamily: 'Inter, sans-serif',
+    },
+  };
+
+  if (chart) {
+    chart.destroy();
+  }
+  chart = new ApexCharts(document.getElementById('donut-chart'), chartOptions);
+  chart.render();
+}
+
+// Initial pie chart rendering
+renderChart(initialCategoryLabels, initialCategoryData);
+
+// Category dropdown filter
+document.getElementById('categoryDropdown').addEventListener('change', function() {
+  const selectedFilter = this.value;
+
+  console.log("Category filter selected:", selectedFilter);
+
+  fetch(`/admin/dashboard?filter=${selectedFilter}`, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
     }
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log("Received category data:", data);
+      renderChart(data.categoryLabels, data.categoryData);
+    })
+    .catch(error => console.error('Error fetching filtered data:', error));
+});
+
+// -------------------------------------------- Table Filter ------------------------------------------
+document.getElementById('filter').addEventListener('change', function() {
+  const filterValue = this.value;
+
+  console.log("Table filter selected:", filterValue);
+
+  fetch(`/admin/dashboard?filter=${filterValue}`, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+    }
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log("Received table data:", data);
+      updateTable(data.topSellingProducts);
+    })
+    .catch(error => console.error('Error fetching data:', error));
+});
+
+function updateTable(products) {
+  const tbody = document.querySelector('tbody');
+
+  // Clear the existing rows
+  tbody.innerHTML = '';
+
+  if (products && products.length > 0) {
+    products.forEach(product => {
+      const row = `
+        <tr class="border-b border-gray-200 hover:bg-gray-50">
+          <td class="py-3 px-4 text-gray-600">${product._id.name}</td>
+          <td class="py-3 px-4 text-gray-600">${product.totalQuantitySold}</td>
+          <td class="py-3 px-4 text-gray-600">${product.totalRevenue.toFixed(2)}</td>
+          <td class="py-3 px-4 text-gray-600">${product._id.discount}%</td>
+        </tr>
+      `;
+      tbody.innerHTML += row;
+    });
+  } else {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="4" class="py-4 px-4 text-gray-500 text-center">No products found for this filter</td>
+      </tr>
+    `;
+  }
+}
   </script>
 
   <%- include('../layouts/footer.ejs') %>

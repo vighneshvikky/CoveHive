@@ -8,10 +8,7 @@ const orderController = require('../../controllers/admin/orderController');
 const couponController = require('../../controllers/admin/couponController');
 const salesController = require('../../controllers/admin/salesController');
 const offerController = require('../../controllers/admin/offerController')
-//const work = require('../../middlewares/multer')
 const load = require('../../middlewares/multer')
-
-//const work = require('../../middlewares/multer')
 
 const adminAuth = require('../../middlewares/admin/adminAuth');
 const multer = require('multer');

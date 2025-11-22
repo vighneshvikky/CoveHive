@@ -52,153 +52,122 @@ exports.loginAdmin = async (req, res) => {
   }
         //---------------------- function for Date Filter   ----------------------
 
-const applyDateFilter = (filter) => {
-  
-
+function applyDateFilter(filter) {
   const now = new Date();
-  let dateFilter = {};
+  let startDate;
 
-  if (filter === "day") {
-    dateFilter.createdAt = {
-      $gte: new Date(now.setHours(0, 0, 0, 0)),
-      $lt: new Date(now.setHours(23, 59, 59, 999)),
-    };
-  } else if (filter === "week") {
-    const startOfWeek = new Date(now);
-    const dayOfWeek = now.getDay();
-    const distanceToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-
-    startOfWeek.setDate(now.getDate() - distanceToMonday);
-    startOfWeek.setHours(0, 0, 0, 0);
-
-    // Set end of the week
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 6);
-    endOfWeek.setHours(23, 59, 59, 999);
-
-    dateFilter.createdAt = { $gte: startOfWeek, $lt: endOfWeek };
-  } else if (filter === "month") {
-    dateFilter.createdAt = {
-      $gte: new Date(now.getFullYear(), now.getMonth(), 1), // Start of month
-      $lt: new Date(now.getFullYear(), now.getMonth() + 1, 1), // Start of next month
-    };
-  } else if (filter === "year") {
-    dateFilter.createdAt = {
-      $gte: new Date(now.getFullYear(), 0, 1), // Start of year
-      $lt: new Date(now.getFullYear(), 12, 31), // End of year
-    };
+  switch (filter) {
+    case "day":
+      startDate = new Date(now.setHours(0, 0, 0, 0));
+      break;
+    case "week":
+      startDate = new Date(now.setDate(now.getDate() - now.getDay()));
+      startDate.setHours(0, 0, 0, 0);
+      break;
+    case "month":
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      break;
+    case "year":
+      startDate = new Date(now.getFullYear(), 0, 1);
+      break;
+    default:
+      startDate = new Date(now.setHours(0, 0, 0, 0));
   }
 
-  return dateFilter;
-};
+  return {
+    createdAt: { $gte: startDate }
+  };
+}
 
 ///----------------------------admin Dashboard-----------------
 
-exports.dashboard = async (req,res) =>{ 
- try {
-  const startOfDay = new Date();
-  startOfDay.setHours(0, 0, 0, 0);
+exports.dashboard = async (req, res) => {
+  try {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
 
-  const endOfDay = new Date();
-  endOfDay.setHours(23, 59, 59, 999);
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
 
-  const totalCustomers = await User.find();
-   const totalUsers = totalCustomers.length;
-console.log('started aggregation')
+    const totalCustomers = await User.find();
+    const totalUsers = totalCustomers.length;
+    console.log('started aggregation');
 
-// daily data start 
-   const dailyOrder = await Order.aggregate([
-    {
-      // Match orders that are not cancelled and have a status of 'Delivered', 'Pending', or 'Shipped'
-      $match: {
-        orderStatus: { $in: ["Delivered", "Pending", "Shipped", "Paid"] },
-        isCancelled: false,
-        paid:true
+    // daily data start
+    const dailyOrder = await Order.aggregate([
+      {
+        $match: {
+          orderStatus: { $in: ["Delivered", "Pending", "Shipped", "Paid"] },
+          isCancelled: false,
+          paid: true
+        },
       },
-    },
-    {
-      // Unwind items array to calculate metrics based on individual products
-      $unwind: "$items"
-    },
-    {
-      // Group by day
+      {
+        $unwind: "$items"
+      },
+      {
         $group: {
           _id: {
             year: { $year: "$createdAt" },
             month: { $month: "$createdAt" },
             day: { $dayOfMonth: "$createdAt" },
           },
-          totalDailyOrders: { $sum: 1 }, // Total number of orders
-          totalProductsSold: { $sum: "$items.productCount" }, // Total products sold
+          totalDailyOrders: { $sum: 1 },
+          totalProductsSold: { $sum: "$items.productCount" },
           totalSales: {
             $sum: {
               $multiply: ["$items.productDiscountPrice", "$items.productCount"],
             },
-          }, // Sum of product discount price * product count
+          },
           totalDailyProfit: {
             $sum: {
               $multiply: ["$items.productDiscountPrice", "$items.productCount", 0.1],
             },
-          }, // Assume 10% profit for simplicity
-        },
-    },
-    {
-      // Project fields for readability
-      $project: {
-        _id: 0,
-        date: {
-          $dateFromParts: {
-            year: "$_id.year",
-            month: "$_id.month",
-            day: "$_id.day",
           },
         },
-        totalDailyOrders: 1,
-        totalProductsSold: 1,
-        totalSales: 1,
-        totalDailyProfit: 1,
       },
-    },
-    {
-      // Sort by date in descending order
-      $sort: { date: -1 },
-    },
-    
-   ]);
+      {
+        $project: {
+          _id: 0,
+          date: {
+            $dateFromParts: {
+              year: "$_id.year",
+              month: "$_id.month",
+              day: "$_id.day",
+            },
+          },
+          totalDailyOrders: 1,
+          totalProductsSold: 1,
+          totalSales: 1,
+          totalDailyProfit: 1,
+        },
+      },
+      {
+        $sort: { date: -1 },
+      },
+    ]);
 
-      
-
-
-  //  daily data end
-
-  //Total sale Amount start
-
-  const totalSaleAmount = await Order.aggregate([
-    // Match orders with the desired statuses
-    {
-      $match: {
-        orderStatus: { $in: ["Pending", "Paid", "Delivered", "Shipped"] },
-        paid:true
+    // Total sale Amount start
+    const totalSaleAmount = await Order.aggregate([
+      {
+        $match: {
+          orderStatus: { $in: ["Pending", "Paid", "Delivered", "Shipped"] },
+          paid: true
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: "$totalPrice" }
+        }
       }
-    },
-    // Group by null to sum the totalPrice
-    {
-      $group: {
-        _id: null,
-        totalAmount: { $sum: "$totalPrice" }
-      }
-    }
-  ]);
-  
-  const finalTotalSaleAmount = (totalSaleAmount && totalSaleAmount.length > 0 && totalSaleAmount[0]?.totalAmount !== undefined)
-  ? totalSaleAmount[0].totalAmount.toFixed(2)
-  : "0.00";
+    ]);
 
-  //Total sale Amount end
+    const finalTotalSaleAmount = (totalSaleAmount && totalSaleAmount.length > 0 && totalSaleAmount[0]?.totalAmount !== undefined)
+      ? totalSaleAmount[0].totalAmount.toFixed(2)
+      : "0.00";
 
-
-    //----------------------- Top selling products---------------------
-
+    // Top selling products
     const filter = req.query.filter || "day";
     const dateFilter = applyDateFilter(filter);
 
@@ -207,10 +176,10 @@ console.log('started aggregation')
     const topSellingProducts = await Order.aggregate([
       {
         $match: {
-          orderStatus: { $in: ["Delivered", "Shipped", "Pending","Paid"] },
+          orderStatus: { $in: ["Delivered", "Shipped", "Pending", "Paid"] },
           isCancelled: false,
           createdAt: dateFilter.createdAt,
-          paid:true
+          paid: true
         },
       },
       {
@@ -237,182 +206,148 @@ console.log('started aggregation')
       },
     ]);
 
-
-    console.log(`popular product before populating ${topSellingProducts}`)
-const productData = await Product.populate(topSellingProducts, {
-  path: "_id",
-  populate: { path: "category", select: "name" },
-  select: "name discount category",
-});
+    console.log(`popular product before populating ${topSellingProducts}`);
+    const productData = await Product.populate(topSellingProducts, {
+      path: "_id",
+      populate: { path: "category", select: "name" },
+      select: "name discount category",
+    });
 
     console.log("Product data: ", productData);
 
-    //----------------------- Top selling products end---------------------
+    // Category performance
+    const categoryFilter = req.query.filter || "day";
+    const CategoryDateFilter = applyDateFilter(categoryFilter);
+    console.log(`categoryDateFilter = ${CategoryDateFilter}`);
 
-    
-      //----------------------- pie chart categgory perfomance  ---------------------
-
-      const categoryFilter = req.query.filter || "day";
-      const CategoryDateFilter = applyDateFilter(categoryFilter);
-    console.log(`categoryDateFilter = ${CategoryDateFilter}`)
-      const categoryPerfomance = await Order.aggregate([
-        {
-          $match: {
-            orderStatus: { $in: ["Delivered", "Shipped", "Pending", "Paid"] },
-            isCancelled: false,
-            createdAt: CategoryDateFilter.createdAt,
-            paid:true
+    const categoryPerfomance = await Order.aggregate([
+      {
+        $match: {
+          orderStatus: { $in: ["Delivered", "Shipped", "Pending", "Paid"] },
+          isCancelled: false,
+          createdAt: CategoryDateFilter.createdAt,
+          paid: true
+        },
+      },
+      { $unwind: "$items" },
+      {
+        $lookup: {
+          from: "products",
+          localField: "items.productId",
+          foreignField: "_id",
+          as: "productData",
+        },
+      },
+      {
+        $unwind: "$productData",
+      },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "productData.category",
+          foreignField: "_id",
+          as: "categoryData",
+        },
+      },
+      {
+        $unwind: "$categoryData",
+      },
+      {
+        $group: {
+          _id: "$categoryData.name",
+          totalQuantitySold: {
+            $sum: { $toInt: "$items.productCount" },
           },
         },
-        { $unwind: "$items" },
-
-        {
-          // First lookup: Join with the Product collection to get product details
-          $lookup: {
-            from: "products", // Name of the product collection
-            localField: "items.productId",
-            foreignField: "_id",
-            as: "productData",
-          },
+      },
+      {
+        $project: {
+          _id: 0,
+          category: "$_id",
+          totalQuantitySold: 1,
         },
+      },
+      { $sort: { totalQuantitySold: -1 } },
+    ]);
 
-        {
-          // Unwind the productData array to have direct access to product details
-          $unwind: "$productData",
+    console.log("categoryPerfomance:", JSON.stringify(categoryPerfomance, null, 2));
+    const categoryLabels = categoryPerfomance.map((item) => item.category);
+    const categoryData = categoryPerfomance.map(
+      (item) => item.totalQuantitySold
+    );
+
+    console.log(`cartegoryData = ${categoryData}`);
+
+    // Weekly/filtered dashboard data
+    const filterMain = req.query.filter || "week";
+    const dateFilterMain = applyDateFilter(filterMain);
+
+    const order = await Order.aggregate([
+      {
+        $match: {
+          orderStatus: { $in: ["Delivered", "Shipped", "Pending", "Paid"] },
+          isCancelled: false,
+          paid: true,
+          createdAt: dateFilterMain.createdAt,
         },
-
-        {
-          // Second lookup: Join with the Category collection to get category details
-            $lookup: {
-              from: "categories", // Name of the category collection
-              localField: "productData.category",
-              foreignField: "_id",
-              as: "categoryData",
-            },
-          },
-
-        {
-          // Unwind the categoryData array to get direct access to category details
-          $unwind: "$categoryData",
+      },
+      {
+        $group: {
+          _id: { $dayOfMonth: "$createdAt" },
+          totalDailySales: { $sum: "$totalPrice" },
+          totalDailyProfit: { $sum: { $multiply: ["$totalPrice", 0.1] } },
         },
+      },
+      {
+        $sort: { _id: 1 },
+      },
+    ]);
 
-        {
-          // Group by the category name
-          $group: {
-            _id: "$categoryData.name", // Group by category name
-            totalQuantitySold: {
-              $sum: { $toInt: "$items.productCount" },
-            },
-          },
-        },
-        {
-          // Project the required fields
-          $project: { 
-            _id: 0,
-            category: "$_id", // Set category to the category name from the group _id
-            totalQuantitySold: 1,
-          },
-        },
-        { $sort: { totalQuantitySold: -1 } },
-      ]);
-      console.log("categoryPerfomance:", JSON.stringify(categoryPerfomance, null, 2));
-      const categoryLabels = categoryPerfomance.map((item) => item.category);   
-      const categoryData = categoryPerfomance.map(
-        (item) => item.totalQuantitySold
-      );
-      
+    const categories = order.map((item) => `Day ${item._id}`);
+    const totalSalesData = order.map((item) => parseFloat(item.totalDailySales.toFixed(2)));
+    const totalProfitData = order.map((item) => parseFloat(item.totalDailyProfit.toFixed(2)));
 
-      console.log(`cartegoryData = ${categoryData}`);
+    console.log("category : ", categories);
+    console.log("totalSalesData : ", totalSalesData);
+    console.log("totalProfitData: ", totalProfitData);
 
+    // Check if this is an AJAX request
+    if (
+      req.xhr ||
+      req.headers["content-type"] === "application/json" ||
+      (req.headers.accept && req.headers.accept.indexOf("json") > -1)
+    ) {
+      console.log("Fetch request detected");
+      return res.json({
+        topSellingProducts: productData,
+        categoryLabels,
+        categoryData,
+        categories,
+        totalSalesData,
+        totalProfitData,
+        finalTotalSaleAmount
+      });
+    }
 
+    console.log(`categoryLabels = ${categoryLabels}`);
+    console.log(`categoryData = ${categoryData}`);
 
-      //----------------------- pie chart categgory perfomance  end ---------------------
+    res.render('admin/adminDashboard', {
+      dailyOrder,
+      totalUsers,
+      topSellingProducts: productData,
+      categories: JSON.stringify(categories),
+      totalSalesData: JSON.stringify(totalSalesData),
+      totalProfitData: JSON.stringify(totalProfitData),
+      categoryLabels: JSON.stringify(categoryLabels),
+      categoryData: JSON.stringify(categoryData),
+      finalTotalSaleAmount,
+    });
 
-        //--------------- weekly dashboard data -----------------------
-
-        const filterMain = req.query.filter || "week";
-
-        const dateFilterMain = applyDateFilter(filterMain)
-  
-        const startOfWeek = new Date();
-        startOfWeek.setDate(startOfWeek.getDate());
-        startOfWeek.setHours(0, 0, 0, 0);
-  
-        const endOfWeek = new Date();
-        endOfWeek.setDate(startOfWeek.getDate() + 6); // Set to the end of the week (Saturday)
-        endOfWeek.setHours(23, 59, 59, 999);
-  
-        const order = await Order.aggregate([
-          {
-            $match: {
-              orderStatus: { $in: ["Delivered", "Shipped", "Pending", "Paid"] },
-              isCancelled: false,
-              createdAt: dateFilter.createdAt, // Apply the filtered date range
-            },
-          },
-          {
-            $group: {
-              _id: { $dayOfMonth: "$createdAt" }, // Group by day of the month for weekly data (modify based on filter)
-              totalDailySales: { $sum: "$totalPrice" }, // Sum of total sales
-              totalDailyProfit: { $sum: { $multiply: ["$totalPrice", 0.1] } }, // Assume profit is 10% of total sales
-            },
-          },
-          {
-            $sort: { _id: 1 },
-          },
-        ]);
-       
-  
-        const categories = order.map((item) => `Day ${item._id}`);
-        const totalSalesData = order.map((item) => item.totalDailySales.toFixed(2));
-        const totalProfitData = order.map((item) => item.totalDailyProfit.toFixed(2));
-  
-        console.log("category : ",categories);
-        console.log("totalSalesData : ",totalSalesData);
-        console.log("totalProfitData: ", totalProfitData);
-
-        
-      if (
-        req.xhr ||
-        req.headers["content-type"] === "application/json" ||
-        req.headers.accept.indexOf("json") > -1
-      ) {
-        console.log("Fetch request detected");
-        // Send JSON response for AJAX
-        return res.json({
-          topSellingProducts: productData,
-          categoryLabels,
-          categoryData,
-          //main cart
-          categories,
-          totalSalesData,
-          totalProfitData,
-          finalTotalSaleAmount
-        });
-      }
-     
-      console.log(`categoryLabels = ${categoryLabels}`);
-      console.log(`categoryData = ${categoryData}`);
-      
-
-res.render('admin/adminDashboard',{
-  dailyOrder,
-  totalUsers,
-  topSellingProducts:productData,
-  categories:JSON.stringify(categories),
-  totalSalesData:JSON.stringify(totalSalesData),
-  totalProfitData:JSON.stringify(totalProfitData),
-  categoryLabels:JSON.stringify(categoryLabels),
-  categoryData:JSON.stringify(categoryData),
-  finalTotalSaleAmount,
-});
-
- } catch (error) {
-  console.log(`error from dashboard${error}`);
-  res.status(500).send("Internal Server Error");
-
- }
-
+  } catch (error) {
+    console.log(`error from dashboard${error}`);
+    res.status(500).send("Internal Server Error");
+  }
 }
 
 
