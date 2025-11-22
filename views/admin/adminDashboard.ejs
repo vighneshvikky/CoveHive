@@ -1,28 +1,14 @@
 <%- include('../layouts/header.ejs') %> <%- include('../layouts/sidebar.ejs') %>
 <div class="ml-[250px] p-6">
   <div style="display: flex; min-height: 100vh">
-    <!-- Sidebar -->
-
     <!-- Main Content -->
     <div style="flex-grow: 1; background-color: black; color: #ffffff">
       <!-- Top section -->
-
       <div class="grid grid-cols-4 gap-4 p-4 bg-white">
-        <!-- Total Daily Profit Card -->
-        <!-- <div class="p-6 bg-white shadow rounded-lg border border-gray-200">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-2xl font-bold text-gray-800">₹ <%= (dailyOrder[0] && dailyOrder[0].totalDailyProfit ? dailyOrder[0].totalDailyProfit.toFixed(2) : "0.00") %></span>
-                </div>
-                <p class="text-sm text-gray-600">Total Daily Profit</p>
-            </div> -->
-
         <!-- Total Daily Sales Card -->
         <div class="p-6 bg-white shadow rounded-lg border border-gray-200">
           <div class="flex justify-between items-center mb-2">
-            <span class="text-2xl font-bold text-gray-800"
-              >₹ <%= (dailyOrder[0] && dailyOrder[0].totalSales ?
-              dailyOrder[0].totalSales.toFixed() : "0.00") %></span
-            >
+            <span class="text-2xl font-bold text-gray-800">₹ <%= (dailyOrder[0] && dailyOrder[0].totalSales ? dailyOrder[0].totalSales.toFixed() : "0.00") %></span>
           </div>
           <p class="text-sm text-gray-600">Total Daily Sales</p>
         </div>
@@ -30,10 +16,7 @@
         <!-- Total Daily Orders Card -->
         <div class="p-6 bg-white shadow rounded-lg border border-gray-200">
           <div class="flex justify-between items-center mb-2">
-            <span class="text-2xl font-bold text-gray-800"
-              ><%= (dailyOrder[0] && dailyOrder[0].totalDailyOrders ?
-              dailyOrder[0].totalDailyOrders : "0") %></span
-            >
+            <span class="text-2xl font-bold text-gray-800"><%= (dailyOrder[0] && dailyOrder[0].totalDailyOrders ? dailyOrder[0].totalDailyOrders : "0") %></span>
           </div>
           <p class="text-sm text-gray-600">Total Daily Orders</p>
         </div>
@@ -41,161 +24,71 @@
         <!-- Total Customers Card -->
         <div class="p-6 bg-white shadow rounded-lg border border-gray-200">
           <div class="flex justify-between items-center mb-2">
-            <span class="text-2xl font-bold text-gray-800"
-              ><%= totalUsers %></span
-            >
+            <span class="text-2xl font-bold text-gray-800"><%= totalUsers %></span>
           </div>
           <p class="text-sm text-gray-600">Total Customers</p>
         </div>
       </div>
 
-      <!----------------------------------------- Top section -------------------------------------------------->
-
-      <!-------------------------------------- graph =------------------------------------------------>
-
+      <!-- Graph Section -->
       <div id="graph-data" class="grid grid-cols-4 mx-2 gap-2">
-        <!-- First Chart - 3/4 of the width -->
-        <div
-          class="col-span-3 max-w-full w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6"
-        >
+        <!-- Main Area Chart - 3/4 width -->
+        <div class="col-span-3 max-w-full w-full bg-white rounded-lg shadow p-4 md:p-6">
           <div class="flex justify-between mb-5">
             <div>
-              <h5
-                class="leading-none text-3xl font-bold text-gray-900 dark:text-white pb-2"
-              >
-                ₹ <%= finalTotalSaleAmount %>
-              </h5>
-              <p
-                class="text-base font-normal text-green-500 dark:text-green-400"
-              >
-                Total Sales
-              </p>
+              <h5 class="leading-none text-3xl font-bold text-gray-900 pb-2">₹ <%= finalTotalSaleAmount %></h5>
+              <p class="text-base font-normal text-green-500">Total Sales</p>
             </div>
-            <div
-              class="flex items-center px-2.5 py-0.5 text-base font-semibold text-green-500 dark:text-green-500 text-center"
-            ></div>
           </div>
-          <div id="data-labels-chart"></div>
-          <div
-            class="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between mt-5"
-          >
+          <!-- Chart.js Canvas -->
+          <div style="height: 350px;">
+            <canvas id="salesChart"></canvas>
+          </div>
+          <div class="grid grid-cols-1 items-center border-gray-200 border-t justify-between mt-5">
             <div class="flex justify-between items-center pt-5">
-              <!-- Dropdown menu -->
-              <select
-                id="mainGraphData"
-                class="block px-4 py-2 rounded-lg shadow w-44 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700"
-              >
+              <select id="mainGraphData" class="block px-4 py-2 rounded-lg shadow w-44 text-gray-700 bg-white">
                 <option value="day">Day</option>
                 <option value="week">Week</option>
                 <option value="month">Month</option>
                 <option value="year">Year</option>
               </select>
-              <a
-                href="/admin/salesReport"
-                class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700 dark:hover:text-blue-500 hover:bg-gray-100 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 px-3 py-2"
-              >
+              <a href="/admin/salesReport" class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700 hover:bg-gray-100 px-3 py-2">
                 Sales Report
-                <svg
-                  class="w-2.5 h-2.5 ms-1.5 rtl:rotate-180"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 6 10"
-                >
-                  <path
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="m1 9 4-4-4-4"
-                  />
+                <svg class="w-2.5 h-2.5 ms-1.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
                 </svg>
               </a>
             </div>
           </div>
         </div>
 
-        <!-------------------------------------- graph end=------------------------------------------------>
-
-        <!-- Second Chart - 1/4 of the width -->
-        <div
-          class="col-span-1 max-w-full w-full bg-white rounded-lg shadow dark:bg-gray-800 py-5 md:p-6"
-        >
-          <!-- Header Section with Chart Title and Info Icon -->
+        <!-- Donut Chart - 1/4 width -->
+        <div class="col-span-1 max-w-full w-full bg-white rounded-lg shadow py-5 md:p-6">
           <div class="flex justify-between mb-3">
-            <div class="flex items-center">
-              <h5
-                class="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1"
-              >
-                Category Performance
-              </h5>
-              <!-- Info Icon -->
-              <!-- <svg data-popover-target="chart-info" data-popover-placement="bottom" class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm0 16a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm1-5.034V12a1 1 0 0 1-2 0v-1.418a1 1 0 0 1 1.038-.999 1.436 1.436 0 0 0 1.488-1.441 1.501 1.501 0 1 0-3-.116.986.986 0 0 1-1.037.961 1 1 0 0 1-.96-1.037A3.5 3.5 0 1 1 11 11.466Z" />
-                      </svg> -->
-              <!-- Popover Tooltip Content -->
-              <div
-                id="chart-info"
-                class="hidden text-sm text-gray-500 bg-white border border-gray-200 rounded-lg shadow-sm p-3 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600"
-              >
-                <h3 class="font-semibold text-gray-900 dark:text-white">
-                  Activity Growth
-                </h3>
-                <p>
-                  This chart helps you understand the performance of your
-                  categories over time. Select a filter to view data for the
-                  specified period.
-                </p>
-              </div>
-            </div>
-            <!-- Download Data Button -->
-            <!-- <button id="download-data" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 rounded-lg text-sm w-8 h-8 flex items-center justify-center">
-                      <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 18">
-                        <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M8 1v11m0 0 4-4m-4 4L4 8m11 4v3a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-3"/>
-                      </svg>
-                      <span class="sr-only">Download CSV</span>
-                    </button> -->
+            <h5 class="text-xl font-bold leading-none text-gray-900 pe-1">Category Performance</h5>
           </div>
-
-          <!-- Donut Chart -->
-          <div class="py-3 mb-3" id="donut-chart"></div>
-
-          <!-- Dropdown Menu for Filter Options -->
+          <!-- Chart.js Donut Canvas -->
+          <div class="py-3 mb-3" style="height: 280px;">
+            <canvas id="donutChart"></canvas>
+          </div>
           <div class="flex justify-between items-center pt-5">
-            <select
-              id="categoryDropdown"
-              class="block px-4 py-2 rounded-lg shadow w-44 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700"
-            >
+            <select id="categoryDropdown" class="block px-4 py-2 rounded-lg shadow w-44 text-gray-700 bg-white">
               <option value="day">Day</option>
               <option value="week">Week</option>
               <option value="month">Month</option>
               <option value="year">Year</option>
             </select>
-            <a
-              href="#"
-              class="uppercase text-sm font-semibold text-blue-600 hover:text-blue-700 dark:hover:text-blue-500 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded-lg"
-            >
-              Filter
-            </a>
           </div>
         </div>
       </div>
-      <!-----------------------------Table top selling products ---------------------------->
 
+      <!-- Table Section -->
       <div class="container mx-auto px-4 py-8">
-        <!-- Filter Dropdown -->
         <div class="flex justify-between items-center mb-4">
-          <h2 class="text-2xl font-semibold text-gray-100">
-            Top Selling Products
-          </h2>
+          <h2 class="text-2xl font-semibold text-gray-100">Top Selling Products</h2>
           <div class="relative inline-block w-64">
-            <label for="filter" class="block mb-1 text-gray-300"
-              >Filter By:</label
-            >
-            <select
-              id="filter"
-              class="w-full px-3 py-2 bg-gray-800 text-gray-300 border border-gray-600 rounded-md"
-            >
+            <label for="filter" class="block mb-1 text-gray-300">Filter By:</label>
+            <select id="filter" class="w-full px-3 py-2 bg-gray-800 text-gray-300 border border-gray-600 rounded-md">
               <option value="day">Day</option>
               <option value="week">Week</option>
               <option value="month">Month</option>
@@ -204,322 +97,225 @@
           </div>
         </div>
 
-        <!-- Table for Top Selling Products -->
         <div class="overflow-x-auto bg-white rounded-lg shadow">
           <table class="min-w-full bg-white border border-gray-200">
             <thead class="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th class="py-3 px-4 text-left text-gray-700 font-semibold">
-                  Product Name
-                </th>
-                <th class="py-3 px-4 text-left text-gray-700 font-semibold">
-                  Total Quantity Sold
-                </th>
-                <th class="py-3 px-4 text-left text-gray-700 font-semibold">
-                  Revenue
-                </th>
-                <th class="py-3 px-4 text-left text-gray-700 font-semibold">
-                  Discount (%)
-                </th>
+                <th class="py-3 px-4 text-left text-gray-700 font-semibold">Product Name</th>
+                <th class="py-3 px-4 text-left text-gray-700 font-semibold">Total Quantity Sold</th>
+                <th class="py-3 px-4 text-left text-gray-700 font-semibold">Revenue</th>
+                <th class="py-3 px-4 text-left text-gray-700 font-semibold">Discount (%)</th>
               </tr>
             </thead>
             <tbody>
-              <% if(topSellingProducts.length > 0 ){ %> <%
-              topSellingProducts.forEach(product=>{ %>
-              <tr class="border-b border-gray-200 hover:bg-gray-50">
-                <td class="py-3 px-4 text-gray-600"><%= product._id.name %></td>
-                <td class="py-3 px-4 text-gray-600">
-                  <%= product.totalQuantitySold %>
-                </td>
-                <td class="py-3 px-4 text-gray-600">
-                  <%= product.totalRevenue.toFixed(2) %>
-                </td>
-                <td class="py-3 px-4 text-gray-600">
-                  <%= product._id.discount %>%
-                </td>
-                <td class="py-3 px-4 text-gray-600">
-                  <%= product._id.publisher %>
-                </td>
-              </tr>
-              <% }) %> <% } else { %>
+              <% if(topSellingProducts.length > 0 ){ %>
+                <% topSellingProducts.forEach(product=>{ %>
+                <tr class="border-b border-gray-200 hover:bg-gray-50">
+                  <td class="py-3 px-4 text-gray-600"><%= product._id.name %></td>
+                  <td class="py-3 px-4 text-gray-600"><%= product.totalQuantitySold %></td>
+                  <td class="py-3 px-4 text-gray-600"><%= product.totalRevenue.toFixed(2) %></td>
+                  <td class="py-3 px-4 text-gray-600"><%= product._id.discount %>%</td>
+                </tr>
+                <% }) %>
+              <% } else { %>
               <tr>
-                <td colspan="5" class="py-4 px-4 text-gray-500 text-center">
-                  No product found
-                </td>
+                <td colspan="4" class="py-4 px-4 text-gray-500 text-center">No product found</td>
               </tr>
               <% } %>
             </tbody>
           </table>
         </div>
-
-        <div
-          id="categories"
-          data-categories="<%JSON.stringify(categories)%>"
-        ></div>
       </div>
-      <!-- graph -->
     </div>
   </div>
 
-  <!-- Chart Container -->
-
-  <!-- Add ApexCharts CDN in the head of your HTML -->
-  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script>
-
-
-
-
+    // Data from server
     const categories = <%- categories %>;
-const totalSalesData = <%- totalSalesData %>;
-const totalProfitData = <%- totalProfitData %>;
+    const totalSalesData = <%- totalSalesData %>;
+    const totalProfitData = <%- totalProfitData %>;
+    const initialCategoryLabels = <%- categoryLabels %>;
+    const initialCategoryData = <%- categoryData %>;
 
-console.log("Initial categories:", categories);
-console.log("Initial sales data:", totalSalesData);
-console.log("Initial profit data:", totalProfitData);
+    // ==================== AREA/LINE CHART ====================
+    let salesChart = null;
 
-// -------------------------------------------- Graph section --------------------------------------
-let chartMain; // Declare the chart globally
+    function renderSalesChart(labels, salesData) {
+      const ctx = document.getElementById('salesChart').getContext('2d');
+      
+      // Destroy existing chart
+      if (salesChart) {
+        salesChart.destroy();
+      }
 
-// Function to render the chart
-function renderGraph(categories, salesData, profitData) {
-  console.log("Rendering graph with:", categories, salesData, profitData);
-  
-  const options = {
-    dataLabels: {
-      enabled: true,
-      style: {
-        cssClass: 'text-xs text-white font-medium',
-      },
-    },
-    grid: {
-      show: false,
-      strokeDashArray: 4,
-      padding: {
-        left: 16,
-        right: 16,
-        top: -26,
-      },
-    },
-    series: [
-      {
-        name: "Total Sales",
-        data: salesData,
-        color: "#1A56DB",
-      },
-
-    ],
-    chart: {
-      height: "100%",
-      type: "area",
-      fontFamily: "Inter, sans-serif",
-      dropShadow: {
-        enabled: false,
-      },
-      toolbar: {
-        show: false,
-      },
-    },
-    tooltip: {
-      enabled: true,
-      x: {
-        show: false,
-      },
-      theme: "dark",
-      style: {
-        fontSize: '12px',
-        color: '#FFFFFF'
-      },
-    },
-    legend: {
-      show: true,
-    },
-    fill: {
-      type: "gradient",
-      gradient: {
-        opacityFrom: 0.55,
-        opacityTo: 0,
-        shade: "#1C64F2",
-        gradientToColors: ["#1C64F2"],
-      },
-    },
-    stroke: {
-      width: 6,
-    },
-    xaxis: {
-      categories: categories,
-      labels: {
-        show: true,
-        style: {
-          fontSize: '12px',
-          colors: '#A0AEC0',
+      salesChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Total Sales',
+            data: salesData,
+            borderColor: '#1A56DB',
+            backgroundColor: 'rgba(26, 86, 219, 0.1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#1A56DB',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6
+          }]
         },
-      },
-      axisTicks: { show: false },
-    },
-    yaxis: {
-      labels: {
-        formatter: (value) => `₹${value.toFixed(2)}`,
-        style: {
-          fontSize: '12px',
-          colors: '#A0AEC0',
-        },
-      },
-    },
-  };
-
-  if (chartMain) {
-    chartMain.destroy();
-  }
-
-  // Create a new chart instance
-  chartMain = new ApexCharts(document.getElementById("data-labels-chart"), options);
-  chartMain.render();
-}
-
-// Initial chart rendering
-renderGraph(categories, totalSalesData, totalProfitData);
-
-// Main graph dropdown filter
-document.getElementById('mainGraphData').addEventListener('change', function() {
-  const selectedFilter = this.value;
-  
-  fetch(`/admin/dashboard?filter=${selectedFilter}`, {
-    method: "GET",
-    headers: {
-      'Accept': 'application/json',
-    }
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Received data:", data);
-      // Update the chart with new data
-      renderGraph(data.categories, data.totalSalesData, data.totalProfitData);
-    })
-    .catch((error) => console.error('Error fetching filtered data:', error));
-});
-
-// -------------------------------------------- Pie chart ------------------------------------------
-let chart;
-
-const initialCategoryLabels = <%- categoryLabels %>;
-const initialCategoryData = <%- categoryData %>;
-
-console.log("Initial category data:", initialCategoryData);
-console.log("Initial category labels:", initialCategoryLabels);
-
-function renderChart(labels, data) {
-  console.log(`Rendering pie chart - labels: ${labels}, data: ${data}`);
-  
-  const chartOptions = {
-    series: data,
-    chart: {
-      height: 320,
-      type: 'donut',
-    },
-    colors: ['#1C64F2', '#16BDCA', '#9061F9', '#FBBF24', '#F472B6', '#34D399'],
-    labels: labels,
-    plotOptions: {
-      pie: {
-        donut: {
-          size: '65%',
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              labels: {
+                font: { family: 'Inter, sans-serif', size: 12 },
+                color: '#374151'
+              }
+            },
+            tooltip: {
+              backgroundColor: '#1f2937',
+              titleFont: { family: 'Inter, sans-serif' },
+              bodyFont: { family: 'Inter, sans-serif' },
+              callbacks: {
+                label: (context) => `₹${context.parsed.y.toFixed(2)}`
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: {
+                font: { size: 12 },
+                color: '#A0AEC0'
+              }
+            },
+            y: {
+              grid: {
+                color: 'rgba(160, 174, 192, 0.2)',
+                drawBorder: false
+              },
+              ticks: {
+                font: { size: 12 },
+                color: '#A0AEC0',
+                callback: (value) => `₹${value}`
+              }
+            }
+          }
         }
-      }
-    },
-    dataLabels: {
-      enabled: true,
-      style: {
-        fontFamily: 'Inter, sans-serif',
-      },
-    },
-    legend: {
-      position: 'bottom',
-      fontFamily: 'Inter, sans-serif',
-    },
-  };
-
-  if (chart) {
-    chart.destroy();
-  }
-  chart = new ApexCharts(document.getElementById('donut-chart'), chartOptions);
-  chart.render();
-}
-
-// Initial pie chart rendering
-renderChart(initialCategoryLabels, initialCategoryData);
-
-// Category dropdown filter
-document.getElementById('categoryDropdown').addEventListener('change', function() {
-  const selectedFilter = this.value;
-
-  console.log("Category filter selected:", selectedFilter);
-
-  fetch(`/admin/dashboard?filter=${selectedFilter}`, {
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json',
+      });
     }
-  })
-    .then(response => response.json())
-    .then(data => {
-      console.log("Received category data:", data);
-      renderChart(data.categoryLabels, data.categoryData);
-    })
-    .catch(error => console.error('Error fetching filtered data:', error));
-});
 
-// -------------------------------------------- Table Filter ------------------------------------------
-document.getElementById('filter').addEventListener('change', function() {
-  const filterValue = this.value;
+    // Initial render
+    renderSalesChart(categories, totalSalesData);
 
-  console.log("Table filter selected:", filterValue);
-
-  fetch(`/admin/dashboard?filter=${filterValue}`, {
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json',
-    }
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log("Received table data:", data);
-      updateTable(data.topSellingProducts);
-    })
-    .catch(error => console.error('Error fetching data:', error));
-});
-
-function updateTable(products) {
-  const tbody = document.querySelector('tbody');
-
-  // Clear the existing rows
-  tbody.innerHTML = '';
-
-  if (products && products.length > 0) {
-    products.forEach(product => {
-      const row = `
-        <tr class="border-b border-gray-200 hover:bg-gray-50">
-          <td class="py-3 px-4 text-gray-600">${product._id.name}</td>
-          <td class="py-3 px-4 text-gray-600">${product.totalQuantitySold}</td>
-          <td class="py-3 px-4 text-gray-600">${product.totalRevenue.toFixed(2)}</td>
-          <td class="py-3 px-4 text-gray-600">${product._id.discount}%</td>
-        </tr>
-      `;
-      tbody.innerHTML += row;
+    // Filter event
+    document.getElementById('mainGraphData').addEventListener('change', function() {
+      fetch(`/admin/dashboard?filter=${this.value}`, {
+        headers: { 'Accept': 'application/json' }
+      })
+        .then(res => res.json())
+        .then(data => renderSalesChart(data.categories, data.totalSalesData))
+        .catch(err => console.error('Error:', err));
     });
-  } else {
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="4" class="py-4 px-4 text-gray-500 text-center">No products found for this filter</td>
-      </tr>
-    `;
-  }
-}
+
+    // ==================== DONUT CHART ====================
+    let donutChart = null;
+
+    function renderDonutChart(labels, data) {
+      const ctx = document.getElementById('donutChart').getContext('2d');
+      
+      if (donutChart) {
+        donutChart.destroy();
+      }
+
+      donutChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: data,
+            backgroundColor: [
+              '#1C64F2', '#16BDCA', '#9061F9', 
+              '#FBBF24', '#F472B6', '#34D399'
+            ],
+            borderColor: '#ffffff',
+            borderWidth: 2,
+            hoverOffset: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '65%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                font: { family: 'Inter, sans-serif', size: 11 },
+                color: '#374151',
+                padding: 15,
+                usePointStyle: true
+              }
+            },
+            tooltip: {
+              backgroundColor: '#1f2937',
+              titleFont: { family: 'Inter, sans-serif' },
+              bodyFont: { family: 'Inter, sans-serif' }
+            }
+          }
+        }
+      });
+    }
+
+    // Initial render
+    renderDonutChart(initialCategoryLabels, initialCategoryData);
+
+    // Filter event
+    document.getElementById('categoryDropdown').addEventListener('change', function() {
+      fetch(`/admin/dashboard?filter=${this.value}`, {
+        headers: { 'Accept': 'application/json' }
+      })
+        .then(res => res.json())
+        .then(data => renderDonutChart(data.categoryLabels, data.categoryData))
+        .catch(err => console.error('Error:', err));
+    });
+
+    // ==================== TABLE FILTER ====================
+    document.getElementById('filter').addEventListener('change', function() {
+      fetch(`/admin/dashboard?filter=${this.value}`, {
+        headers: { 'Accept': 'application/json' }
+      })
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.querySelector('tbody');
+          tbody.innerHTML = '';
+          
+          if (data.topSellingProducts?.length > 0) {
+            data.topSellingProducts.forEach(p => {
+              tbody.innerHTML += `
+                <tr class="border-b border-gray-200 hover:bg-gray-50">
+                  <td class="py-3 px-4 text-gray-600">${p._id.name}</td>
+                  <td class="py-3 px-4 text-gray-600">${p.totalQuantitySold}</td>
+                  <td class="py-3 px-4 text-gray-600">${p.totalRevenue.toFixed(2)}</td>
+                  <td class="py-3 px-4 text-gray-600">${p._id.discount}%</td>
+                </tr>`;
+            });
+          } else {
+            tbody.innerHTML = '<tr><td colspan="4" class="py-4 px-4 text-gray-500 text-center">No products found</td></tr>';
+          }
+        })
+        .catch(err => console.error('Error:', err));
+    });
   </script>
 
   <%- include('../layouts/footer.ejs') %>
