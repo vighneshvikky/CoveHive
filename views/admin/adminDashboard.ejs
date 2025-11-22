@@ -1,92 +1,315 @@
 <%- include('../layouts/header.ejs') %> <%- include('../layouts/sidebar.ejs') %>
-<div class="ml-[250px] p-6">
-  <div style="display: flex; min-height: 100vh">
-    <!-- Main Content -->
-    <div style="flex-grow: 1; background-color: black; color: #ffffff">
-      <!-- Top section -->
-      <div class="grid grid-cols-4 gap-4 p-4 bg-white">
-        <div class="p-6 bg-white shadow rounded-lg border border-gray-200">
-          <div class="flex justify-between items-center mb-2">
-            <span class="text-2xl font-bold text-gray-800">₹ <%= (dailyOrder[0] && dailyOrder[0].totalSales ? dailyOrder[0].totalSales.toFixed() : "0.00") %></span>
+
+<style>
+  /* ========== Dashboard Styles (No Tailwind Required) ========== */
+  * { box-sizing: border-box; }
+  
+  .dashboard-wrapper {
+    margin-left: 250px;
+    padding: 24px;
+  }
+  .dashboard-flex {
+    display: flex;
+    min-height: 100vh;
+  }
+  .dashboard-main {
+    flex-grow: 1;
+    background-color: #111827;
+    color: #ffffff;
+  }
+  
+  /* Stats Cards Grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 16px;
+    background-color: #ffffff;
+  }
+  @media (max-width: 1024px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .stats-grid { grid-template-columns: 1fr; }
+  }
+  .stat-card {
+    padding: 24px;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+  }
+  .stat-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1f2937;
+  }
+  .stat-label {
+    font-size: 14px;
+    color: #6b7280;
+  }
+  
+  /* Charts Grid */
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 8px;
+    margin: 8px;
+  }
+  @media (max-width: 1024px) {
+    .charts-grid { grid-template-columns: 1fr; }
+  }
+  .chart-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    padding: 16px 24px;
+  }
+  .chart-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .chart-title {
+    font-size: 30px;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1;
+    padding-bottom: 8px;
+  }
+  .chart-subtitle {
+    font-size: 16px;
+    font-weight: 400;
+    color: #22c55e;
+  }
+  .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111827;
+  }
+  .chart-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    margin-top: 20px;
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  /* Form Elements */
+  .filter-select {
+    display: block;
+    padding: 8px 16px;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    width: 176px;
+    color: #374151;
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .filter-select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+  
+  /* Links */
+  .link-btn {
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 8px;
+    color: #2563eb;
+    padding: 8px 12px;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .link-btn:hover {
+    color: #1d4ed8;
+    background-color: #f3f4f6;
+  }
+  .link-btn svg {
+    width: 10px;
+    height: 10px;
+  }
+  
+  /* Table Section */
+  .table-section {
+    max-width: 100%;
+    padding: 32px 16px;
+  }
+  .table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .table-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #f3f4f6;
+  }
+  .filter-group {
+    width: 256px;
+  }
+  .filter-label {
+    display: block;
+    margin-bottom: 4px;
+    color: #d1d5db;
+    font-size: 14px;
+  }
+  .filter-select-dark {
+    width: 100%;
+    padding: 8px 12px;
+    background-color: #1f2937;
+    color: #d1d5db;
+    border: 1px solid #4b5563;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  .table-container {
+    overflow-x: auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .data-table {
+    width: 100%;
+    min-width: 600px;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-collapse: collapse;
+  }
+  .data-table thead {
+    background-color: #f9fafb;
+  }
+  .data-table th {
+    padding: 12px 16px;
+    text-align: left;
+    color: #374151;
+    font-weight: 600;
+    font-size: 14px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .data-table td {
+    padding: 12px 16px;
+    color: #6b7280;
+    font-size: 14px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .data-table tbody tr:hover {
+    background-color: #f9fafb;
+  }
+  .data-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+  .text-center {
+    text-align: center;
+  }
+  
+  /* Donut chart container */
+  .donut-section {
+    padding: 12px 0;
+    margin-bottom: 12px;
+  }
+  .donut-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+  }
+</style>
+
+<div class="dashboard-wrapper">
+  <div class="dashboard-flex">
+    <div class="dashboard-main">
+      
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-value">₹ <%= (dailyOrder[0] && dailyOrder[0].totalSales ? dailyOrder[0].totalSales.toFixed() : "0.00") %></span>
           </div>
-          <p class="text-sm text-gray-600">Total Daily Sales</p>
+          <p class="stat-label">Total Daily Sales</p>
         </div>
-        <div class="p-6 bg-white shadow rounded-lg border border-gray-200">
-          <div class="flex justify-between items-center mb-2">
-            <span class="text-2xl font-bold text-gray-800"><%= (dailyOrder[0] && dailyOrder[0].totalDailyOrders ? dailyOrder[0].totalDailyOrders : "0") %></span>
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-value"><%= (dailyOrder[0] && dailyOrder[0].totalDailyOrders ? dailyOrder[0].totalDailyOrders : "0") %></span>
           </div>
-          <p class="text-sm text-gray-600">Total Daily Orders</p>
+          <p class="stat-label">Total Daily Orders</p>
         </div>
-        <div class="p-6 bg-white shadow rounded-lg border border-gray-200">
-          <div class="flex justify-between items-center mb-2">
-            <span class="text-2xl font-bold text-gray-800"><%= totalUsers %></span>
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-value"><%= totalUsers %></span>
           </div>
-          <p class="text-sm text-gray-600">Total Customers</p>
+          <p class="stat-label">Total Customers</p>
         </div>
       </div>
 
-      <!-- Graph Section -->
-      <div id="graph-data" class="grid grid-cols-4 mx-2 gap-2">
+      <!-- Charts Section -->
+      <div class="charts-grid">
         <!-- Main Area Chart -->
-        <div class="col-span-3 max-w-full w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
-          <div class="flex justify-between mb-5">
+        <div class="chart-card">
+          <div class="chart-header">
             <div>
-              <h5 class="leading-none text-3xl font-bold text-gray-900 dark:text-white pb-2">₹ <%= finalTotalSaleAmount %></h5>
-              <p class="text-base font-normal text-green-500 dark:text-green-400">Total Sales</p>
+              <h5 class="chart-title">₹ <%= finalTotalSaleAmount %></h5>
+              <p class="chart-subtitle">Total Sales</p>
             </div>
           </div>
-          <!-- FIXED: Set explicit height on canvas parent AND canvas -->
-          <div style="position: relative; height: 350px; width: 100%;">
-            <canvas id="salesChart" style="height: 350px !important; width: 100% !important;"></canvas>
-          </div>
-          <div class="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between mt-5">
-            <div class="flex justify-between items-center pt-5">
-              <select id="mainGraphData" class="block px-4 py-2 rounded-lg shadow w-44 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700">
-                <option value="day">Day</option>
-                <option value="week">Week</option>
-                <option value="month">Month</option>
-                <option value="year">Year</option>
-              </select>
-              <a href="/admin/salesReport" class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700 dark:hover:text-blue-500 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2">
-                Sales Report
-                <svg class="w-2.5 h-2.5 ms-1.5 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-                </svg>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Donut Chart -->
-        <div class="col-span-1 max-w-full w-full bg-white rounded-lg shadow dark:bg-gray-800 py-5 md:p-6">
-          <div class="flex justify-between mb-3">
-            <div class="flex items-center">
-              <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1">Category Performance</h5>
-            </div>
-          </div>
-          <!-- FIXED: Set explicit height on canvas parent AND canvas -->
-          <div class="py-3 mb-3" style="position: relative; height: 280px; width: 100%;">
-            <canvas id="donutChart" style="height: 280px !important; width: 100% !important;"></canvas>
-          </div>
-          <div class="flex justify-between items-center pt-5">
-            <select id="categoryDropdown" class="block px-4 py-2 rounded-lg shadow w-44 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700">
+          <div id="data-labels-chart"></div>
+          <div class="chart-footer">
+            <select id="mainGraphData" class="filter-select">
               <option value="day">Day</option>
               <option value="week">Week</option>
               <option value="month">Month</option>
               <option value="year">Year</option>
             </select>
-            <a href="#" class="uppercase text-sm font-semibold text-blue-600 hover:text-blue-700 dark:hover:text-blue-500 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded-lg">Filter</a>
+            <a href="/admin/salesReport" class="link-btn">
+              Sales Report
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Donut Chart -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h5 class="section-title">Category Performance</h5>
+          </div>
+          <div class="donut-section" id="donut-chart"></div>
+          <div class="donut-footer">
+            <select id="categoryDropdown" class="filter-select">
+              <option value="day">Day</option>
+              <option value="week">Week</option>
+              <option value="month">Month</option>
+              <option value="year">Year</option>
+            </select>
           </div>
         </div>
       </div>
 
       <!-- Table Section -->
-      <div class="container mx-auto px-4 py-8">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-2xl font-semibold text-gray-100">Top Selling Products</h2>
-          <div class="relative inline-block w-64">
-            <label for="filter" class="block mb-1 text-gray-300">Filter By:</label>
-            <select id="filter" class="w-full px-3 py-2 bg-gray-800 text-gray-300 border border-gray-600 rounded-md">
+      <div class="table-section">
+        <div class="table-header">
+          <h2 class="table-title">Top Selling Products</h2>
+          <div class="filter-group">
+            <label for="filter" class="filter-label">Filter By:</label>
+            <select id="filter" class="filter-select-dark">
               <option value="day">Day</option>
               <option value="week">Week</option>
               <option value="month">Month</option>
@@ -94,334 +317,282 @@
             </select>
           </div>
         </div>
-        <div class="overflow-x-auto bg-white rounded-lg shadow">
-          <table class="min-w-full bg-white border border-gray-200">
-            <thead class="bg-gray-50 border-b border-gray-200">
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
               <tr>
-                <th class="py-3 px-4 text-left text-gray-700 font-semibold">Product Name</th>
-                <th class="py-3 px-4 text-left text-gray-700 font-semibold">Total Quantity Sold</th>
-                <th class="py-3 px-4 text-left text-gray-700 font-semibold">Revenue</th>
-                <th class="py-3 px-4 text-left text-gray-700 font-semibold">Discount (%)</th>
+                <th>Product Name</th>
+                <th>Total Quantity Sold</th>
+                <th>Revenue</th>
+                <th>Discount (%)</th>
               </tr>
             </thead>
             <tbody>
               <% if(topSellingProducts.length > 0 ){ %>
-                <% topSellingProducts.forEach(product=>{ %>
-                <tr class="border-b border-gray-200 hover:bg-gray-50">
-                  <td class="py-3 px-4 text-gray-600"><%= product._id.name %></td>
-                  <td class="py-3 px-4 text-gray-600"><%= product.totalQuantitySold %></td>
-                  <td class="py-3 px-4 text-gray-600"><%= product.totalRevenue.toFixed(2) %></td>
-                  <td class="py-3 px-4 text-gray-600"><%= product._id.discount %>%</td>
+                <% topSellingProducts.forEach(product => { %>
+                <tr>
+                  <td><%= product._id.name %></td>
+                  <td><%= product.totalQuantitySold %></td>
+                  <td>₹ <%= product.totalRevenue.toFixed(2) %></td>
+                  <td><%= product._id.discount %>%</td>
                 </tr>
                 <% }) %>
               <% } else { %>
               <tr>
-                <td colspan="4" class="py-4 px-4 text-gray-500 text-center">No product found</td>
+                <td colspan="4" class="text-center">No product found</td>
               </tr>
               <% } %>
             </tbody>
           </table>
         </div>
       </div>
+
     </div>
   </div>
 
-  <!-- Chart.js CDN - Use specific version -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- ApexCharts CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
   <script>
     // Data from server
-    var categories = <%- categories %>;
-    var totalSalesData = <%- totalSalesData %>;
-    var totalProfitData = <%- totalProfitData %>;
-    var initialCategoryLabels = <%- categoryLabels %>;
-    var initialCategoryData = <%- categoryData %>;
+    const categories = <%- categories %>;
+    const totalSalesData = <%- totalSalesData %>;
+    const totalProfitData = <%- totalProfitData %>;
+    const initialCategoryLabels = <%- categoryLabels %>;
+    const initialCategoryData = <%- categoryData %>;
 
     console.log("Initial categories:", categories);
     console.log("Initial sales data:", totalSalesData);
 
-    // ==================== SALES LINE/AREA CHART ====================
-    var salesChart = null;
+    // ==================== AREA CHART ====================
+    let chartMain;
 
-    function renderSalesChart(labels, salesData) {
-      var canvas = document.getElementById('salesChart');
-      var ctx = canvas.getContext('2d');
-      
-      // Destroy existing chart if exists
-      if (salesChart) {
-        salesChart.destroy();
-        salesChart = null;
-      }
-
-      // Create gradient
-      var gradient = ctx.createLinearGradient(0, 0, 0, 350);
-      gradient.addColorStop(0, 'rgba(26, 86, 219, 0.5)');
-      gradient.addColorStop(1, 'rgba(26, 86, 219, 0.0)');
-
-      // FIXED: Use requestAnimationFrame to ensure DOM is ready
-      requestAnimationFrame(function() {
-        salesChart = new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: labels,
-            datasets: [{
-              label: 'Total Sales',
-              data: salesData,
-              borderColor: '#1A56DB',
-              backgroundColor: gradient,
-              borderWidth: 3,
-              fill: true,
-              tension: 0.4,
-              pointBackgroundColor: '#1A56DB',
-              pointBorderColor: '#ffffff',
-              pointBorderWidth: 2,
-              pointRadius: 5,
-              pointHoverRadius: 8,
-              pointHoverBackgroundColor: '#1A56DB',
-              pointHoverBorderColor: '#ffffff',
-              pointHoverBorderWidth: 3
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            // ANIMATION SETTINGS - Simplified for production
-            animation: {
-              duration: 1500,
-              easing: 'easeOutQuart',
-              onProgress: function(animation) {
-                // Debug: uncomment to see animation progress
-                // console.log('Animation progress:', animation.currentStep / animation.numSteps);
-              },
-              onComplete: function() {
-                console.log('Sales chart animation complete');
-              }
+    function renderGraph(categories, salesData, profitData) {
+      const options = {
+        series: [{
+          name: "Total Sales",
+          data: salesData,
+          color: "#1A56DB",
+        }],
+        chart: {
+          height: 350,
+          type: "area",
+          fontFamily: "Inter, sans-serif",
+          toolbar: { show: false },
+          animations: {
+            enabled: true,
+            easing: 'easeinout',
+            speed: 1000,
+            animateGradually: {
+              enabled: true,
+              delay: 150
             },
-            interaction: {
-              mode: 'index',
-              intersect: false
-            },
-            plugins: {
-              legend: {
-                display: true,
-                position: 'top',
-                labels: {
-                  font: { family: 'Inter, sans-serif', size: 12, weight: '500' },
-                  color: '#374151',
-                  usePointStyle: true,
-                  pointStyle: 'circle',
-                  padding: 20
-                }
-              },
-              tooltip: {
-                enabled: true,
-                backgroundColor: 'rgba(17, 24, 39, 0.95)',
-                titleFont: { family: 'Inter, sans-serif', size: 14, weight: 'bold' },
-                bodyFont: { family: 'Inter, sans-serif', size: 13 },
-                padding: 12,
-                cornerRadius: 8,
-                displayColors: true,
-                callbacks: {
-                  label: function(context) {
-                    return '  Sales: ₹' + context.parsed.y.toFixed(2);
-                  }
-                }
-              }
-            },
-            scales: {
-              x: {
-                grid: { display: false },
-                ticks: {
-                  font: { size: 12, family: 'Inter, sans-serif' },
-                  color: '#6B7280'
-                }
-              },
-              y: {
-                beginAtZero: true,
-                grid: {
-                  color: 'rgba(156, 163, 175, 0.2)',
-                  drawBorder: false
-                },
-                ticks: {
-                  font: { size: 12, family: 'Inter, sans-serif' },
-                  color: '#6B7280',
-                  callback: function(value) {
-                    return '₹' + value;
-                  }
-                }
-              }
+            dynamicAnimation: {
+              enabled: true,
+              speed: 350
             }
           }
-        });
-      });
-    }
-
-    // ==================== DONUT CHART ====================
-    var donutChart = null;
-
-    function renderDonutChart(labels, data) {
-      var canvas = document.getElementById('donutChart');
-      var ctx = canvas.getContext('2d');
-      
-      if (donutChart) {
-        donutChart.destroy();
-        donutChart = null;
-      }
-
-      // FIXED: Use requestAnimationFrame to ensure DOM is ready
-      requestAnimationFrame(function() {
-        donutChart = new Chart(ctx, {
-          type: 'doughnut',
-          data: {
-            labels: labels,
-            datasets: [{
-              data: data,
-              backgroundColor: [
-                '#1C64F2',
-                '#16BDCA',
-                '#9061F9',
-                '#FBBF24',
-                '#F472B6',
-                '#34D399',
-                '#EF4444',
-                '#8B5CF6'
-              ],
-              borderColor: '#ffffff',
-              borderWidth: 3,
-              hoverOffset: 20,
-              hoverBorderColor: '#ffffff',
-              hoverBorderWidth: 4
-            }]
+        },
+        dataLabels: {
+          enabled: true,
+          style: {
+            fontSize: '12px',
+            fontWeight: 'bold',
+            colors: ['#ffffff']
           },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            cutout: '60%',
-            // ANIMATION SETTINGS - Simplified for production
-            animation: {
-              animateScale: true,
-              animateRotate: true,
-              duration: 1500,
-              easing: 'easeOutQuart',
-              onComplete: function() {
-                console.log('Donut chart animation complete');
-              }
-            },
-            plugins: {
-              legend: {
-                position: 'bottom',
-                labels: {
-                  font: { family: 'Inter, sans-serif', size: 11, weight: '500' },
-                  color: '#374151',
-                  padding: 15,
-                  usePointStyle: true,
-                  pointStyle: 'circle'
-                }
-              },
-              tooltip: {
-                enabled: true,
-                backgroundColor: 'rgba(17, 24, 39, 0.95)',
-                titleFont: { family: 'Inter, sans-serif', size: 14, weight: 'bold' },
-                bodyFont: { family: 'Inter, sans-serif', size: 13 },
-                padding: 12,
-                cornerRadius: 8,
-                displayColors: true,
-                callbacks: {
-                  label: function(context) {
-                    var total = context.dataset.data.reduce(function(a, b) { return a + b; }, 0);
-                    var percentage = ((context.parsed / total) * 100).toFixed(1);
-                    return '  ' + context.label + ': ' + context.parsed + ' (' + percentage + '%)';
-                  }
-                }
-              }
-            }
+          background: {
+            enabled: true,
+            foreColor: '#1A56DB',
+            borderRadius: 4,
+            padding: 4
+          },
+          formatter: function(val) {
+            return '₹' + val.toFixed(0);
           }
-        });
-      });
+        },
+        stroke: {
+          curve: 'smooth',
+          width: 3,
+        },
+        fill: {
+          type: "gradient",
+          gradient: {
+            shadeIntensity: 1,
+            opacityFrom: 0.6,
+            opacityTo: 0.1,
+            stops: [0, 90, 100],
+            colorStops: [
+              { offset: 0, color: "#1A56DB", opacity: 0.6 },
+              { offset: 100, color: "#1A56DB", opacity: 0.1 }
+            ]
+          },
+        },
+        xaxis: {
+          categories: categories,
+          labels: {
+            style: {
+              fontSize: '12px',
+              colors: '#6B7280',
+            },
+          },
+          axisBorder: { show: false },
+          axisTicks: { show: false },
+        },
+        yaxis: {
+          labels: {
+            formatter: (value) => '₹' + (value ? value.toFixed(0) : '0'),
+            style: {
+              fontSize: '12px',
+              colors: '#6B7280',
+            },
+          },
+        },
+        grid: {
+          borderColor: '#E5E7EB',
+          strokeDashArray: 4,
+          padding: { left: 16, right: 16 },
+        },
+        tooltip: {
+          enabled: true,
+          theme: "dark",
+          y: {
+            formatter: (value) => '₹' + (value ? value.toFixed(2) : '0.00')
+          }
+        },
+        legend: { show: true },
+        markers: {
+          size: 5,
+          colors: ['#1A56DB'],
+          strokeColors: '#fff',
+          strokeWidth: 2,
+          hover: { size: 7 }
+        }
+      };
+
+      if (chartMain) chartMain.destroy();
+      chartMain = new ApexCharts(document.getElementById("data-labels-chart"), options);
+      chartMain.render();
     }
 
-    // ==================== INITIALIZE CHARTS ON DOM READY ====================
-    // FIXED: Wait for DOM to be fully loaded and use setTimeout for extra safety
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initCharts);
-    } else {
-      initCharts();
-    }
+    // Initial render
+    renderGraph(categories, totalSalesData, totalProfitData);
 
-    function initCharts() {
-      // Small delay to ensure canvas is visible and has dimensions
-      setTimeout(function() {
-        console.log('Initializing charts...');
-        renderSalesChart(categories, totalSalesData);
-        renderDonutChart(initialCategoryLabels, initialCategoryData);
-      }, 100);
-    }
-
-    // ==================== FILTER EVENT LISTENERS ====================
+    // Filter listener
     document.getElementById('mainGraphData').addEventListener('change', function() {
-      var selectedFilter = this.value;
-      fetch('/admin/dashboard?filter=' + selectedFilter, {
-        method: 'GET',
+      fetch('/admin/dashboard?filter=' + this.value, {
         headers: { 'Accept': 'application/json' }
       })
-        .then(function(response) { return response.json(); })
-        .then(function(data) {
-          console.log("Received data:", data);
-          renderSalesChart(data.categories, data.totalSalesData);
+        .then(res => res.json())
+        .then(data => {
+          renderGraph(data.categories, data.totalSalesData, data.totalProfitData);
         })
-        .catch(function(error) { console.error('Error:', error); });
+        .catch(err => console.error('Error:', err));
     });
 
+    // ==================== DONUT CHART ====================
+    let chart;
+
+    function renderChart(labels, data) {
+      const chartOptions = {
+        series: data,
+        chart: {
+          height: 320,
+          type: 'donut',
+          animations: {
+            enabled: true,
+            easing: 'easeinout',
+            speed: 1000,
+            animateGradually: {
+              enabled: true,
+              delay: 150
+            }
+          }
+        },
+        colors: ['#1C64F2', '#16BDCA', '#9061F9', '#FBBF24', '#F472B6', '#34D399', '#EF4444', '#8B5CF6'],
+        labels: labels,
+        plotOptions: {
+          pie: {
+            donut: {
+              size: '65%',
+              labels: {
+                show: true,
+                total: {
+                  show: true,
+                  label: 'Total',
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  color: '#374151'
+                }
+              }
+            }
+          }
+        },
+        dataLabels: {
+          enabled: true,
+          style: { fontFamily: 'Inter, sans-serif', fontSize: '12px' },
+        },
+        legend: {
+          position: 'bottom',
+          fontFamily: 'Inter, sans-serif',
+          fontSize: '12px',
+          labels: { colors: '#374151' }
+        },
+        tooltip: {
+          enabled: true,
+          y: {
+            formatter: function(val) {
+              return val + ' units';
+            }
+          }
+        }
+      };
+
+      if (chart) chart.destroy();
+      chart = new ApexCharts(document.getElementById('donut-chart'), chartOptions);
+      chart.render();
+    }
+
+    // Initial render
+    renderChart(initialCategoryLabels, initialCategoryData);
+
+    // Filter listener
     document.getElementById('categoryDropdown').addEventListener('change', function() {
-      var selectedFilter = this.value;
-      fetch('/admin/dashboard?filter=' + selectedFilter, {
-        method: 'GET',
+      fetch('/admin/dashboard?filter=' + this.value, {
         headers: { 'Accept': 'application/json' }
       })
-        .then(function(response) { return response.json(); })
-        .then(function(data) {
-          console.log("Received category data:", data);
-          renderDonutChart(data.categoryLabels, data.categoryData);
+        .then(res => res.json())
+        .then(data => {
+          renderChart(data.categoryLabels, data.categoryData);
         })
-        .catch(function(error) { console.error('Error:', error); });
+        .catch(err => console.error('Error:', err));
     });
 
     // ==================== TABLE FILTER ====================
     document.getElementById('filter').addEventListener('change', function() {
-      var filterValue = this.value;
-      fetch('/admin/dashboard?filter=' + filterValue, {
-        method: 'GET',
+      fetch('/admin/dashboard?filter=' + this.value, {
         headers: { 'Accept': 'application/json' }
       })
-        .then(function(response) {
-          if (!response.ok) throw new Error("Network error");
-          return response.json();
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.querySelector('tbody');
+          tbody.innerHTML = '';
+
+          if (data.topSellingProducts && data.topSellingProducts.length > 0) {
+            data.topSellingProducts.forEach(product => {
+              tbody.innerHTML += `
+                <tr>
+                  <td>${product._id.name}</td>
+                  <td>${product.totalQuantitySold}</td>
+                  <td>₹ ${product.totalRevenue.toFixed(2)}</td>
+                  <td>${product._id.discount}%</td>
+                </tr>`;
+            });
+          } else {
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center">No products found for this filter</td></tr>';
+          }
         })
-        .then(function(data) {
-          console.log("Received table data:", data);
-          updateTable(data.topSellingProducts);
-        })
-        .catch(function(error) { console.error('Error:', error); });
+        .catch(err => console.error('Error:', err));
     });
-
-    function updateTable(products) {
-      var tbody = document.querySelector('tbody');
-      tbody.innerHTML = '';
-
-      if (products && products.length > 0) {
-        products.forEach(function(product) {
-          var row = '<tr class="border-b border-gray-200 hover:bg-gray-50">' +
-            '<td class="py-3 px-4 text-gray-600">' + product._id.name + '</td>' +
-            '<td class="py-3 px-4 text-gray-600">' + product.totalQuantitySold + '</td>' +
-            '<td class="py-3 px-4 text-gray-600">' + product.totalRevenue.toFixed(2) + '</td>' +
-            '<td class="py-3 px-4 text-gray-600">' + product._id.discount + '%</td>' +
-            '</tr>';
-          tbody.innerHTML += row;
-        });
-      } else {
-        tbody.innerHTML = '<tr><td colspan="4" class="py-4 px-4 text-gray-500 text-center">No products found for this filter</td></tr>';
-      }
-    }
   </script>
 
   <%- include('../layouts/footer.ejs') %>
