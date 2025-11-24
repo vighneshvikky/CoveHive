@@ -1,4 +1,8 @@
-<%- include('../layouts/header.ejs') %> <%- include('../layouts/sidebar.ejs') %>
+<%- include('../layouts/header.ejs') %>
+<%- include('../layouts/sidebar.ejs') %>
+
+<!-- Load ApexCharts FIRST in head -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.45.1/dist/apexcharts.min.js"></script>
 
 <style>
   /* ========== Dashboard Styles (No Tailwind Required) ========== */
@@ -275,7 +279,7 @@
               <option value="day">Day</option>
               <option value="week">Week</option>
               <option value="month">Month</option>
-              <option value="year">Year</option>
+              <option value="year" selected>Year</option>
             </select>
             <a href="/admin/salesReport" class="link-btn">
               Sales Report
@@ -297,7 +301,7 @@
               <option value="day">Day</option>
               <option value="week">Week</option>
               <option value="month">Month</option>
-              <option value="year">Year</option>
+              <option value="year" selected>Year</option>
             </select>
           </div>
         </div>
@@ -313,7 +317,7 @@
               <option value="day">Day</option>
               <option value="week">Week</option>
               <option value="month">Month</option>
-              <option value="year">Year</option>
+              <option value="year" selected>Year</option>
             </select>
           </div>
         </div>
@@ -350,134 +354,266 @@
     </div>
   </div>
 
-  <!-- ApexCharts CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-
   <script>
-    // Data from server
-    const categories = <%- categories %>;
-    const totalSalesData = <%- totalSalesData %>;
-    const totalProfitData = <%- totalProfitData %>;
-    const initialCategoryLabels = <%- categoryLabels %>;
-    const initialCategoryData = <%- categoryData %>;
+  // Data from server
+  const categories = <%- categories %>;
+  const totalSalesData = <%- totalSalesData %>;
+  const totalProfitData = <%- totalProfitData %>;
+  const initialCategoryLabels = <%- categoryLabels %>;
+  const initialCategoryData = <%- categoryData %>;
 
-    console.log("Initial categories:", categories);
-    console.log("Initial sales data:", totalSalesData);
+  console.log("Script loaded");
+  console.log("ApexCharts available:", typeof ApexCharts !== 'undefined');
+  console.log("Initial categories:", categories);
+  console.log("Initial sales data:", totalSalesData);
 
-    // ==================== AREA CHART ====================
-    let chartMain;
+  // ==================== AREA CHART ====================
+  let chartMain;
 
-    function renderGraph(categories, salesData, profitData) {
-      const options = {
-        series: [{
-          name: "Total Sales",
-          data: salesData,
-          color: "#1A56DB",
-        }],
-        chart: {
-          height: 350,
-          type: "area",
-          fontFamily: "Inter, sans-serif",
-          toolbar: { show: false },
-          animations: {
-            enabled: true,
-            easing: 'easeinout',
-            speed: 1000,
-            animateGradually: {
-              enabled: true,
-              delay: 150
-            },
-            dynamicAnimation: {
-              enabled: true,
-              speed: 350
-            }
-          }
-        },
-        dataLabels: {
-          enabled: true,
-          style: {
-            fontSize: '12px',
-            fontWeight: 'bold',
-            colors: ['#ffffff']
-          },
-          background: {
-            enabled: true,
-            foreColor: '#1A56DB',
-            borderRadius: 4,
-            padding: 4
-          },
-          formatter: function(val) {
-            return '₹' + val.toFixed(0);
-          }
-        },
-        stroke: {
-          curve: 'smooth',
-          width: 3,
-        },
-        fill: {
-          type: "gradient",
-          gradient: {
-            shadeIntensity: 1,
-            opacityFrom: 0.6,
-            opacityTo: 0.1,
-            stops: [0, 90, 100],
-            colorStops: [
-              { offset: 0, color: "#1A56DB", opacity: 0.6 },
-              { offset: 100, color: "#1A56DB", opacity: 0.1 }
-            ]
-          },
-        },
-        xaxis: {
-          categories: categories,
-          labels: {
-            style: {
-              fontSize: '12px',
-              colors: '#6B7280',
-            },
-          },
-          axisBorder: { show: false },
-          axisTicks: { show: false },
-        },
-        yaxis: {
-          labels: {
-            formatter: (value) => '₹' + (value ? value.toFixed(0) : '0'),
-            style: {
-              fontSize: '12px',
-              colors: '#6B7280',
-            },
-          },
-        },
-        grid: {
-          borderColor: '#E5E7EB',
-          strokeDashArray: 4,
-          padding: { left: 16, right: 16 },
-        },
-        tooltip: {
-          enabled: true,
-          theme: "dark",
-          y: {
-            formatter: (value) => '₹' + (value ? value.toFixed(2) : '0.00')
-          }
-        },
-        legend: { show: true },
-        markers: {
-          size: 5,
-          colors: ['#1A56DB'],
-          strokeColors: '#fff',
-          strokeWidth: 2,
-          hover: { size: 7 }
-        }
-      };
-
-      if (chartMain) chartMain.destroy();
-      chartMain = new ApexCharts(document.getElementById("data-labels-chart"), options);
-      chartMain.render();
+  function renderGraph(categories, salesData, profitData) {
+    const chartElement = document.getElementById("data-labels-chart");
+    if (!chartElement) {
+      console.error("Chart element not found!");
+      return;
     }
 
-    // Initial render
-    renderGraph(categories, totalSalesData, totalProfitData);
+    console.log("Rendering graph with data:", salesData);
 
-    // Filter listener
+    const options = {
+      series: [{
+        name: "Total Sales",
+        data: salesData,
+        color: "#1A56DB",
+      }],
+      chart: {
+        height: 350,
+        type: "area",
+        fontFamily: "Inter, sans-serif",
+        toolbar: { show: false },
+        animations: {
+          enabled: true,
+          easing: 'easeinout',
+          speed: 800,
+          animateGradually: {
+            enabled: true,
+            delay: 150
+          },
+          dynamicAnimation: {
+            enabled: true,
+            speed: 350
+          }
+        }
+      },
+      dataLabels: {
+        enabled: true,
+        style: {
+          fontSize: '12px',
+          fontWeight: 'bold',
+          colors: ['#ffffff']
+        },
+        background: {
+          enabled: true,
+          foreColor: '#1A56DB',
+          borderRadius: 4,
+          padding: 4,
+          opacity: 0.9
+        },
+        formatter: function(val) {
+          return '₹' + (val ? val.toFixed(0) : '0');
+        }
+      },
+      stroke: {
+        curve: 'smooth',
+        width: 3,
+      },
+      fill: {
+        type: "gradient",
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.6,
+          opacityTo: 0.1,
+          stops: [0, 90, 100],
+          colorStops: [
+            { offset: 0, color: "#1A56DB", opacity: 0.6 },
+            { offset: 100, color: "#1A56DB", opacity: 0.1 }
+          ]
+        },
+      },
+      xaxis: {
+        categories: categories,
+        labels: {
+          style: {
+            fontSize: '12px',
+            colors: '#6B7280',
+          },
+        },
+        axisBorder: { show: false },
+        axisTicks: { show: false },
+      },
+      yaxis: {
+        labels: {
+          formatter: (value) => '₹' + (value ? value.toFixed(0) : '0'),
+          style: {
+            fontSize: '12px',
+            colors: '#6B7280',
+          },
+        },
+      },
+      grid: {
+        borderColor: '#E5E7EB',
+        strokeDashArray: 4,
+        padding: { left: 16, right: 16 },
+      },
+      tooltip: {
+        enabled: true,
+        theme: "dark",
+        y: {
+          formatter: (value) => '₹' + (value ? value.toFixed(2) : '0.00')
+        }
+      },
+      legend: { show: true },
+      markers: {
+        size: 5,
+        colors: ['#1A56DB'],
+        strokeColors: '#fff',
+        strokeWidth: 2,
+        hover: { size: 7 }
+      }
+    };
+
+    // Destroy existing chart if present
+    if (chartMain) {
+      chartMain.destroy();
+    }
+    
+    // Create new chart
+    chartMain = new ApexCharts(chartElement, options);
+    chartMain.render();
+    console.log("Graph rendered successfully");
+  }
+
+  // ==================== DONUT CHART ====================
+  let chart;
+
+  function renderChart(labels, data) {
+    const chartElement = document.getElementById('donut-chart');
+    if (!chartElement) {
+      console.error("Donut chart element not found!");
+      return;
+    }
+
+    console.log("Rendering donut chart with data:", data);
+
+    const chartOptions = {
+      series: data,
+      chart: {
+        height: 320,
+        type: 'donut',
+        animations: {
+          enabled: true,
+          easing: 'easeinout',
+          speed: 800,
+          animateGradually: {
+            enabled: true,
+            delay: 150
+          },
+          dynamicAnimation: {
+            enabled: true,
+            speed: 350
+          }
+        }
+      },
+      colors: ['#1C64F2', '#16BDCA', '#9061F9', '#FBBF24', '#F472B6', '#34D399', '#EF4444', '#8B5CF6'],
+      labels: labels,
+      plotOptions: {
+        pie: {
+          donut: {
+            size: '65%',
+            labels: {
+              show: true,
+              total: {
+                show: true,
+                label: 'Total',
+                fontSize: '16px',
+                fontWeight: 600,
+                color: '#374151',
+                formatter: function(w) {
+                  return w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                }
+              }
+            }
+          }
+        }
+      },
+      dataLabels: {
+        enabled: true,
+        style: { fontFamily: 'Inter, sans-serif', fontSize: '12px' },
+      },
+      legend: {
+        position: 'bottom',
+        fontFamily: 'Inter, sans-serif',
+        fontSize: '12px',
+        labels: { colors: '#374151' }
+      },
+      tooltip: {
+        enabled: true,
+        y: {
+          formatter: function(val) {
+            return val + ' units';
+          }
+        }
+      }
+    };
+
+    // Destroy existing chart if present
+    if (chart) {
+      chart.destroy();
+    }
+    
+    // Create new chart
+    chart = new ApexCharts(chartElement, chartOptions);
+    chart.render();
+    console.log("Donut chart rendered successfully");
+  }
+
+  // ==================== INITIALIZATION ====================
+  function initializeCharts() {
+    console.log("Initializing charts...");
+    renderGraph(categories, totalSalesData, totalProfitData);
+    renderChart(initialCategoryLabels, initialCategoryData);
+  }
+
+  // Check if everything is ready
+  function checkAndInitialize() {
+    if (typeof ApexCharts !== 'undefined' && document.getElementById('data-labels-chart') && document.getElementById('donut-chart')) {
+      console.log("ApexCharts and DOM ready, initializing...");
+      initializeCharts();
+      return true;
+    }
+    return false;
+  }
+
+  // Try immediate initialization
+  if (!checkAndInitialize()) {
+    console.log("Waiting for ApexCharts or DOM...");
+    
+    // Fallback 1: DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log("DOMContentLoaded fired");
+      if (!checkAndInitialize()) {
+        // Fallback 2: window.load
+        window.addEventListener('load', function() {
+          console.log("Window load fired");
+          checkAndInitialize();
+        });
+      }
+    });
+  }
+
+  // ==================== EVENT LISTENERS ====================
+  // Wait for DOM to attach event listeners
+  document.addEventListener('DOMContentLoaded', function() {
+    // Main graph filter
     document.getElementById('mainGraphData').addEventListener('change', function() {
       fetch('/admin/dashboard?filter=' + this.value, {
         headers: { 'Accept': 'application/json' }
@@ -489,73 +625,7 @@
         .catch(err => console.error('Error:', err));
     });
 
-    // ==================== DONUT CHART ====================
-    let chart;
-
-    function renderChart(labels, data) {
-      const chartOptions = {
-        series: data,
-        chart: {
-          height: 320,
-          type: 'donut',
-          animations: {
-            enabled: true,
-            easing: 'easeinout',
-            speed: 1000,
-            animateGradually: {
-              enabled: true,
-              delay: 150
-            }
-          }
-        },
-        colors: ['#1C64F2', '#16BDCA', '#9061F9', '#FBBF24', '#F472B6', '#34D399', '#EF4444', '#8B5CF6'],
-        labels: labels,
-        plotOptions: {
-          pie: {
-            donut: {
-              size: '65%',
-              labels: {
-                show: true,
-                total: {
-                  show: true,
-                  label: 'Total',
-                  fontSize: '16px',
-                  fontWeight: 600,
-                  color: '#374151'
-                }
-              }
-            }
-          }
-        },
-        dataLabels: {
-          enabled: true,
-          style: { fontFamily: 'Inter, sans-serif', fontSize: '12px' },
-        },
-        legend: {
-          position: 'bottom',
-          fontFamily: 'Inter, sans-serif',
-          fontSize: '12px',
-          labels: { colors: '#374151' }
-        },
-        tooltip: {
-          enabled: true,
-          y: {
-            formatter: function(val) {
-              return val + ' units';
-            }
-          }
-        }
-      };
-
-      if (chart) chart.destroy();
-      chart = new ApexCharts(document.getElementById('donut-chart'), chartOptions);
-      chart.render();
-    }
-
-    // Initial render
-    renderChart(initialCategoryLabels, initialCategoryData);
-
-    // Filter listener
+    // Category dropdown filter
     document.getElementById('categoryDropdown').addEventListener('change', function() {
       fetch('/admin/dashboard?filter=' + this.value, {
         headers: { 'Accept': 'application/json' }
@@ -567,7 +637,7 @@
         .catch(err => console.error('Error:', err));
     });
 
-    // ==================== TABLE FILTER ====================
+    // Table filter
     document.getElementById('filter').addEventListener('change', function() {
       fetch('/admin/dashboard?filter=' + this.value, {
         headers: { 'Accept': 'application/json' }
@@ -593,7 +663,8 @@
         })
         .catch(err => console.error('Error:', err));
     });
+  });
   </script>
 
   <%- include('../layouts/footer.ejs') %>
-</div>
+</div

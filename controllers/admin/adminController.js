@@ -51,7 +51,6 @@ exports.loginAdmin = async (req, res) => {
     }
   }
         //---------------------- function for Date Filter   ----------------------
-
 function applyDateFilter(filter) {
   const now = new Date();
   let startDate;
@@ -78,8 +77,6 @@ function applyDateFilter(filter) {
     createdAt: { $gte: startDate }
   };
 }
-
-///----------------------------admin Dashboard-----------------
 
 exports.dashboard = async (req, res) => {
   try {
@@ -168,7 +165,7 @@ exports.dashboard = async (req, res) => {
       : "0.00";
 
     // Top selling products
-    const filter = req.query.filter || "day";
+    const filter = req.query.filter || "year"; // Changed default to "year"
     const dateFilter = applyDateFilter(filter);
 
     console.log("data filter ", filter);
@@ -215,10 +212,10 @@ exports.dashboard = async (req, res) => {
 
     console.log("Product data: ", productData);
 
-    // Category performance
-    const categoryFilter = req.query.filter || "day";
+    // Category performance - FIXED: Use same filter as other sections
+    const categoryFilter = req.query.filter || "year"; // Changed default to "year"
     const CategoryDateFilter = applyDateFilter(categoryFilter);
-    console.log(`categoryDateFilter = ${CategoryDateFilter}`);
+    console.log(`categoryDateFilter = ${JSON.stringify(CategoryDateFilter)}`);
 
     const categoryPerfomance = await Order.aggregate([
       {
@@ -271,15 +268,21 @@ exports.dashboard = async (req, res) => {
     ]);
 
     console.log("categoryPerfomance:", JSON.stringify(categoryPerfomance, null, 2));
-    const categoryLabels = categoryPerfomance.map((item) => item.category);
-    const categoryData = categoryPerfomance.map(
-      (item) => item.totalQuantitySold
-    );
+    
+    // FIXED: Handle empty category data properly
+    const categoryLabels = categoryPerfomance.length > 0 
+      ? categoryPerfomance.map((item) => item.category)
+      : ["No Data"];
+    
+    const categoryData = categoryPerfomance.length > 0
+      ? categoryPerfomance.map((item) => item.totalQuantitySold)
+      : [0];
 
-    console.log(`cartegoryData = ${categoryData}`);
+    console.log(`categoryLabels = ${categoryLabels}`);
+    console.log(`categoryData = ${categoryData}`);
 
     // Weekly/filtered dashboard data
-    const filterMain = req.query.filter || "week";
+    const filterMain = req.query.filter || "year"; // Changed default to "year"
     const dateFilterMain = applyDateFilter(filterMain);
 
     const order = await Order.aggregate([
@@ -303,9 +306,18 @@ exports.dashboard = async (req, res) => {
       },
     ]);
 
-    const categories = order.map((item) => `Day ${item._id}`);
-    const totalSalesData = order.map((item) => parseFloat(item.totalDailySales.toFixed(2)));
-    const totalProfitData = order.map((item) => parseFloat(item.totalDailyProfit.toFixed(2)));
+    // FIXED: Handle empty order data
+    const categories = order.length > 0
+      ? order.map((item) => `Day ${item._id}`)
+      : ["No Data"];
+    
+    const totalSalesData = order.length > 0
+      ? order.map((item) => parseFloat(item.totalDailySales.toFixed(2)))
+      : [0];
+    
+    const totalProfitData = order.length > 0
+      ? order.map((item) => parseFloat(item.totalDailyProfit.toFixed(2)))
+      : [0];
 
     console.log("category : ", categories);
     console.log("totalSalesData : ", totalSalesData);
@@ -329,8 +341,8 @@ exports.dashboard = async (req, res) => {
       });
     }
 
-    console.log(`categoryLabels = ${categoryLabels}`);
-    console.log(`categoryData = ${categoryData}`);
+    console.log(`Final categoryLabels sent to view = ${categoryLabels}`);
+    console.log(`Final categoryData sent to view = ${categoryData}`);
 
     res.render('admin/adminDashboard', {
       dailyOrder,
@@ -349,9 +361,6 @@ exports.dashboard = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 }
-
-
-
 
 exports.dashboardFilter = async(req,res) =>{
   try {
