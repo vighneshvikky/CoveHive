@@ -1,280 +1,323 @@
+<% if(user){ %> <%- include('../layouts/userHeader.ejs') %> <%}else{%> <%-
+include('../layouts/landingNav.ejs') %> <%} %>
 
-<% if(user){ %>
-    <%- include('../layouts/userHeader.ejs') %>
-  <%}else{%>
-    <%- include('../layouts/landingNav.ejs') %>
-  <%} %>
+<div
+  class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6 md:p-8"
+>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+  />
+  <h2 class="text-2xl font-bold text-gray-800 mb-4">Your Cart</h2>
 
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6 md:p-8 ">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <h2 class="text-2xl font-bold text-gray-800 mb-4">Your Cart</h2>
+  <!-- Add SweetAlert2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Add SweetAlert2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- SweetAlert message for exceeding stock or out of stock -->
+  <% if (typeof alertMessage !== 'undefined' && alertMessage !== '') { %>
+  <script>
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "<%= alertMessage %>",
+    });
+  </script>
+  <% } %>
 
-    <!-- SweetAlert message for exceeding stock or out of stock -->
-    <% if (typeof alertMessage !== 'undefined' && alertMessage !== '') { %>
-        <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: '<%= alertMessage %>',
-            });
-        </script>
-    <% } %>
+  <!-- If there are items in the cart -->
+  <% if (cart&&cart.items.length > 0) { %>
+  <table class="min-w-full table-auto border border-gray-300">
+    <thead class="bg-gray-200">
+      <tr>
+        <th class="border border-gray-300 p-2">Image</th>
+        <th class="border border-gray-300 p-2">Product</th>
+        <th class="border border-gray-300 p-2">Price</th>
+        <th class="border border-gray-300 p-2">Quantity</th>
+        <th class="border border-gray-300 p-2">Total</th>
+        <th class="border border-gray-300 p-2">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% cart.items.forEach(item => { %>
+      <tr class="border-b border-gray-200">
+        <td class="border border-gray-300 p-2">
+          <img
+            src="/uploads/<%= item.productImage %>"
+            alt="Product Image"
+            class="w-20 h-20 object-cover"
+          />
+        </td>
+        <td class="border border-gray-300 p-2"><%= item.productId.name %></td>
+        <!-- Product name -->
+        <td class="border border-gray-300 p-2">
+          <i class="fa-solid fa-indian-rupee-sign"></i> <%
+          if(item.productId.discount > 0) { %> <% const discountAmount =
+          (item.productId.price * item.productId.discount) / 100; %> <% const
+          discountedPrice = item.productId.price - discountAmount; %> <%=
+          discountedPrice.toFixed(2) %>
+          <!-- Output the discounted price -->
+          <% } else { %> <%= item.productId.price.toFixed(2) %> <% } %>
+        </td>
+        <!-- Product price -->
+        <td class="border border-gray-300 p-2">
+          <!-- Buttons to update quantity -->
+          <form
+            class="update-quantity-form"
+            data-product-id="<%= item.productId._id %>"
+          >
+            <div class="input-group" style="display: flex; align-items: center">
+              <!-- Decrement button -->
+              <button
+                type="button"
+                class="btn decrement-quantity"
+                style="
+                  background-color: #14213d; /* Brighter green */
+                  color: white;
+                  font-size: 18px;
+                  border: none;
+                  padding: 8px 12px;
+                  cursor: pointer;
+                  border-radius: 5px;
+                  margin-right: 5px;
+                  transition: background-color 0.3s;
+                "
+                data-action="decrement"
+              >
+                -
+              </button>
 
-    <!-- If there are items in the cart -->
-    <% if (cart&&cart.items.length > 0) { %>
-        <table class="min-w-full table-auto border border-gray-300">
-            <thead class="bg-gray-200">
-                <tr>
-                    <th class="border border-gray-300 p-2">Image</th>
-                    <th class="border border-gray-300 p-2">Product</th>
-                    <th class="border border-gray-300 p-2">Price</th>
-                    <th class="border border-gray-300 p-2">Quantity</th>
-                    <th class="border border-gray-300 p-2">Total</th>
-                    <th class="border border-gray-300 p-2">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% cart.items.forEach(item => { %>
-                    <tr class="border-b border-gray-200">
-                        <td class="border border-gray-300 p-2">
-                            <img src="/uploads/<%= item.productImage %>" alt="Product Image" class="w-20 h-20 object-cover" />
-                        </td>
-                        <td class="border border-gray-300 p-2"><%= item.productId.name %></td> <!-- Product name -->
-                        <td class="border border-gray-300 p-2">  <i class="fa-solid fa-indian-rupee-sign"></i>
-                            <% if(item.productId.discount > 0) { %>
-                                <% const discountAmount = (item.productId.price * item.productId.discount) / 100; %>  
-                                <% const discountedPrice = item.productId.price - discountAmount; %>
-                                <%= discountedPrice.toFixed(2) %> <!-- Output the discounted price -->
-                            <% } else { %>
-                         <%= item.productId.price.toFixed(2) %>
-                            <% } %>
-                        </td> <!-- Product price -->
-                        <td class="border border-gray-300 p-2">
-                            <!-- Buttons to update quantity -->
-                            <form class="update-quantity-form" data-product-id="<%= item.productId._id %>">
-                                <div class="input-group" style="display: flex; align-items: center;">
-                                    <!-- Decrement button -->
-                                    <button type="button" class="btn decrement-quantity" 
-                                        style="
-                                            background-color: #14213d; /* Brighter green */
-                                            color: white; 
-                                            font-size: 18px; 
-                                            border: none; 
-                                            padding: 8px 12px; 
-                                            cursor: pointer; 
-                                            border-radius: 5px;
-                                            margin-right: 5px;
-                                            transition: background-color 0.3s;
-                                        " 
-                                        data-action="decrement">-</button>
-                            
-                                    <!-- Display current quantity -->
-                                    <input type="text" name="productCount" 
-                                        value="<%= item.productCount %>" 
-                                        readonly 
-                                        class="form-control text-center product-count" 
-                                        style="
-                                            width: 50px; 
-                                            text-align: center; 
-                                            border: 1px solid #ccc; 
-                                            border-radius: 5px;
-                                        "/>
-                            
-                                    <!-- Increment button -->
-                                    <button type="button" class="btn increment-quantity" 
-                                        style="
-                                            background-color: #14213d; /* Brighter green */
-                                            color: white; 
-                                            font-size: 18px; 
-                                            border: none; 
-                                            padding: 8px 12px; 
-                                            cursor: pointer; 
-                                            border-radius: 5px;
-                                            margin-left: 5px;
-                                            transition: background-color 0.3s;
-                                        " 
-                                        data-action="increment">+</button>
-                                </div>
-                            </form>
-                            
-                            
+              <!-- Display current quantity -->
+              <input
+                type="text"
+                name="productCount"
+                value="<%= item.productCount %>"
+                readonly
+                class="form-control text-center product-count"
+                style="
+                  width: 50px;
+                  text-align: center;
+                  border: 1px solid #ccc;
+                  border-radius: 5px;
+                "
+              />
 
-                        </td>
-                        <td class="border border-gray-300 p-2"><i class="fa-solid fa-indian-rupee-sign"></i><span class="item-total" data-price="<%= item.productDiscountPrice %>"><%= (item.
-productDiscountPrice * item.productCount).toFixed(2) %></span></td> <!-- Total for this product -->
-                        <td class="border border-gray-300 p-2">
-                            <!-- Button to remove item from cart -->
-                            <!-- <a href="/cart/remove/<%= item.productId._id %>" class="btn bg-red-500 text-white hover:bg-red-600 rounded p-2">Remove</a> -->
-                            <a href="#" class="btn btn-danger remove-item-btn" 
-    data-url="/cart/remove/<%= item.productId._id %>" 
-    style="
-        background-color: #dc3545; /* Bootstrap red 'danger' color */
-        color: white;
-        padding: 10px 20px;
-        text-decoration: none;
-        font-size: 16px;
-        border-radius: 5px;
-        border: none;
-        transition: background-color 0.3s ease;
-        display: inline-block;
-    ">
-    Remove
-</a>    
-                        </td>
-                    </tr>
-                <% }); %>
-            </tbody>
-        </table>
+              <!-- Increment button -->
+              <button
+                type="button"
+                class="btn increment-quantity"
+                style="
+                  background-color: #14213d; /* Brighter green */
+                  color: white;
+                  font-size: 18px;
+                  border: none;
+                  padding: 8px 12px;
+                  cursor: pointer;
+                  border-radius: 5px;
+                  margin-left: 5px;
+                  transition: background-color 0.3s;
+                "
+                data-action="increment"
+              >
+                +
+              </button>
+            </div>
+          </form>
+        </td>
+        <td class="border border-gray-300 p-2">
+          <i class="fa-solid fa-indian-rupee-sign"></i
+          ><span
+            class="item-total"
+            data-price="<%= item.productDiscountPrice %>"
+            ><%= (item. productDiscountPrice * item.productCount).toFixed(2)
+            %></span
+          >
+        </td>
+        <!-- Total for this product -->
+        <td class="border border-gray-300 p-2">
+          <!-- Button to remove item from cart -->
+          <!-- <a href="/cart/remove/<%= item.productId._id %>" class="btn bg-red-500 text-white hover:bg-red-600 rounded p-2">Remove</a> -->
+          <a
+            href="#"
+            class="btn btn-danger remove-item-btn"
+            data-url="/cart/remove/<%= item.productId._id %>"
+            style="
+              background-color: #dc3545; /* Bootstrap red 'danger' color */
+              color: white;
+              padding: 10px 20px;
+              text-decoration: none;
+              font-size: 16px;
+              border-radius: 5px;
+              border: none;
+              transition: background-color 0.3s ease;
+              display: inline-block;
+            "
+          >
+            Remove
+          </a>
+        </td>
+      </tr>
+      <% }); %>
+    </tbody>
+  </table>
 
-        <!-- Calculate and display the total cart price -->
-        <h4 id="cart-total" class="text-xl font-semibold mt-4">Total Amount: <i class="fa-solid fa-indian-rupee-sign"></i><%= cart.items.reduce((total, item) => total + (item.productDiscountPrice * item.productCount), 0).toFixed(2) %></h4>
-    
-        <!-- Button to proceed to checkout -->
-       <button id="checkoutButton" class="btn bg-green-500 text-white hover:bg-green-600 rounded p-2 mt-4 inline-block">
-        Proceed to Checkout
-    </button>
-         <!-- <a href="/checkout"><button>proceed to checkout</button></a> -->
+  <!-- Calculate and display the total cart price -->
+  <h4 id="cart-total" class="text-xl font-semibold mt-4">
+    Total Amount: <i class="fa-solid fa-indian-rupee-sign"></i><%=
+    cart.items.reduce((total, item) => total + (item.productDiscountPrice *
+    item.productCount), 0).toFixed(2) %>
+  </h4>
 
-    <% } else { %>
-        <!-- Message when cart is empty -->
-        <p class="text-center text-4xl text-gray-600 py-4 font-extrabold">Your cart is empty.</p>
-    <% } %>
+  <!-- Button to proceed to checkout -->
+  <button
+    id="checkoutButton"
+    class="btn bg-green-500 text-white hover:bg-green-600 rounded p-2 mt-4 inline-block"
+  >
+    Proceed to Checkout
+  </button>
+  <!-- <a href="/checkout"><button>proceed to checkout</button></a> -->
+
+  <% } else { %>
+  <!-- Message when cart is empty -->
+  <p class="text-center text-4xl text-gray-600 py-4 font-extrabold">
+    Your cart is empty.
+  </p>
+  <% } %>
 </div>
 
-<script> 
-
-  document.getElementById('checkoutButton').addEventListener('click',async() =>{
-    try {
-        const response = await fetch('/checkout/validate',{
-            method:'Get',
-            headers:{
-                'Content-Type':'application/json',
-            }
+<script>
+  document
+    .getElementById("checkoutButton")
+    .addEventListener("click", async () => {
+      try {
+        const response = await fetch("/checkout/validate", {
+          method: "Get",
+          headers: {
+            "Content-Type": "application/json",
+          },
         });
-const data = await response.json();
-if(data.success){
-    window.location.href = '/checkout'
-}else{
-    Swal.fire({
-                    icon: 'error',
-                    title: 'Checkout Error',
-                    text: data.message, // Show the error message from the backend
-                });
-}
-    } catch (error) {
-        console.error('Error:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Unexpected Error',
-                text: 'An unexpected error occurred. Please try again later.',
-            });
-    }
-  })
-    // Handle increment and decrement button clicks
-    document.querySelectorAll('.increment-quantity, .decrement-quantity').forEach(button => {
-        button.addEventListener('click', function() {
-            const form = this.closest('.update-quantity-form');
-            const productId = form.dataset.productId;
-            const action = this.dataset.action;
-            const productCountElement = form.querySelector('.product-count');
-            let productCount = parseInt(productCountElement.value);
+        const data = await response.json();
+        if (data.success) {
+          window.location.href = "/checkout";
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Checkout Error",
+            text: data.message, // Show the error message from the backend
+          });
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Unexpected Error",
+          text: "An unexpected error occurred. Please try again later.",
+        });
+      }
+    });
+  // Handle increment and decrement button clicks
+  document
+    .querySelectorAll(".increment-quantity, .decrement-quantity")
+    .forEach((button) => {
+      button.addEventListener("click", function () {
+        const form = this.closest(".update-quantity-form");
+        const productId = form.dataset.productId;
+        const action = this.dataset.action;
+        const productCountElement = form.querySelector(".product-count");
+        let productCount = parseInt(productCountElement.value);
 
-            // Update the product count based on the action
-            if (action === 'increment') {
-                productCount++;
-            } else if (action === 'decrement' && productCount > 1) {
-                productCount--;
-            }
+        if (action === "increment") {
+          productCount++;
+        } else if (action === "decrement" && productCount > 1) {
+          productCount--;
+        }
 
-            // Update the quantity in the backend via AJAX
-            fetch(`/cart/${action}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ productId, productCount })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Response data:', data);  
-                if (data.success) {
-                    // Update the UI
-                    productCountElement.value = productCount;
+        fetch(`/cart/${action}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ productId, productCount }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Response data:", data);
+            if (data.success) {
+              // Update the UI
+              productCountElement.value = productCount;
 
-                    // Update the total price for the specific item
-                    const itemTotal = (data.updatedPrice).toFixed(2);
-                    form.closest('tr').querySelector('.item-total').textContent = itemTotal;
+              // Update the total price for the specific item
+              const itemTotal = data.updatedPrice.toFixed(2);
+              form.closest("tr").querySelector(".item-total").textContent =
+                itemTotal;
 
-                    // Update the total cart price
-                    document.getElementById('cart-total').textContent = `Total Amount: ${data.cartTotal.toFixed(2)}`;
-                    // document.getElementById('cart-items').textContent = `Total Items : ${data.productCount}`  //here i want to do more
+              // Update the total cart price
+              document.getElementById(
+                "cart-total"
+              ).textContent = `Total Amount: ${data.cartTotal.toFixed(2)}`;
+              // document.getElementById('cart-items').textContent = `Total Items : ${data.productCount}`  //here i want to do more
 
-                    // Disable the decrement button if the product count is 1
-                    const decrementButton = form.querySelector('.decrement-quantity');
-                    if (productCount === 1) {
-                        decrementButton.setAttribute('disabled', true);
-                    } else {
-                        decrementButton.removeAttribute('disabled');
-                    }
-                } else {
-                    // Handle stock and quantity alerts
-                    if (data.message.includes('Maximum quantity')) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Limit Exceeded',
-                            text: data.message // Show the maximum quantity message
-                        });
-                    } else if (data.message.includes('Available quantity')) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Stock Exceeded',
-                            text: data.message // Show the stock exceeded message
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: data.message || 'Could not update quantity'
-                        });
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
+              // Disable the decrement button if the product count is 1
+              const decrementButton = form.querySelector(".decrement-quantity");
+              if (productCount === 1) {
+                decrementButton.setAttribute("disabled", true);
+              } else {
+                decrementButton.removeAttribute("disabled");
+              }
+            } else {
+       
+              if (data.message.includes("Maximum quantity")) {
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Something went wrong!'
+                  icon: "error",
+                  title: "Limit Exceeded",
+                  text: data.message, 
                 });
+              } else if (data.message.includes("Available quantity")) {
+                Swal.fire({
+                  icon: "error",
+                  title: "Stock Exceeded",
+                  text: data.message,
+                });
+              } else {
+                Swal.fire({
+                  icon: "error",
+                  title: "Error",
+                  text: data.message || "Could not update quantity",
+                });
+              }
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Something went wrong!",
             });
-        });
+          });
+      });
     });
 
-document.querySelectorAll('.remove-item-btn').forEach(button => {
-    button.addEventListener('click',function(e){
-        console.log('prevented')
-        e.preventDefault();
-        const removeUrl = this.dataset.url;
+  document.querySelectorAll(".remove-item-btn").forEach((button) => {
+    button.addEventListener("click", function (e) {
+      console.log("prevented");
+      e.preventDefault();
+      const removeUrl = this.dataset.url;
 
-        Swal.fire({
-            title:"Are you sure?",
-            text:"Do you want to remove this item from your cart?",
-            icon:'warning',
-            showCancelButton:true,
-            confirmButtonColor:'#3085d6',
-            cancelButtonColor:'#d33',
-            confirmButtonText:'Yes, remove it!'
-        }).then((result) => {
-            if(result.isConfirmed) {
-        window.location.href = removeUrl;
-            }
-        })
-    })
-})
-
-</script> 
+      Swal.fire({
+        title: "Are you sure?",
+        text: "Do you want to remove this item from your cart?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, remove it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = removeUrl;
+        }
+      });
+    });
+  });
+</script>
 
 <%- include('../layouts/userFooter.ejs') %>

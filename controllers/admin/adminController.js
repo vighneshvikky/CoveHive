@@ -204,16 +204,17 @@ exports.dashboard = async (req, res) => {
     ]);
 
     console.log(`popular product before populating ${topSellingProducts}`);
-    const productData = await Product.populate(topSellingProducts, {
-      path: "_id",
-      populate: { path: "category", select: "name" },
-      select: "name discount category",
-    });
+const productData = (await Product.populate(topSellingProducts, {
+  path: "_id",
+  populate: { path: "category", select: "name" },
+  select: "name discount category",
+})).filter(p => p._id !== null);
+
 
     console.log("Product data: ", productData);
 
-    // Category performance - FIXED: Use same filter as other sections
-    const categoryFilter = req.query.filter || "year"; // Changed default to "year"
+  
+    const categoryFilter = req.query.filter || "year"; 
     const CategoryDateFilter = applyDateFilter(categoryFilter);
     console.log(`categoryDateFilter = ${JSON.stringify(CategoryDateFilter)}`);
 
@@ -269,7 +270,7 @@ exports.dashboard = async (req, res) => {
 
     console.log("categoryPerfomance:", JSON.stringify(categoryPerfomance, null, 2));
     
-    // FIXED: Handle empty category data properly
+  
     const categoryLabels = categoryPerfomance.length > 0 
       ? categoryPerfomance.map((item) => item.category)
       : ["No Data"];
@@ -281,8 +282,8 @@ exports.dashboard = async (req, res) => {
     console.log(`categoryLabels = ${categoryLabels}`);
     console.log(`categoryData = ${categoryData}`);
 
-    // Weekly/filtered dashboard data
-    const filterMain = req.query.filter || "year"; // Changed default to "year"
+    
+    const filterMain = req.query.filter || "year"; 
     const dateFilterMain = applyDateFilter(filterMain);
 
     const order = await Order.aggregate([
@@ -306,7 +307,7 @@ exports.dashboard = async (req, res) => {
       },
     ]);
 
-    // FIXED: Handle empty order data
+   
     const categories = order.length > 0
       ? order.map((item) => `Day ${item._id}`)
       : ["No Data"];
@@ -323,7 +324,7 @@ exports.dashboard = async (req, res) => {
     console.log("totalSalesData : ", totalSalesData);
     console.log("totalProfitData: ", totalProfitData);
 
-    // Check if this is an AJAX request
+   
     if (
       req.xhr ||
       req.headers["content-type"] === "application/json" ||
