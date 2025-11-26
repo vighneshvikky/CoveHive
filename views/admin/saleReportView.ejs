@@ -1,164 +1,206 @@
-<%- include('../layouts/header.ejs') %>
-<%- include('../layouts/sidebar.ejs') %>
+<%- include('../layouts/header.ejs') %> <%- include('../layouts/sidebar.ejs') %>
 <main class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-4xl mx-auto">
-        <!-- Order Details Card -->
-        <div class="bg-white rounded-xl shadow-lg p-6 sm:p-8 mb-6">
-            <!-- Header -->
-            <div class="text-center mb-8">
-                <h1 class="text-3xl font-bold text-gray-900">Order Details</h1>
-            </div>
+  <div class="max-w-4xl mx-auto">
+    <!-- Order Details Card -->
+    <div class="bg-white rounded-xl shadow-lg p-6 sm:p-8 mb-6">
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Order Details</h1>
+      </div>
 
-            <!-- Order Information -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 p-4 bg-gray-50 rounded-lg border border-gray-100">
-                <div class="space-y-3">
-                    <p class="flex items-center gap-2">
-                        <span class="font-medium text-gray-600 min-w-[140px]">Order ID:</span>
-                        <span class="text-gray-900"><%= order.orderId%></span>
-                    </p>
-                    <p class="flex items-center gap-2">
-                        <span class="font-medium text-gray-600 min-w-[140px]">Ordered Date:</span>
-                        <span class="text-gray-900"><%= new Date(order.createdAt).toLocaleDateString('en-GB') %></span>
-                    </p>
-                    <p class="flex items-center gap-2">
-                        <span class="font-medium text-gray-600 min-w-[140px]">Delivery Date:</span>
-                        <span class="text-gray-900">
-                            <% if(order.orderStatus !== 'Delivered'){ %>
-                                Not delivered yet
-                            <% } else { %>
-                                <%= new Date(order.deliveredDate).toLocaleDateString('en-GB') %>
-                            <% } %>
-                        </span>
-                    </p>
-                    <p class="flex items-center gap-2">
-                        <span class="font-medium text-gray-600 min-w-[140px]">Order Status:</span>
-                        <span class="px-3 py-1 rounded-full text-sm font-medium
-                            <%= order.orderStatus === 'Delivered' ? 'bg-green-100 text-green-800' : 
-                               order.orderStatus === 'Cancelled' ? 'bg-red-100 text-red-800' : 
-                               'bg-yellow-100 text-yellow-800' %>">
-                            <%= order.orderStatus %>
-                        </span>
-                    </p>
-                </div>
-            </div>
-
-            <!-- Delivery Address -->
-            <div class="mb-8">
-                <h2 class="text-xl font-semibold text-gray-900 mb-4 pb-2 border-b">Delivery Address</h2>
-                <div class="p-4 bg-gray-50 rounded-lg border border-gray-100 space-y-2">
-                    <p class="text-gray-900 font-medium"><%= order.address.contactName %></p>
-                    <p class="text-gray-700"><%= order.address.street %></p>
-                    <p class="text-gray-700"><%= order.address.city %>, <%= order.address.state %></p>
-                    <p class="text-gray-700"><%= order.address.country %> - <%= order.address.pincode %></p>
-                </div>
-            </div>
-
-            <!-- Payment Method -->
-            <div class="mb-8">
-                <h2 class="text-xl font-semibold text-gray-900 mb-4 pb-2 border-b">Payment Method</h2>
-                <div class="p-4 bg-gray-50 rounded-lg border border-gray-100">
-                    <p class="text-gray-900 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                  d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
-                        </svg>
-                        <%= order.paymentMethod %>
-                    </p>
-                </div>
-            </div>
-
-            <!-- Product Details -->
-            <div class="mb-8">
-                <h2 class="text-xl font-semibold text-gray-900 mb-4 pb-2 border-b">Products</h2>
-                <div class="space-y-4">
-                    <% order.items.forEach(product => { %>
-                        <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 items-center">
-                                <div class="sm:col-span-1">
-                                    <img 
-                                        class="w-full h-32 object-cover rounded-lg border border-gray-200" 
-                                        src="/uploads/<%= product.productId.image[0] %>" 
-                                        alt="<%= product.productId.name %>"
-                                    >
-                                </div>
-                                <div class="sm:col-span-3 space-y-2">
-                                    <h3 class="text-lg font-semibold text-gray-900"><%= product.productId.name %></h3>
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <p class="text-gray-700">
-                                            <span class="font-medium">Quantity:</span> 
-                                            <%= product.productCount %>
-                                        </p>
-                                        <p class="text-gray-800 text-xl font-bold"><i class="fa-solid fa-indian-rupee-sign"></i>
-                                            <% if(product.productId.discount > 0) { %>
-                                                <% const discountAmount = (product.productId.price * product.productId.discount) / 100; %>  
-                                                <% const discountedPrice = product.productId.price - discountAmount; %>
-                                                <%= discountedPrice.toFixed(2) %> <!-- Output the discounted price -->
-                                            <% } else { %>
-                                                <%= product.productId.price %> <!-- Output the original price if no discount -->
-                                            <% } %>
-                                        </p>
-                              
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    <% }) %>
-                </div>
-            </div>
-
-            <!-- Order Summary -->
-            <div class="mb-8">
-                <h2 class="text-xl font-semibold text-gray-900 mb-4 pb-2 border-b">Order Summary</h2>
-                <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                    <div class="space-y-3">
-                        <div class="flex justify-between text-gray-700">
-                            <span>Subtotal:</span>
-                            <span class="font-medium">₹<%= order.totalPrice.toFixed(2) %></span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-700">Coupon Discount:</span>
-                            <span class="font-medium text-green-600">-₹<%= order.couponDiscount.toFixed(2) %></span>
-                        </div>
-                        <div class="h-px bg-gray-200 my-2"></div>
-                        <div class="flex justify-between">
-                            <span class="font-semibold text-gray-900">Total:</span>
-                            <span class="font-semibold text-xl text-gray-900">₹<%= order.totalPrice.toFixed(2) %></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <!-- Order Information -->
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 p-4 bg-gray-50 rounded-lg border border-gray-100"
+      >
+        <div class="space-y-3">
+          <p class="flex items-center gap-2">
+            <span class="font-medium text-gray-600 min-w-[140px]"
+              >Order ID:</span
+            >
+            <span class="text-gray-900"><%= order.orderId%></span>
+          </p>
+          <p class="flex items-center gap-2">
+            <span class="font-medium text-gray-600 min-w-[140px]"
+              >Ordered Date:</span
+            >
+            <span class="text-gray-900"
+              ><%= new Date(order.createdAt).toLocaleDateString('en-GB')
+              %></span
+            >
+          </p>
+          <p class="flex items-center gap-2">
+            <span class="font-medium text-gray-600 min-w-[140px]"
+              >Delivery Date:</span
+            >
+            <span class="text-gray-900">
+              <% if(order.orderStatus !== 'Delivered'){ %> Not delivered yet <%
+              } else { %> <%= new
+              Date(order.deliveredDate).toLocaleDateString('en-GB') %> <% } %>
+            </span>
+          </p>
+          <p class="flex items-center gap-2">
+            <span class="font-medium text-gray-600 min-w-[140px]"
+              >Order Status:</span
+            >
+            <span
+              class="px-3 py-1 rounded-full text-sm font-medium <%= order.orderStatus === 'Delivered' ? 'bg-green-100 text-green-800' : order.orderStatus === 'Cancelled' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800' %>"
+            >
+              <%= order.orderStatus %>
+            </span>
+          </p>
         </div>
+      </div>
 
-    
+      <!-- Delivery Address -->
+      <div class="mb-8">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4 pb-2 border-b">
+          Delivery Address
+        </h2>
+        <div class="p-4 bg-gray-50 rounded-lg border border-gray-100 space-y-2">
+          <p class="text-gray-900 font-medium">
+            <%= order.address.contactName %>
+          </p>
+          <p class="text-gray-700"><%= order.address.street %></p>
+          <p class="text-gray-700">
+            <%= order.address.city %>, <%= order.address.state %>
+          </p>
+          <p class="text-gray-700">
+            <%= order.address.country %> - <%= order.address.pincode %>
+          </p>
+        </div>
+      </div>
+
+      <!-- Payment Method -->
+      <div class="mb-8">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4 pb-2 border-b">
+          Payment Method
+        </h2>
+        <div class="p-4 bg-gray-50 rounded-lg border border-gray-100">
+          <p class="text-gray-900 flex items-center gap-2">
+            <svg
+              class="w-5 h-5 text-gray-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+              />
+            </svg>
+            <%= order.paymentMethod %>
+          </p>
+        </div>
+      </div>
+
+      <!-- Product Details -->
+      <div class="mb-8">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4 pb-2 border-b">
+          Products
+        </h2>
+        <div class="space-y-4">
+          <% order.items.forEach(product => { %>
+          <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 items-center">
+              <div class="sm:col-span-1">
+                <img
+                  class="w-full h-32 object-cover rounded-lg border border-gray-200"
+                  src="/uploads/<%= product.productId.image[0] %>"
+                  alt="<%= product.productId.name %>"
+                />
+              </div>
+              <div class="sm:col-span-3 space-y-2">
+                <h3 class="text-lg font-semibold text-gray-900">
+                  <%= product.productId.name %>
+                </h3>
+                <div class="grid grid-cols-2 gap-4">
+                  <p class="text-gray-700">
+                    <span class="font-medium">Quantity:</span>
+                    <%= product.productCount %>
+                  </p>
+                  <p class="text-gray-800 text-xl font-bold">
+                    <i class="fa-solid fa-indian-rupee-sign"></i> <%
+                    if(product.productId.discount > 0) { %> <% const
+                    discountAmount = (product.productId.price *
+                    product.productId.discount) / 100; %> <% const
+                    discountedPrice = product.productId.price - discountAmount;
+                    %> <%= discountedPrice.toFixed(2) %>
+                    <!-- Output the discounted price -->
+                    <% } else { %> <%= product.productId.price %>
+                    <!-- Output the original price if no discount -->
+                    <% } %>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="mb-8">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4 pb-2 border-b">
+          Order Summary
+        </h2>
+        <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+          <div class="space-y-3">
+            <div class="flex justify-between text-gray-700">
+              <span>Subtotal:</span>
+              <span class="font-medium"
+                >₹<%= order.totalPrice.toFixed(2) %></span
+              >
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-700">Coupon Discount:</span>
+              <span class="font-medium text-green-600"
+                >-₹<%= order.couponDiscount.toFixed(2) %></span
+              >
+            </div>
+            <div class="h-px bg-gray-200 my-2"></div>
+            <div class="flex justify-between">
+              <span class="font-semibold text-gray-900">Total:</span>
+              <span class="font-semibold text-xl text-gray-900"
+                >₹<%= order.totalPrice.toFixed(2) %></span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </main>
-  <script>
-    document.getElementById('downloadInvoice').addEventListener('click', function(event) {
-      event.preventDefault();  // Prevent the default anchor behavior
-  
+<script>
+  document
+    .getElementById("downloadInvoice")
+    .addEventListener("click", function (event) {
+      event.preventDefault(); // Prevent the default anchor behavior
+
       // Get the order-details div
-      const orderDetails = document.querySelector('.order-details');
-  
+      const orderDetails = document.querySelector(".order-details");
+
       // Use html2canvas to capture the order details as a canvas
-      html2canvas(orderDetails, { scale: 2 }).then(canvas => {
+      html2canvas(orderDetails, { scale: 2 }).then((canvas) => {
         // Initialize jsPDF
         const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF('p', 'mm', 'a4');  // p for portrait, mm for millimeters, a4 paper size
-  
+        const pdf = new jsPDF("p", "mm", "a4"); // p for portrait, mm for millimeters, a4 paper size
+
         // Convert the canvas to image format
-        const imgData = canvas.toDataURL('image/png');
-  
+        const imgData = canvas.toDataURL("image/png");
+
         // Calculate image size and position for A4 page (210mm x 297mm)
-        const imgWidth = 210;  // Full width of A4
+        const imgWidth = 210; // Full width of A4
         const pageHeight = 297;
         const imgHeight = (canvas.height * imgWidth) / canvas.width; // Maintain aspect ratio
-  
+
         // Add the image to the PDF
-        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-  
+        pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+
         // Save the PDF as "invoice.pdf"
-        pdf.save('invoice.pdf');
+        pdf.save("invoice.pdf");
       });
     });
-  </script>
+</script>
 <%- include('../layouts/Footer.ejs') %>

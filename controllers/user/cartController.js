@@ -33,45 +33,44 @@ exports.addToCart = async (req, res) => {
   const MAX_QUANTITY_LIMIT = 10;
 
   try {
-      // Fetch the product by ID
+  
       const product = await Product.findById(productId);
       req.session.user_price = product.price;
       if (!product) {
           return res.send('Product not found');
       }
 
-      // Check if the product is in stock
+      
       if (product.stock <= 0) {
           req.flash('error_msg','Product is out of Stock');
           return res.redirect(`/products/${productId}`);
       }
 
-      // Fetch the user's cart
+    
       let cart = await Cart.findOne({ userId }).populate('items.productId');
 
-      // If the cart doesn't exist, create a new one
+    
       if (!cart) {
           cart = new Cart({ userId, items: [], payableAmount: 0, totalPrice: 0 });
       }
 
 
-      // Check if the item already exists in the cart
       let cartItem = cart.items.find(item => item.productId.equals(product._id));
       
       if (cartItem) {
-          // Check quantity limits
+        
           if (cartItem.productCount + 1 > product.stock || cartItem.productCount + 1 > MAX_QUANTITY_LIMIT) {
               res.locals.alertMessage = `Cannot add more than ${Math.min(product.stock, MAX_QUANTITY_LIMIT)} items to the cart.`;
               return res.redirect('/cart');
           } else {
-              cartItem.productCount += 1; // Increment the count
+              cartItem.productCount += 1; 
           }
       } else {
-          // Add new item to the cart
+          
           cart.items.push({
               productId: product._id,
               productCount: 1,
-              productPrice: product.price || 0, // Fallback to 0 if product.price is undefined
+              productPrice: product.price || 0, 
               productImage: product.image[0],
               productDiscountPrice: product.price 
               ? (product.discount ? product.price * (1 - (product.discount / 100)) : product.price) 
@@ -86,8 +85,7 @@ exports.addToCart = async (req, res) => {
         0
       );
 const payableAmount  = cart.items.reduce((acc,item)=> acc+(item.productDiscountPrice * item.productCount),0)
-// cart.items.reduce((total, item) => total + (item.productDiscountPrice * item.productCount), 0),
-      // Calculate payable amount if necessary
+
       cart.payableAmount = payableAmount;
     
 
@@ -109,12 +107,12 @@ exports.increment = async (req, res) => {
   
       const maxQuantity = 10;
 
-      // Validate request
+      
       if (!userId || !productId) {
           return res.status(400).json({ success: false, message: 'Invalid request' });
       }
 
-      // Find the product
+      
       const product = await Product.findById(productId);
       if (!product) {
           return res.status(404).json({ success: false, message: 'Product not found' });
@@ -208,7 +206,7 @@ exports.decrement = async (req, res) => {
               cartTotal: cart.items.reduce((total, item) => total + (item.productDiscountPrice * item.productCount), 0),
               productCount:cart.items[index].productCount,
               updatedPrice: cart.items[index]?.productDiscountPrice * cart.items[index]?.productCount || 0});
-              disableButton: cart.items[index]?.productCount === 1 // Disable button when count is 1
+              disableButton: cart.items[index]?.productCount === 1 
               productCount:cart.items[index].productCount;
       } else {
           res.status(404).send('Product not found in cart');

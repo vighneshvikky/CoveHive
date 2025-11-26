@@ -30,7 +30,7 @@
         ref:"User",
         required:true
     },
-    items:[itemSchema],// Embed itemSchema as a subdocument
+    items:[itemSchema],
     payableAmount:{
         type:Number,
         default:0
