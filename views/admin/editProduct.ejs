@@ -158,7 +158,7 @@
         <button 
           type="button" 
           class="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200 ease-in-out hover:bg-red-600"
-          onclick="removeImage('<%= img %>', '<%= product._id %>')"
+          onclick="openRemoveModal('<%= img %>', '<%= product._id %>')"
         >
           Remove
         </button>
@@ -211,35 +211,95 @@
     </a>
   </div>
 </form>
-<!-- Added ID here -->
-        </div>
-      
-        <div id="productModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center hidden">
-          <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-            <p class="text-center text-green-500 mb-4">Add Product Successfully.</p>
-            <button id="closeModal" class="bg-blue-700 text-white px-4 py-2 rounded">Close</button>
-          </div>
-        </div>
-        
-        <!-- Modal -->
-      
-        <div id="confirmation-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50  items-center justify-center hidden">
-          <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
-              <h2 class="text-lg font-bold mb-4">Confirm Action</h2>
-              <p id="modal-message" class="mb-6"></p>
-              <div class="flex justify-end">
-                  <button id="cancel-btn" class="bg-gray-500 text-white px-4 py-2 rounded mr-2" onclick="closeModal()">Cancel</button>
-                  <form id="confirm-form" action="" method="POST" style="display: inline;">
-                      <input type="hidden" name="is_blocked" id="isBlocked" value="" />
-                      <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded">Confirm</button>
-                  </form>
-              </div>
-          </div>
-      </div>
-   
-      <!-- Modal -->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+<!-- Remove Image Confirmation Modal -->
+<div id="removeImageModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+  <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md mx-4 transform transition-all">
+    <div class="flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full mb-4">
+      <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+      </svg>
+    </div>
+    <h2 class="text-xl font-bold text-center text-gray-800 mb-2">Remove Image</h2>
+    <p class="text-center text-gray-600 mb-6">Are you sure you want to remove this image? This action cannot be undone.</p>
+    <div class="flex gap-3">
+      <button 
+        id="cancelRemoveBtn" 
+        class="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:ring-2 focus:ring-gray-400 transition-colors font-medium"
+        onclick="closeRemoveModal()"
+      >
+        Cancel
+      </button>
+      <button 
+        id="confirmRemoveBtn" 
+        class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-red-500 transition-colors font-medium"
+        onclick="confirmRemoveImage()"
+      >
+        Remove
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 <script>
+// Global variables for remove modal
+let currentImageToRemove = null;
+let currentProductId = null;
+
+function openRemoveModal(image, productId) {
+  currentImageToRemove = image;
+  currentProductId = productId;
+  document.getElementById('removeImageModal').classList.remove('hidden');
+}
+
+function closeRemoveModal() {
+  currentImageToRemove = null;
+  currentProductId = null;
+  document.getElementById('removeImageModal').classList.add('hidden');
+}
+
+function confirmRemoveImage() {
+  if (currentImageToRemove && currentProductId) {
+    fetch(`/admin/product/remove-image/${currentProductId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ image: currentImageToRemove, productId: currentProductId }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        closeRemoveModal();
+        location.reload();
+      } else {
+        alert('Failed to remove the image');
+        closeRemoveModal();
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('An error occurred while removing the image');
+      closeRemoveModal();
+    });
+  }
+}
+
+// Close modal when clicking outside
+document.getElementById('removeImageModal').addEventListener('click', function(e) {
+  if (e.target === this) {
+    closeRemoveModal();
+  }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeRemoveModal();
+  }
+});
+
 document.addEventListener('DOMContentLoaded', function() {
   const imageInput = document.getElementById('imageInput');
   const imagePreviewsContainer = document.getElementById('imagePreviews');
@@ -248,7 +308,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const productForm = document.querySelector('form');
   let existingImageCount = <%=product.image.length%>
   
-
   let cropperInstances = [];
 
   
@@ -322,28 +381,22 @@ if(!validName.test(compatibleDevicesInput)){
   valid=false;
 }
 
-
-
-
 if ((existingImageCount + imageInput.files.length) < 3) {
   err_img.textContent = "Enter at least 3 images";
   valid = false;
 } else {
-  err_img.textContent = ""; // Clear the error message if validation passes
+  err_img.textContent = ""; 
 }
 if(valid){
   console.log('valid sucess')
 document.getElementById('formSubmit').submit();
-
 }
-
-
-       })
+  })
     
   // Retrieve existing images from data attribute
   let existingImages = [];
   try {
-    existingImages =  SON.parse(imagePreviewsContainer.dataset.existingImages);
+    existingImages = JSON.parse(imagePreviewsContainer.dataset.existingImages);
     if (!Array.isArray(existingImages)) {
       existingImages = [];
     } 
@@ -379,8 +432,6 @@ document.getElementById('formSubmit').submit();
 
     imagePreviewsContainer.appendChild(previewContainer);
     previewContainer.appendChild(imgElement);
-
-// ... rest of the function ...
 
    imagePreviewsContainer.appendChild(previewContainer);
     if (!isExisting) {
@@ -466,33 +517,5 @@ document.getElementById('formSubmit').submit();
     });
   });
 });
-function removeImage(image, productId) {
-  console.log(`image is ${image}`);
-  console.log(`product is ${productId}`);
-  
-  
-    if (confirm('Are you sure you want to remove this image?')) {
-      fetch(`/admin/product/remove-image/${productId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ image, productId }),
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          // Remove the image from the DOM or refresh the page
-          location.reload(); // You can also remove the image without refreshing the page
-        } else {
-          alert('Failed to remove the image');
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-    }
-  }
-
 </script>
 <%- include('../layouts/footer.ejs') %>
