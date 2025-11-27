@@ -3,19 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CoveHive - Premium  Phone</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <title>CoveHive - Premium Phone</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-   body {
-    font-family: monospace;
-}
+        body {
+            font-family: monospace;
+        }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -26,20 +21,14 @@
                         lightGray: '#e5e5e5',
                         white: '#ffffff',
                         premium: '#14213d',
-                        
                     }
                 }
             }
         }
-       
-        
     </script>
-    <!-- Include Toastify CSS -->
-
-     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body class="min-h-screen flex flex-col bg-white">
-    <nav class="bg-black text-white p-4 sticky top-0 z-20  shadow-md">
+    <nav class="bg-black text-white p-4 sticky top-0 z-20 shadow-md">
         <div class="container mx-auto">
             <!-- Main Navigation Content -->
             <div class="flex flex-wrap items-center justify-between">
@@ -52,7 +41,7 @@
                 <!-- Mobile Menu Button -->
                 <div class="flex items-center md:hidden">
                     <a href="/cart" class="p-2 hover:text-gray-300 transition duration-300 mr-4">
-                        <i class="fa-solid fa-cart-shopping"></i>
+                        <i class="fa-solid fa-cart-shopping text-xl"></i>
                     </a>
                     <button 
                         id="mobile-menu-button" 
@@ -71,7 +60,6 @@
                                 type="text" 
                                 name="q" 
                                 placeholder="Search for products..." 
-                                value="<%= searchQuery || '' %>" 
                                 class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14213d] bg-white text-black shadow-sm transition duration-300 ease-in-out"
                             >
                             <button 
@@ -83,22 +71,26 @@
                         </form>
                     </div>
     
-                    <!-- Desktop Menu Items -->
+                    <!-- Desktop Menu Items with Icons -->
                     <div class="flex items-center space-x-6">
-                        <a href="/home" class="hover:text-gray-300 transition duration-300">Home</a>
-                        <a href="/allProducts" class="hover:text-gray-300 transition duration-300">All Products</a>
-                        <a href="/wishList" class="hover:text-gray-300 transition duration-300">Wishlist</a>
-                        <a href="/profile" class="hover:text-gray-300 transition duration-300">
-                            <% if (user && user.fullName) { %>
-                                <%= user.fullName %>
-                            <% } else { %>
-                                Guest
-                            <% } %>
+                        <a href="/home" class="hover:text-gray-300 transition duration-300 flex items-center" title="Home">
+                            <i class="fas fa-home text-xl"></i>
                         </a>
-                        <a href="/cart" class="hover:text-gray-300 transition duration-300">
-                            <i class="fa-solid fa-cart-shopping"></i>
+                        <a href="/allProducts" class="hover:text-gray-300 transition duration-300 flex items-center" title="All Products">
+                            <i class="fas fa-shopping-bag text-xl"></i>
                         </a>
-                        <a href="/logout" class="hover:text-gray-300 transition duration-300">Logout</a>
+                        <a href="/wishList" class="hover:text-gray-300 transition duration-300 flex items-center" title="Wishlist">
+                            <i class="fas fa-heart text-xl"></i>
+                        </a>
+                        <a href="/profile" class="hover:text-gray-300 transition duration-300 flex items-center" title="Profile">
+                            <i class="fas fa-user text-xl"></i>
+                        </a>
+                        <a href="/cart" class="hover:text-gray-300 transition duration-300 flex items-center" title="Cart">
+                            <i class="fa-solid fa-cart-shopping text-xl"></i>
+                        </a>
+                        <a href="/logout" class="hover:text-gray-300 transition duration-300 flex items-center" title="Logout">
+                            <i class="fas fa-sign-out-alt text-xl"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -112,7 +104,6 @@
                             type="text" 
                             name="q" 
                             placeholder="Search products..." 
-                            value="<%= searchQuery || '' %>" 
                             class="w-full p-2 pl-3 pr-10 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#14213d] bg-white text-black shadow-sm transition duration-300 ease-in-out"
                         >
                         <button 
@@ -136,12 +127,7 @@
                         <i class="fas fa-heart mr-2"></i> Wishlist
                     </a>
                     <a href="/profile" class="hover:text-gray-300 transition duration-300 py-2">
-                        <i class="fas fa-user mr-2"></i> 
-                        <% if (user && user.fullName) { %>
-                            <%= user.fullName %>
-                        <% } else { %>
-                            Guest
-                        <% } %>
+                        <i class="fas fa-user mr-2"></i> Profile
                     </a>
                     <a href="/logout" class="hover:text-gray-300 transition duration-300 py-2">
                         <i class="fas fa-sign-out-alt mr-2"></i> Logout
@@ -151,7 +137,6 @@
         </div>
     </nav>
     
-    <!-- Add this script at the end of your body tag -->
     <script>
         // Mobile menu toggle functionality
         const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -170,8 +155,10 @@
     
         // Close mobile menu when window is resized to desktop view
         window.addEventListener('resize', () => {
-            if (window.innerWidth >= 768) { // 768px is the md breakpoint in Tailwind
+            if (window.innerWidth >= 768) {
                 mobileMenu.classList.add('hidden');
             }
         });
     </script>
+</body>
+</html>

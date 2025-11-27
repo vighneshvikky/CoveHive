@@ -59,7 +59,7 @@ user_route.get('/home',userAuth.isblocked,userAuth.isLogin,userController.loadHo
 
 //---------------------------------Product Details ----------------------------------
 
-user_route.get('/products/:id',userController.loadProductDetails)
+user_route.get('/products/:id',userAuth.isblocked, userController.loadProductDetails)
 
 //----------------------------------edit profile ------------------------------------
 
@@ -68,11 +68,11 @@ user_route.post('/edit-profile',userProfile.editProfile)
 
 //----------------------------------category page ---------------------------------
 
-user_route.get('/category/:id',userController.loadCategory)
+user_route.get('/category/:id',userAuth.isblocked,userController.loadCategory)
 
 //----------------------------------user profile -----------------------------------
 
-user_route.get('/profile',userAuth.isLogin,userProfile.loadUserProfile)
+user_route.get('/profile',userAuth.isblocked,userAuth.isLogin,userProfile.loadUserProfile)
 
 //----------------------------------edit profile ------------------------------------
 
