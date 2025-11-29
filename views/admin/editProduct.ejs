@@ -511,7 +511,6 @@ document.getElementById('formSubmit').submit();
     cropperInstances.forEach(instance => instance.cropper.destroy());
     cropperInstances = [];
 
-    // Restore existing image previews
     existingImages.forEach(imagePath => {
       createImagePreview(imagePath, true);
     });

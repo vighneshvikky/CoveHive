@@ -1,0 +1,624 @@
+<%- include('../layouts/userHeader.ejs') %>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div
+  class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-8 px-4 sm:px-6 lg:px-8"
+>
+  <div class="max-w-6xl mx-auto">
+    <!-- Back Button and Breadcrumb -->
+    <nav class="flex mb-6" aria-label="Breadcrumb">
+      <ol class="inline-flex items-center space-x-1 md:space-x-2">
+        <li class="inline-flex items-center">
+          <a
+            href="/home"
+            class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600"
+          >
+            <svg class="w-3 h-3 me-2.5" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"
+              />
+            </svg>
+            Home
+          </a>
+        </li>
+        <li>
+          <div class="flex items-center">
+            <svg
+              class="w-3 h-3 text-gray-400 mx-1"
+              fill="none"
+              viewBox="0 0 6 10"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m1 9 4-4-4-4"
+              />
+            </svg>
+            <a
+              href="/orders"
+              class="text-sm font-medium text-gray-700 hover:text-blue-600"
+              >Orders</a
+            >
+          </div>
+        </li>
+        <li aria-current="page">
+          <div class="flex items-center">
+            <svg
+              class="w-3 h-3 text-gray-400 mx-1"
+              fill="none"
+              viewBox="0 0 6 10"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m1 9 4-4-4-4"
+              />
+            </svg>
+            <span class="text-sm font-medium text-gray-500">Order Details</span>
+          </div>
+        </li>
+      </ol>
+    </nav>
+
+    <!-- Main Content Card -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+      <!-- Header -->
+      <div
+        class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-8 text-white"
+      >
+        <h1 class="text-3xl font-bold mb-2">Order Details</h1>
+        <p class="text-blue-100">
+          Order ID: <span class="font-semibold"><%= order._id %></span>
+        </p>
+      </div>
+
+      <!-- Order Information Grid -->
+      <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <!-- Order Status Card -->
+          <div
+            class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-5 border border-green-200"
+          >
+            <h3 class="text-sm font-medium text-green-800 mb-2">
+              Order Status
+            </h3>
+            <p class="text-2xl font-bold text-green-900">
+              <%= order.status || 'Processing' %>
+            </p>
+          </div>
+
+          <!-- Order Date Card -->
+          <div
+            class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-5 border border-purple-200"
+          >
+            <h3 class="text-sm font-medium text-purple-800 mb-2">Order Date</h3>
+            <p class="text-lg font-semibold text-purple-900">
+              <%= new Date(order.createdAt).toLocaleDateString() %>
+            </p>
+            <p class="text-sm text-purple-700 mt-1">
+              <%= new Date(order.createdAt).toLocaleTimeString() %>
+            </p>
+          </div>
+
+          <!-- Payment Method Card -->
+          <div
+            class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-5 border border-blue-200"
+          >
+            <h3 class="text-sm font-medium text-blue-800 mb-2">
+              Payment Method
+            </h3>
+            <p class="text-lg font-semibold text-blue-900">
+              <%= order.paymentMethod %>
+            </p>
+            <% if(order.paid) { %>
+            <span
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 mt-2"
+            >
+              Paid
+            </span>
+            <% } else { %>
+            <span
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 mt-2"
+            >
+              Unpaid
+            </span>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- Shipping and Coupon Information -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <!-- Shipping Address -->
+          <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+            <h3
+              class="text-lg font-semibold text-gray-900 mb-4 flex items-center"
+            >
+              <svg
+                class="w-5 h-5 mr-2 text-gray-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                ></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                ></path>
+              </svg>
+              Shipping Address
+            </h3>
+            <div class="text-gray-700 space-y-1">
+              <p class="font-medium"><%= order.address.contactName %></p>
+              <p><%= order.address.street %></p>
+              <p><%= order.address.city %>, <%= order.address.state %></p>
+              <p><%= order.address.country %> - <%= order.address.pincode %></p>
+              <% if(order.address.phone) { %>
+              <p class="mt-2">
+                <span class="text-gray-600">Phone:</span>
+                <span class="font-medium"><%= order.address.phone %></span>
+              </p>
+              <% } %>
+            </div>
+          </div>
+
+          <!-- Coupon & Pricing Info -->
+          <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+            <h3
+              class="text-lg font-semibold text-gray-900 mb-4 flex items-center"
+            >
+              <svg
+                class="w-5 h-5 mr-2 text-gray-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                ></path>
+              </svg>
+              Pricing Details
+            </h3>
+            <div class="space-y-3">
+              <div class="flex justify-between text-gray-700">
+                <span>Subtotal:</span>
+                <span class="font-medium"
+                  >₹<%= order.subtotal || order.totalPrice %></span
+                >
+              </div>
+              <% if(order.couponDiscount && order.couponDiscount > 0) { %>
+              <div class="flex justify-between text-green-600">
+                <span>Coupon Discount:</span>
+                <span class="font-medium">-₹<%= order.couponDiscount %></span>
+              </div>
+              <% } else { %>
+              <div class="flex justify-between text-gray-500">
+                <span>Coupon Discount:</span>
+                <span>Not Applied</span>
+              </div>
+              <% } %>
+              <div class="pt-3 border-t border-gray-300">
+                <div
+                  class="flex justify-between text-lg font-bold text-gray-900"
+                >
+                  <span>Total Price:</span>
+                  <span>₹<%= order.totalPrice %></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Items Purchased -->
+        <div class="mb-8">
+          <h3
+            class="text-xl font-semibold text-gray-900 mb-4 flex items-center"
+          >
+            <svg
+              class="w-6 h-6 mr-2 text-gray-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+              ></path>
+            </svg>
+            Items Purchased
+          </h3>
+          <div class="space-y-4">
+            <% order.items.forEach(item => { %>
+            <div
+              class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
+            >
+              <div class="flex flex-col md:flex-row gap-6">
+                <img
+                  src="/uploads/<%= item.productImage %>"
+                  alt="<%= item.productId.name %>"
+                  class="w-full md:w-32 h-32 object-cover rounded-lg"
+                />
+
+                <div class="flex-1">
+                  <div class="flex justify-between items-start mb-3">
+                    <div>
+                      <h4 class="text-lg font-semibold text-gray-900">
+                        <%= item.productId.name %>
+                      </h4>
+                      <p class="text-sm text-gray-600 mt-1">
+                        Quantity: <%= item.productCount %>
+                      </p>
+                    </div>
+                    <div class="text-right">
+                      <p class="text-lg font-bold text-gray-900">
+                        ₹<%= item.productDiscountPrice %>
+                      </p>
+                      <% if(item.productId.discount > 0) { %>
+                      <span
+                        class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 mt-1"
+                      >
+                        <%= item.productId.discount %>% OFF
+                      </span>
+                      <% } %>
+                    </div>
+                  </div>
+
+                  <!-- Status Badge -->
+                  <div class="mb-3">
+                    <% let statusColor = 'gray'; let statusBg = 'bg-gray-100';
+                    let statusText = 'text-gray-800'; if(item.productStatus ===
+                    'Delivered') { statusColor = 'green'; statusBg =
+                    'bg-green-100'; statusText = 'text-green-800'; } else
+                    if(item.productStatus === 'Shipped') { statusColor = 'blue';
+                    statusBg = 'bg-blue-100'; statusText = 'text-blue-800'; }
+                    else if(item.productStatus === 'Pending') { statusColor =
+                    'yellow'; statusBg = 'bg-yellow-100'; statusText =
+                    'text-yellow-800'; } else if(item.productStatus ===
+                    'Cancelled') { statusColor = 'red'; statusBg = 'bg-red-100';
+                    statusText = 'text-red-800'; } else if(item.productStatus
+                    === 'Requested') { statusColor = 'violet'; statusBg =
+                    'bg-violet-100'; statusText = 'text-violet-800'; } %>
+                    <span
+                      class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium <%= statusBg %> <%= statusText %>"
+                    >
+                      <span
+                        class="w-2 h-2 rounded-full bg-<%= statusColor %>-500 mr-2"
+                      ></span>
+                      <%= item.productStatus %>
+                    </span>
+                  </div>
+
+                  <!-- Action Buttons -->
+                  <div class="flex flex-wrap gap-3">
+                    <% if(item.productStatus === 'Delivered') { %>
+                    <button
+                      onclick="openModal('<%= order._id %>','<%= item.productId._id%>', 'return')"
+                      class="px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-md hover:bg-orange-700 transition-colors"
+                    >
+                      Return Order
+                    </button>
+                    <% } else if(item.productStatus !== 'Cancelled' &&
+                    item.productStatus !== 'Returned' && item.productStatus !==
+                    'Requested' && item.productStatus !== 'Rejected') { %>
+                    <button
+                      onclick="openModal('<%= order._id %>','<%=item.productId._id%>', 'cancel')"
+                      class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors"
+                    >
+                      Cancel Order
+                    </button>
+                    <% } %>
+
+                    <a
+                      href="#"
+                      class="px-4 py-2 text-sm font-medium text-green-600 bg-green-50 rounded-md hover:bg-green-100 transition-colors"
+                    >
+                      Rate & Review
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <% }) %>
+          </div>
+        </div>
+
+        <!-- Payment Failed Notice -->
+        <% if(!order.paid) { %>
+        <div class="bg-red-50 border border-red-200 rounded-lg p-6 mb-8">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-semibold text-red-800 mb-2">
+                Payment Failed
+              </h3>
+              <p class="text-red-600">
+                Your payment was not completed. Please retry to complete your
+                order.
+              </p>
+            </div>
+            <button
+              onclick="retryPayment('<%= order._id %>')"
+              class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors shadow-md"
+            >
+              Pay Now
+            </button>
+          </div>
+        </div>
+        <% } %>
+
+        <!-- Action Buttons -->
+        <div
+          class="flex flex-col sm:flex-row gap-4 justify-end pt-6 border-t border-gray-200"
+        >
+          <button
+            onclick="downloadOrderPDF()"
+            class="inline-flex items-center justify-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors shadow-md hover:shadow-lg"
+          >
+            <svg
+              class="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              ></path>
+            </svg>
+            Download Invoice
+          </button>
+          <button
+            onclick="window.print()"
+            class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-md hover:shadow-lg"
+          >
+            <svg
+              class="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+              ></path>
+            </svg>
+            Print Order
+          </button>
+          <a
+            href="/orders"
+            class="inline-flex items-center justify-center px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors shadow-md hover:shadow-lg"
+          >
+            Back to Orders
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cancel/Return Modal -->
+<div
+  id="cancelModal"
+  class="hidden fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50"
+>
+  <div class="bg-white rounded-lg w-full max-w-md mx-4 p-6">
+    <h2 class="text-lg font-semibold mb-4" id="modalTitle">
+      Reason for Action
+    </h2>
+    <form id="cancelForm">
+      <input
+        type="hidden"
+        id="orderId"
+        name="orderId"
+        value="<%= order._id %>"
+      />
+      <input type="hidden" id="actionType" name="actionType" value="" />
+      <input type="hidden" id="productId" value="" />
+
+      <div class="mb-4">
+        <label for="reason" class="block text-gray-700 mb-2"
+          >Enter Reason:</label
+        >
+        <textarea
+          id="reason"
+          name="reason"
+          class="w-full p-2 border border-gray-300 rounded-md"
+          rows="3"
+          required
+        ></textarea>
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <button
+          type="button"
+          onclick="closeModal()"
+          class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+        >
+          Submit
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function openModal(orderId, productId, action) {
+    document.getElementById("cancelModal").classList.remove("hidden");
+    document.getElementById("orderId").value = orderId;
+    document.getElementById("productId").value = productId;
+    document.getElementById("actionType").value = action;
+    document.getElementById("modalTitle").innerText = `Reason for ${
+      action.charAt(0).toUpperCase() + action.slice(1)
+    } Order`;
+  }
+
+  function closeModal() {
+    document.getElementById("cancelModal").classList.add("hidden");
+    document.getElementById("reason").value = "";
+  }
+
+  document
+    .getElementById("cancelForm")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
+      const orderId = document.getElementById("orderId").value;
+      const productId = document.getElementById("productId").value;
+      const actionType = document.getElementById("actionType").value;
+      const reason = document.getElementById("reason").value;
+
+      fetch(`/cancelOrder/${orderId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: actionType,
+          reason: reason,
+          productId: productId,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: data.message,
+            confirmButtonText: "OK",
+          }).then(() => {
+            closeModal();
+            location.reload();
+          });
+        })
+        .catch((error) => {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "An error occurred while processing your request.",
+          });
+        });
+    });
+
+  async function downloadOrderPDF() {
+    try {
+      const orderId = "<%= order._id %>";
+      const response = await fetch(`/orders/download-pdf/${orderId}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) throw new Error("PDF generation failed");
+
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = `order-${orderId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to download invoice.",
+      });
+    }
+  }
+
+  async function retryPayment(orderId) {
+    try {
+      const res = await fetch("/retryRazorPay", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId }),
+      });
+
+      if (res.ok) {
+        const retryPaymentData = await res.json();
+        const options = {
+          key: "rzp_test_KDYrLJHnu3O9Ip",
+          amount: retryPaymentData.amount,
+          currency: "INR",
+          name: "CoveHive",
+          order_id: retryPaymentData.razorpayOrderId.id,
+          handler: async function (response) {
+            const resData = {
+              orderId,
+              razorpayOrderId: response.razorpay_order_id,
+              paymentId: response.razorpay_payment_id,
+            };
+            const payment = await fetch("/retryPayment", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(resData),
+            });
+
+            if (payment.ok) {
+              window.location.href = "/conform-order";
+            }
+          },
+          prefill: {
+            name: retryPaymentData.address.contactName,
+            email: retryPaymentData.address.street,
+            contact: retryPaymentData.address.pincode,
+          },
+          theme: { color: "#3399cc" },
+          modal: {
+            ondismiss: function () {
+              window.location.href = "/orders";
+            },
+          },
+        };
+        const rzp1 = new Razorpay(options);
+        rzp1.open();
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+</script>
+
+<style>
+  @media print {
+    nav,
+    button,
+    .no-print {
+      display: none !important;
+    }
+    body {
+      background: white;
+    }
+    .shadow-lg,
+    .shadow-md {
+      box-shadow: none !important;
+    }
+  }
+</style>
+
+<%- include('../layouts/userFooter.ejs') %>

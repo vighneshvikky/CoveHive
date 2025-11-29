@@ -94,9 +94,9 @@
                                 <% }) %>
                             </td>
                             <td class="px-4 py-4 flex space-x-2">
-                                <button onclick="viewOrder('<%= order._id %>')" 
+                                <button  
                                     class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                    View
+                                    <a href="/admin/orders/details/<%= order._id %>">View</a>
                                 </button>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

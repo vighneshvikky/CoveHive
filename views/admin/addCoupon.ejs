@@ -132,8 +132,14 @@ let expiryDate = document.getElementById('expiryDate').value;
 let usageCount = document.getElementById('usageCount').value.trim();
 
 let currentDate = new Date();
+currentDate.setHours(0, 0, 0, 0); 
+
 let startDateObj = new Date(startDate);
+startDateObj.setHours(0, 0, 0, 0); 
+
 let expiryDateObj = new Date(expiryDate);
+expiryDateObj.setHours(0, 0, 0, 0);
+
 let isValid = true;
 
 

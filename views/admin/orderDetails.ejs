@@ -1,0 +1,270 @@
+<%- include('../layouts/header.ejs') %>
+<%- include('../layouts/sidebar.ejs') %>
+
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+<div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 ml-64">
+    <div class="max-w-6xl mx-auto">
+        <!-- Back Button -->
+        <div class="mb-6">
+            <a href="/admin/orders" class="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Back to Orders
+            </a>
+        </div>
+
+        <!-- Main Content Card -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-8 text-white">
+                <h1 class="text-3xl font-bold mb-2">Order Details</h1>
+                <p class="text-blue-100">Order ID: <span class="font-semibold"><%= order._id %></span></p>
+            </div>
+
+            <!-- Order Information Grid -->
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <!-- Customer Info Card -->
+                    <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg p-5 border border-indigo-200">
+                        <h3 class="text-sm font-medium text-indigo-800 mb-2">Customer</h3>
+                        <p class="text-xl font-bold text-indigo-900"><%= order.userId.fullName %></p>
+                        <p class="text-sm text-indigo-700 mt-1"><%= order.userId.email %></p>
+                    </div>
+
+                    <!-- Order Date Card -->
+                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-5 border border-purple-200">
+                        <h3 class="text-sm font-medium text-purple-800 mb-2">Order Date</h3>
+                        <p class="text-lg font-semibold text-purple-900"><%= new Date(order.createdAt).toLocaleDateString() %></p>
+                        <p class="text-sm text-purple-700 mt-1"><%= new Date(order.createdAt).toLocaleTimeString() %></p>
+                    </div>
+
+                    <!-- Payment Method Card -->
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-5 border border-blue-200">
+                        <h3 class="text-sm font-medium text-blue-800 mb-2">Payment Method</h3>
+                        <p class="text-lg font-semibold text-blue-900"><%= order.paymentMethod %></p>
+                        <% if(order.paymentStatus) { %>
+                            <p class="text-sm text-blue-700 mt-1">Status: <%= order.paymentStatus %></p>
+                        <% } %>
+                    </div>
+                </div>
+
+                <!-- Shipping and Coupon Information -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- Shipping Address -->
+                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            Shipping Address
+                        </h3>
+                        <div class="text-gray-700 space-y-1">
+                            <p class="font-medium"><%= order.address.contactName %></p>
+                            <p><%= order.address.street %></p>
+                            <p><%= order.address.city %>, <%= order.address.state %></p>
+                            <p><%= order.address.country %> - <%= order.address.pincode %></p>
+                            <% if(order.address.phone) { %>
+                                <p class="mt-2">
+                                    <span class="text-gray-600">Phone:</span> 
+                                    <span class="font-medium"><%= order.address.phone %></span>
+                                </p>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <!-- Pricing Details -->
+                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Pricing Details
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between text-gray-700">
+                                <span>Subtotal:</span>
+                                <span class="font-medium">₹<%= order.subtotal || order.totalPrice %></span>
+                            </div>
+                            <% if(order.couponDiscount && order.couponDiscount > 0) { %>
+                                <div class="flex justify-between text-green-600">
+                                    <span>Coupon Discount:</span>
+                                    <span class="font-medium">-₹<%= order.couponDiscount %></span>
+                                </div>
+                            <% } else { %>
+                                <div class="flex justify-between text-gray-500">
+                                    <span>Coupon Discount:</span>
+                                    <span>Not Applied</span>
+                                </div>
+                            <% } %>
+                            <div class="pt-3 border-t border-gray-300">
+                                <div class="flex justify-between text-lg font-bold text-gray-900">
+                                    <span>Total Price:</span>
+                                    <span>₹<%= order.totalPrice %></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Items Purchased -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                        <svg class="w-6 h-6 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                        </svg>
+                        Items Purchased
+                    </h3>
+                    <div class="overflow-x-auto border border-gray-200 rounded-lg">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="bg-gray-50 border-b border-gray-200">
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Product</th>
+                                    <th class="px-6 py-4 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Image</th>
+                                    <th class="px-6 py-4 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">Quantity</th>
+                                    <th class="px-6 py-4 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">Price</th>
+                                    <th class="px-6 py-4 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">Discount</th>
+                                    <th class="px-6 py-4 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">Total</th>
+                                    <th class="px-6 py-4 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 bg-white">
+                                <% order.items.forEach(item => { %>
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <div class="text-sm font-medium text-gray-900"><%= item.productId.name %></div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <img src="/uploads/<%= item.productImage %>" alt="<%= item.productId.name %>" class="w-16 h-16 object-cover rounded-lg shadow-sm">
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            <span class="inline-flex items-center justify-center w-8 h-8 bg-blue-100 text-blue-800 rounded-full font-semibold text-sm">
+                                                <%= item.productCount %>
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-right text-sm text-gray-900 font-medium">
+                                            ₹<%= item.productDiscountPrice %>
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            <% if(item.productId.discount > 0) { %>
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    <%= item.productId.discount %>% OFF
+                                                </span>
+                                            <% } else { %>
+                                                <span class="text-sm text-gray-500">-</span>
+                                            <% } %>
+                                        </td>
+                                        <td class="px-6 py-4 text-right text-sm font-bold text-gray-900">
+                                            ₹<%= item.productDiscountPrice * item.productCount %>
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            <% 
+                                                let statusColor = 'gray';
+                                                if(item.productStatus === 'Delivered') statusColor = 'green';
+                                                else if(item.productStatus === 'Shipped') statusColor = 'blue';
+                                                else if(item.productStatus === 'Pending') statusColor = 'yellow';
+                                                else if(item.productStatus === 'Cancelled') statusColor = 'red';
+                                                else if(item.productStatus === 'Confirmed') statusColor = 'purple';
+                                            %>
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-<%= statusColor %>-100 text-<%= statusColor %>-800">
+                                                <%= item.productStatus %>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-end pt-6 border-t border-gray-200">
+                        <button
+            onclick="downloadOrderPDF()"
+            class="inline-flex items-center justify-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors shadow-md hover:shadow-lg"
+          >
+            <svg
+              class="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              ></path>
+            </svg>
+            Download Invoice
+          </button>
+                    <button 
+                        onclick="window.print()" 
+                        class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+                    >
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                        </svg>
+                        Print Order
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+      async function downloadOrderPDF() {
+    try {
+      const orderId = "<%= order._id %>";
+      const response = await fetch(`/orders/download-pdf/${orderId}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) throw new Error("PDF generation failed");
+
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = `order-${orderId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to download invoice.",
+      });
+    }
+  }
+</script>
+
+<!-- Print Styles -->
+<style>
+@media print {
+    .no-print, nav, aside, button {
+        display: none !important;
+    }
+    
+    body {
+        background: white;
+    }
+    
+    .ml-64 {
+        margin-left: 0 !important;
+    }
+    
+    .shadow-lg, .shadow-md {
+        box-shadow: none !important;
+    }
+}
+</style>
+
+<%- include('../layouts/footer.ejs') %>

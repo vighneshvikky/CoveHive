@@ -44,9 +44,10 @@
                   <% order.items.forEach(item => { %>
                     
                       <div class="flex flex-col md:flex-row p-6 gap-6">
-                          <button onclick="viewOrder('<%=order._id%>')"><img src="/uploads/<%= item.productImage %>" 
-                                
-                            class="w-full md:w-48 h-48 object-cover rounded-lg"></button>
+                          <a href="/orders/details/<%= order._id %>">
+                            <img src="/uploads/<%= item.productImage %>" 
+                              class="w-full md:w-48 h-48 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity">
+                          </a>
                           
                           <div class="flex-1 space-y-4">
                               <div class="flex justify-between items-start">
@@ -54,7 +55,7 @@
                                       <%=item.productId.name%>
                                   </h5>
                                   <p class="text-lg font-bold text-gray-900">
-                                    <i class="fa-solid fa-indian-rupee-sign"></i><%= item.productDiscountPrice.toFixed(2) %> x <%= item.productCount %>%>
+                                    <i class="fa-solid fa-indian-rupee-sign"></i><%= item.productDiscountPrice.toFixed(2) %> x <%= item.productCount %>
                                   </p>
                               </div>
 
@@ -84,8 +85,8 @@
                                       <span class="w-2.5 h-2.5 rounded-full bg-violet-500"></span>
                                       <strong class="font-medium text-violet-600">Requested</strong>
                                   </div>
-                                  <p class="text-gray-600 text-sm">Your Request has been send.</p>
-                                   <%}else if (item.prouductStatus === 'Rejected'){%>
+                                  <p class="text-gray-600 text-sm">Your Request has been sent.</p>
+                                   <%}else if (item.productStatus === 'Rejected'){%>
                                     <div class="flex items-center gap-2">
                                       <span class="w-2.5 h-2.5 rounded-full bg-gray-500"></span>
                                       <strong class="font-medium text-gray-600">Rejected</strong>
@@ -100,19 +101,24 @@
                                   <% } %>
                               </div>
 
-                              <a href="#" class="inline-flex items-center text-green-600 hover:text-green-700 text-sm font-medium">
+                              <!-- View Details Button -->
+                              <a href="/orders/details/<%= order._id %>" 
+                                 class="inline-flex items-center text-blue-600 hover:text-blue-700 text-sm font-medium">
+                                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                  </svg>
+                                  View Order Details
+                              </a>
+
+                              <a href="#" class="inline-flex items-center text-green-600 hover:text-green-700 text-sm font-medium ml-4">
                                   <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                                   </svg>
                                   Rate & Review Product
-                                  
                               </a>
                             
-                    
-                         
                               <!-- Cancel and Return button -->
-
-    
                               <% if(item.productStatus === 'Delivered') { %>
                                 <div class="flex flex-wrap gap-3 pt-4">
                                   <button onclick="openModal('<%= order._id %>','<%= item.productId._id%>', 'return')" 
@@ -122,16 +128,14 @@
                                 </div>
                               <% } else { %>
                                 <%if(item.productStatus === 'Cancelled'||item.productStatus === 'Returned'||item.productStatus === 'Requested'||item.productStatus === 'Rejected'){ %>
-                     <%  }else{ %>
+                                <%  }else{ %>
                                 <div class="flex flex-wrap gap-3 pt-4">
                                   <button onclick="openModal('<%= order._id %>','<%=item.productId._id%>', 'cancel')" 
                                           class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors">
                                     Cancel Order
                                   </button>
                                 </div>
-
-                          <%    } %>
-                   
+                                <%    } %>
                               <% } %>
 
                               <% if(item.productStatus === 'Pending'){ %>
@@ -151,37 +155,35 @@
                                   </div>
                                 <% } %>
                               <% } %> 
-
-                     
                           </div>
                       </div>
-                      <div id="cancelModal" class="hidden fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-                        <div class="bg-white rounded-lg w-1/3 p-6">
+
+                      <!-- Cancel/Return Modal -->
+                      <div id="cancelModal" class="hidden fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+                        <div class="bg-white rounded-lg w-full max-w-md mx-4 p-6">
                           <h2 class="text-lg font-semibold mb-4" id="modalTitle">Reason for Action</h2>
                           <form id="cancelForm">
-                         
                               <input type="hidden" id="orderId" name="orderId" value="<%=order._id%>">
                               <input type="hidden" id="actionType" name="actionType" value="">
                               <input type="hidden" id="productId" value="<%=order.items.productId %>">
                         
                               <div class="mb-4">
-                                <label for="reason" class="block text-gray-700">Enter Reason:</label>
+                                <label for="reason" class="block text-gray-700 mb-2">Enter Reason:</label>
                                 <textarea id="reason" name="reason" class="w-full p-2 border border-gray-300 rounded-md" rows="3" required></textarea>
                               </div>
                               
                               <div class="flex justify-end gap-3">
-                                <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-500 text-white rounded-md">Cancel</button>
-                                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md">Submit</button>
+                                <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600">Cancel</button>
+                                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Submit</button>
                               </div>
-                       
-                      
                           </form>
                         </div>
                       </div>
                   <% }) %>
               </div>
-         
           <% }) %>
+
+          <!-- Pagination -->
           <div class="mt-4 flex justify-center space-x-4">
             <% if (currentPage > 1) { %>
               <a href="?page=<%= currentPage - 1 %>&limit=10" class="bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">Previous</a>
@@ -205,400 +207,140 @@
       </div>
   </div>
 </div>
-<!-- Modal for Reason Input -->
-
-
-
-<!-- Modal -->
-
-<div id="modalBackground" class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity z-40 hidden"></div>
-<div id="orderModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
-    <div class="relative w-full max-w-4xl bg-white rounded-xl shadow-2xl">
-        <!-- Header -->
-        <h2 class="text-2xl font-semibold text-gray-900 p-6 border-b border-gray-200">Order Details</h2>
-        
-        <!-- Main Content -->
-        <div class="p-6">
-            <!-- Two Column Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <!-- Left Column -->
-                <div>
-                    <div class="mb-4">
-                        <p class="font-medium text-gray-900">Order ID: <span id="orderId" class="text-gray-700"></span></p>
-                        <p class="font-medium text-gray-900">Order Date: <span id="orderDate" class="text-gray-700"></span></p>
-                    </div>
-                    
-                    <div class="mt-6">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Shipping Address</h3>
-                        <p id="shippingAddress" class="text-gray-700"></p>
-                    </div>
-                </div>
-                
-                <!-- Right Column -->
-                <div>
-                    <div class="mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Payment Method</h3>
-                        <p id="paymentMethod" class="text-gray-700"></p>
-                    </div>
-                    <div class="mb-4">
-                      <h3 class="text-lg font-semibold text-gray-900 mb-2">Coupon discount</h3>
-                      <p id="couponApplied" class="text-gray-700"></p>
-                  </div> 
-                </div>
-                <div>
-              </div>
-            </div>
-            
-            <!-- Items Table -->
-            <div class="mt-8">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Items Purchased</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead>
-                            <tr class="bg-gray-50">
-                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Product</th>
-                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Image</th>
-                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Quantity</th>
-                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Price</th>
-                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Discount</th>
-                                <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Status</th>
-                               
-                              
-                            </tr>
-                        </thead>
-                        <tbody id="itemsPurchased" class="divide-y divide-gray-200">
-                            <!-- Items will be dynamically inserted here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <!-- Total Price -->
-            <div class="mt-6 flex justify-end">
-                <p class="text-lg">
-                    <span class="font-semibold text-gray-900">Total Price:</span>
-                    <span class="ml-2">₹<span id="totalPrice" class="text-gray-900"></span></span>
-                </p>
-            </div>
-            <button onclick="downloadOrderPDF()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
-              Download Invoice as PDF
-          </button>
-            <!-- Close Button -->
-            <div class="mt-8 flex justify-end">
-                <button onclick="closeModalOrderDetails()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors duration-200">
-                    Close
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Include SweetAlert2 Script -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-
-  function viewOrder(orderId){
-    console.log('hai');
-    
-    document.getElementById('modalBackground').classList.remove('hidden');
-    document.getElementById('orderModal').classList.remove('hidden');
-
-    fetch(`/orders/${orderId}`)
-    .then(response => response.json())
-    .then(order => {
- console.log(`order = ${order}`);
- 
-               // Populate basic order details
-               document.getElementById('orderId').textContent = order.orderId || order._id;
-            document.getElementById('orderDate').textContent = new Date(order.createdAt).toLocaleDateString();
-            document.getElementById('shippingAddress').textContent = `
-    ${order.address.contactName}
-    ${order.address.street}, 
-    ${order.address.city}, 
-    ${order.address.state}, 
-    ${order.address.country} - ${order.address.pincode}
-`;
-            document.getElementById('paymentMethod').textContent = order.paymentMethod;
-            document.getElementById('couponApplied').textContent = `₹${order.couponDiscount}`
-            document.getElementById('totalPrice').textContent = order.totalPrice.toLocaleString();
-
-            // Clear existing items
-            const itemsTable = document.getElementById('itemsPurchased');
-            itemsTable.innerHTML = '';
-
-            // Add items with status
-            order.items.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-    <tr class="hover:bg-gray-50 transition-colors">
-    <!-- Product Name -->
-    <td class="px-6 py-4">
-        <p class="text-sm text-gray-700 font-medium">${item.productId.name}</p>
-    </td>
-    
-    <!-- Product Image -->
-    <td class="px-6 py-4">
-        <img src="/uploads/${item.productImage}" 
-             alt="Product image" 
-             class="w-16 h-16 object-cover rounded-lg shadow-sm hover:shadow-md transition-shadow">
-    </td>
-    
-    <!-- Product Count -->
-    <td class="px-6 py-4">
-        <span class="text-sm text-gray-700">${item.productCount}</span>
-    </td>
-    
-    <!-- Product Price -->
-    <td class="px-6 py-4">
-        <span class="text-sm font-medium text-gray-900">
-            ₹${item.productDiscountPrice.toFixed(2)} × ${item.productCount}
-        </span>
-    </td>
-    
-    <!-- Discount -->
-    <td class="px-6 py-4">
-        <span class="text-sm font-medium text-green-600">
-            ${item.productId.discount}%
-        </span>
-    </td>
-    
-    <!-- Status -->
-    <td class="px-6 py-4">
-        <div class="flex flex-col gap-2">
-            <span class="px-3 py-1 text-xs font-medium rounded-full inline-flex items-center justify-center ${getStatusClass(item.productStatus)}">
-                ${item.productStatus}
-            </span>
-            <span class="text-xs text-gray-500">
-                ${getStatusTimeline(item.productStatus)}
-            </span>
-        </div>
-    </td>
-</tr>
-            
-                `;
-                itemsTable.appendChild(row);
-            });
-
-            // Add order status section
-            const orderStatusDiv = document.getElementById('orderStatus');
-            if (orderStatusDiv) {
-                orderStatusDiv.innerHTML = `
-                    <div class="flex items-center space-x-2">
-                        <span class="px-3 py-1 text-xs font-medium rounded-full ${getStatusClass(order.status)}">
-                            ${order.status}
-                        </span>
-                        ${order.isCancel ? 
-                            '<span class="text-red-600 text-sm">(Order Cancelled)</span>' 
-                            : ''}
-                    </div>
-                `;
-            }
-    })
-  }
-  function getStatusClass(status) {
-    const statusClasses = {
-        'Pending': 'bg-yellow-100 text-yellow-800',
-        'Confirmed': 'bg-green-100 text-green-800',
-        'Shipped': 'bg-blue-100 text-blue-800',
-        'Delivered': 'bg-purple-100 text-purple-800',
-        'Cancelled': 'bg-red-100 text-red-800',
-        'Returned': 'bg-gray-100 text-gray-800'
-    };
-    return statusClasses[status] || 'bg-gray-100 text-gray-800';
-}
-
-function getStatusTimeline(currentStatus) {
-    const statuses = ['Pending', 'Confirmed', 'Shipped', 'Delivered'];
-    const currentIndex = statuses.indexOf(currentStatus);
-    
-    if (currentStatus === 'Cancelled' || currentStatus === 'Returned') {
-        return ''; // Don't show timeline for cancelled/returned items
-    }
-
-    return `
-        <div class="mt-2">
-            <div class="flex items-center space-x-2 text-xs">
-                ${statuses.map((status, index) => `
-                    <span class="${index <= currentIndex ? 'text-blue-600' : 'text-gray-400'}">
-                        ${status}
-                    </span>
-                    ${index < statuses.length - 1 ? `
-                        <span class="${index < currentIndex ? 'text-blue-600' : 'text-gray-300'}">→</span>
-                    ` : ''}
-                `).join('')}
-            </div>
-        </div>
-    `;
-}
-  function closeModalOrderDetails() {
-    document.getElementById('modalBackground').classList.add('hidden');
-    document.getElementById('orderModal').classList.add('hidden');
-}
-// When the Cancel Order button is clicked, open the modal and set the order ID
+// Open Modal for Cancel/Return
 function openModal(orderId, productId, action) {
-  console.log(`productId = ${productId}`)
-  console.log(`orderId = ${orderId}`)
-  console.log(`action = ${action}`)
-
     document.getElementById('cancelModal').classList.remove('hidden');
     document.getElementById('orderId').value = orderId;
-    document.getElementById('productId').value = productId; // Set productId
+    document.getElementById('productId').value = productId;
     document.getElementById('actionType').value = action;
     document.getElementById('modalTitle').innerText = `Reason for ${action.charAt(0).toUpperCase() + action.slice(1)} Order`;
 }
 
-  // Close Modal Function
-  function closeModal  () {
+// Close Modal Function
+function closeModal() {
     document.getElementById('cancelModal').classList.add('hidden');
     document.getElementById('reason').value = '';
-  }
+}
 
 // JavaScript for submitting the cancel/return form with reason
 document.getElementById('cancelForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  console.log('prevented')
-  const orderId = document.getElementById('orderId').value;
-  const productId = document.getElementById('productId').value;
-  const actionType = document.getElementById('actionType').value;
-  const reason = document.getElementById('reason').value;
+    e.preventDefault();
+    const orderId = document.getElementById('orderId').value;
+    const productId = document.getElementById('productId').value;
+    const actionType = document.getElementById('actionType').value;
+    const reason = document.getElementById('reason').value;
 
-  fetch(`/cancelOrder/${orderId}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: actionType, reason: reason ,productId:productId})
-  })
-  .then(response => response.json())
-  .then(data => {
-    Swal.fire({
-      icon: 'success',  // Change this to 'error' for error messages
-      title: 'Success',
-      text: data.message,  // Display success message from server
-      confirmButtonText: 'OK',
-    }).then(() => {
-      closeModal();  // Close the modal
-      // Optionally refresh the page or update the UI
-      location.reload(); // Uncomment this if you want to refresh the page
+    fetch(`/cancelOrder/${orderId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: actionType, reason: reason, productId: productId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: data.message,
+            confirmButtonText: 'OK',
+        }).then(() => {
+            closeModal();
+            location.reload();
+        });
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while processing your request.',
+            confirmButtonText: 'OK'
+        });
     });
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    Swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: 'An error occurred while processing your request.',
-      confirmButtonText: 'OK'
-    });
-  });
 });
 
-
 function showError(message) {
-  // You can customize this to show the error on the UI
-  alert(message);
-  console.error(message);
+    alert(message);
+    console.error(message);
 }
 
+async function retryPayment(orderId) {
+    try {
+        const res = await fetch('/retryRazorPay', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ orderId })
+        });
 
-async function downloadOrderPDF (){
-try {
-  const orderId = document.getElementById('orderId').value
-  const response = await fetch(`/orders/dowload-pdf/${orderId}`,{
-    method:'GET',
-    headers:{
-      'Content-type':'application/json',
-    },
-  });
-
-  if(!response.ok) throw new Error('PDF generation failed')
-  const blob = await response.blob();
-        const downloadUrl = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = `order-${orderId}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(downloadUrl);
-} catch (error) {
-  console.log(`error dowloading PDf ${error}`)
-}
-}
-async function retryPayment(orderId){
-  console.log(`orderId = ${orderId}`)
-  try {
-                    const res = await fetch('/retryRazorPay', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ orderId })
-                    });
-
-                    if (res.ok) {
-                        const retryPaymentData = await res.json();
-                        const options = {
-                            key: 'rzp_test_KDYrLJHnu3O9Ip',
-                            amount: retryPaymentData.amount,
-                            currency: "INR",
-                            name: "CoveHive",
-                            order_id: retryPaymentData.razorpayOrderId.id,
-                            handler: async function (response) {
-                                try {
-                                    const resData = {
-                                        orderId,
-                                        razorpayOrderId: response.razorpay_order_id,
-                                        paymentId: response.razorpay_payment_id,
-                                    };
-                                    const payment = await fetch('/retryPayment', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify(resData)
-                                    });
-
-                                    if (payment.ok) {
-                                        const paymentData = await payment.json();
-                                        window.location.href = "/conform-order";
-                                    } else {
-                                        const error = await payment.text();
-                                        showError(error);
-                                    }
-                                } catch (error) {
-                                    console.error(`Handler error: ${error}`);
-                                }
-                            },
-                            prefill: {
-                                name: retryPaymentData.address.contactName,
-                                email: retryPaymentData.address.street,
-                                contact: retryPaymentData.address.pincode
-                            },
-                            notes: {
-                                address: retryPaymentData.address
-                            },
-                            theme: {
-                                color: "#3399cc"
-                            },
-                            "modal": {
-                                "ondismiss": function () {
-                                    window.location.href = '/orders';
-                                }
-                            }
+        if (res.ok) {
+            const retryPaymentData = await res.json();
+            const options = {
+                key: 'rzp_test_KDYrLJHnu3O9Ip',
+                amount: retryPaymentData.amount,
+                currency: "INR",
+                name: "CoveHive",
+                order_id: retryPaymentData.razorpayOrderId.id,
+                handler: async function (response) {
+                    try {
+                        const resData = {
+                            orderId,
+                            razorpayOrderId: response.razorpay_order_id,
+                            paymentId: response.razorpay_payment_id,
                         };
-                        const rzp1 = new Razorpay(options);
-                        rzp1.on('payment.failed', function (response) {
-                            showError('Payment Failure');
+                        const payment = await fetch('/retryPayment', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(resData)
                         });
-                        rzp1.open();
-                    } else {
-                        const error = await res.text();
-                        showError(error);
+
+                        if (payment.ok) {
+                            window.location.href = "/conform-order";
+                        } else {
+                            const error = await payment.text();
+                            showError(error);
+                        }
+                    } catch (error) {
+                        console.error(`Handler error: ${error}`);
                     }
-                } catch (error) {
-                    console.error(`Error from retry payment fetch: ${error}`);
+                },
+                prefill: {
+                    name: retryPaymentData.address.contactName,
+                    email: retryPaymentData.address.street,
+                    contact: retryPaymentData.address.pincode
+                },
+                notes: {
+                    address: retryPaymentData.address
+                },
+                theme: {
+                    color: "#3399cc"
+                },
+                "modal": {
+                    "ondismiss": function () {
+                        window.location.href = '/orders';
+                    }
                 }
+            };
+            const rzp1 = new Razorpay(options);
+            rzp1.on('payment.failed', function (response) {
+                showError('Payment Failure');
+            });
+            rzp1.open();
+        } else {
+            const error = await res.text();
+            showError(error);
+        }
+    } catch (error) {
+        console.error(`Error from retry payment fetch: ${error}`);
+    }
 }
 </script>
 
