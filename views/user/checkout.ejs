@@ -294,76 +294,111 @@
 
     <!-- Order Summary -->
 
-    <div class="bg-white shadow-lg rounded-lg p-6 border border-[#14213d]">
-      <div class="bg-gray-200 p-4 mb-4">
-        <h5 class="text-lg font-semibold text-[#14213d]">
-          Order Summary <span class="float-right">#MN0124</span>
-        </h5>
-      </div>
-      <div class="overflow-x-auto">
-        <table class="min-w-full table-auto">
-          <thead>
-            <tr>
-              <th class="text-left text-[#14213d] py-2">Product</th>
-              <th class="text-left text-[#14213d] py-2">Product Desc</th>
-              <th class="text-left text-[#14213d] py-2">Price</th>
-              <th class="text-left text-[#14213d] py-2">Discount</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% cartDetails.items.forEach(item => { %>
-            <tr>
-              <td>
-                <img
-                  src="/uploads/<%= item.productImage %>"
-                  alt="<%= item.productId.name %>"
-                  class="w-16 h-16 rounded-lg"
-                />
-              </td>
-              <td>
-                <h5 class="text-sm font-semibold text-[#14213d]">
-                  <%= item.productId.name %>
-                </h5>
-                <p class="text-gray-500 text-sm">
-                  <%= item.productDiscountPrice.toFixed(2) %> x <%=
-                  item.productCount %>
-                </p>
-              </td>
-              <td class="text-[#14213d]">
-                <i class="fa-solid fa-indian-rupee-sign"></i><%=
-                (item.productDiscountPrice * item.productCount).toFixed(2) %>
-              </td>
-              <td class="py-3 px-4 text-gray-800 font-medium">
-                <span
-                  class="inline-flex items-center justify-center bg-green-100 text-green-800 rounded-full px-3 py-1"
-                >
-                  <%=item.productId.discount%>% OFF
-                </span>
-              </td>
-            </tr>
-            <% }) %>
+  
+<div class="bg-white shadow-lg rounded-lg p-6 border border-[#14213d]">
+  <div class="bg-gray-200 p-4 mb-4">
+    <h5 class="text-lg font-semibold text-[#14213d]">
+      Order Summary <span class="float-right">#MN0124</span>
+    </h5>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="min-w-full table-auto">
+      <thead>
+        <tr class="border-b border-gray-300">
+          <th class="text-left text-[#14213d] py-3 px-2">Product</th>
+          <th class="text-left text-[#14213d] py-3 px-2">Description</th>
+          <th class="text-right text-[#14213d] py-3 px-2">Price</th>
+          <th class="text-center text-[#14213d] py-3 px-2">Discount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Product Items -->
+        <% cartDetails.items.forEach(item => { %>
+        <tr class="border-b border-gray-200">
+          <td class="py-3 px-2">
+            <img
+              src="/uploads/<%= item.productImage %>"
+              alt="<%= item.productId.name %>"
+              class="w-16 h-16 rounded-lg object-cover"
+            />
+          </td>
+          <td class="py-3 px-2">
+            <h5 class="text-sm font-semibold text-[#14213d]">
+              <%= item.productId.name %>
+            </h5>
+            <p class="text-gray-500 text-sm mt-1">
+              ₹<%= item.productDiscountPrice.toFixed(2) %> × <%= item.productCount %>
+            </p>
+          </td>
+          <td class="py-3 px-2 text-right text-[#14213d] font-medium">
+            ₹<%= (item.productDiscountPrice * item.productCount).toFixed(2) %>
+          </td>
+          <td class="py-3 px-2 text-center">
+            <span class="inline-flex items-center justify-center bg-green-100 text-green-800 rounded-full px-3 py-1 text-xs font-semibold">
+              <%= item.productId.discount %>% OFF
+            </span>
+          </td>
+        </tr>
+        <% }) %>
 
-            <!-- Total Amount Row -->
-            <tr
-              class="border-t-2 border-gray-200 bg-slate-50 hover:bg-slate-100 transition-all duration-200"
-            >
-              <td
-                colspan="2"
-                class="py-4 px-6 text-right text-slate-900 font-semibold text-lg whitespace-nowrap"
-              >
-                Total :
-              </td>
-              <td class="py-4 px-6 text-red-600 font-semibold text-lg">
-                <div class="flex items-center gap-2">
-                  <span class="text-base">₹</span>
-                  <span><%= cartDetails.payableAmount.toFixed(2) %></span>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+        <!-- Spacing Row -->
+        <tr>
+          <td colspan="4" class="py-2"></td>
+        </tr>
+
+        <!-- Subtotal Row -->
+        <tr class="bg-slate-50">
+          <td colspan="2" class="py-3 px-4"></td>
+          <td colspan="2" class="py-3 px-4">
+            <div class="flex justify-between items-center">
+              <span class="text-slate-700 font-medium">Subtotal:</span>
+              <div class="flex items-center gap-1">
+                <span class="text-slate-900 font-medium">₹</span>
+                <span id="subtotal" class="text-slate-900 font-medium">
+                  <%= cartDetails.totalPrice ? cartDetails.totalPrice.toFixed(2) : cartDetails.payableAmount.toFixed(2) %>
+                </span>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Coupon Discount Row (conditionally shown) -->
+        <% if (cartDetails.isCouponApplied && cartDetails.couponDiscount) { %>
+        <tr id="couponDiscountRow" class="bg-green-50">
+          <td colspan="2" class="py-3 px-4"></td>
+          <td colspan="2" class="py-3 px-4">
+            <div class="flex justify-between items-center">
+              <span class="text-green-700 font-medium">Coupon Discount:</span>
+              <div class="flex items-center gap-1">
+                <span class="text-green-600 font-semibold">-₹</span>
+                <span id="couponDiscount" class="text-green-600 font-semibold">
+                  <%= cartDetails.couponDiscount.toFixed(2) %>
+                </span>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <% } %>
+
+        <!-- Total Amount Row -->
+        <tr class="border-t-2 border-gray-300 bg-slate-100">
+          <td colspan="2" class="py-4 px-4"></td>
+          <td colspan="2" class="py-4 px-4">
+            <div class="flex justify-between items-center">
+              <span class="text-slate-900 font-bold text-lg">Total:</span>
+              <div class="flex items-center gap-1">
+                <span class="text-red-600 font-bold text-lg">₹</span>
+                <span id="finalTotal" class="text-red-600 font-bold text-lg">
+                  <%= cartDetails.payableAmount.toFixed(2) %>
+                </span>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
   </div>
 </div>
 <!-- Button to Open the Modal -->
@@ -668,30 +703,25 @@ function applyCoupon() {
   const selectedCouponId = document.getElementById('coupons').value;
   const couponError = document.getElementById('couponError');
   
-  // Clear previous errors
   couponError.innerHTML = "";
   couponError.style.display = "none";
 
-  // Validate coupon selection
   if (!selectedCouponId || selectedCouponId === "") {
     couponError.innerHTML = "Please select a coupon";
     couponError.style.display = "block";
     
-    // Fallback if Swal is not loaded
     if (typeof Swal === 'undefined') {
       alert("Please select a coupon");
     }
     return;
   }
 
-  // Disable button to prevent multiple clicks
   const applyCouponBtn = document.getElementById('applyCouponBtn');
   applyCouponBtn.disabled = true;
   applyCouponBtn.textContent = "Applying...";
 
-  // Try both possible data structures your backend might expect
   const data = {
-    couponCode: selectedCouponId  // Keep original key name
+    couponCode: selectedCouponId
   };
 
   fetch('/applyCoupon', {
@@ -701,32 +731,47 @@ function applyCoupon() {
     },
     body: JSON.stringify(data)
   })
-    .then(response => {
-      // Check if response is ok before parsing
-      if (!response.ok) {
-        return response.json().then(err => {
-          throw new Error(err.message || 'Failed to apply coupon');
-        });
-      }
-      return response.json();
-    })
+    .then(response => response.json())
     .then(result => {
+      // Re-enable button first
+      applyCouponBtn.disabled = false;
+      applyCouponBtn.textContent = "Apply Coupon";
+      
       if (result.status === 'success') {
-        // Update the total amount if provided in response
-        if (result.newTotal) {
+        // Update UI with discount information
+        if (result.newTotal !== undefined) {
           totalAmount = result.newTotal;
+          
+          const finalTotalElement = document.getElementById('finalTotal');
+          if (finalTotalElement) {
+            finalTotalElement.textContent = result.newTotal.toFixed(2);
+          }
+          
           const orderPlacementBtn = document.getElementById('place-order-btn');
           if (orderPlacementBtn) {
             orderPlacementBtn.setAttribute('data-amount', totalAmount);
           }
         }
         
-        // Check if Swal is available
+        // Update subtotal if provided
+        if (result.subtotal !== undefined) {
+          const subtotalElement = document.getElementById('subtotal');
+          if (subtotalElement) {
+            subtotalElement.textContent = result.subtotal.toFixed(2);
+          }
+        }
+        
+        // Update or create discount row
+        if (result.discountAmount !== undefined) {
+          updateDiscountDisplay(result.discountAmount);
+        }
+        
         if (typeof Swal !== 'undefined') {
           Swal.fire({
             icon: 'success',
-            title: 'Coupon Applied',
-            text: result.message || 'Coupon applied successfully'
+            title: 'Coupon Applied!',
+            text: result.message || `Coupon applied successfully! You saved ₹${result.discountAmount ? result.discountAmount.toFixed(2) : '0.00'}`,
+            confirmButtonColor: '#10b981'
           }).then(() => {
             window.location.reload();
           });
@@ -735,25 +780,30 @@ function applyCoupon() {
           window.location.reload();
         }
       } else {
-        // Re-enable button on error
-        applyCouponBtn.disabled = false;
-        applyCouponBtn.textContent = "Apply Coupon";
+        // Handle specific error cases
+        const errorMessage = result.message || 'Coupon application failed';
         
         if (typeof Swal !== 'undefined') {
           Swal.fire({
             icon: 'error',
-            title: 'Coupon Failed',
-            text: result.message || 'Coupon application failed'
+            title: 'Cannot Apply Coupon',
+            text: errorMessage,
+            confirmButtonColor: '#ef4444',
+            html: errorMessage.includes('limit') 
+              ? `<p>${errorMessage}</p><p class="mt-2 text-sm text-gray-600">Please try a different coupon or remove the existing one first.</p>`
+              : errorMessage
           });
         } else {
-          alert(result.message || 'Coupon application failed');
+          alert(errorMessage);
         }
+        
+        // Reset coupon selection
+        document.getElementById('coupons').value = "";
       }
     })
     .catch(error => {
       console.error('Error while applying coupon:', error);
       
-      // Re-enable button on error
       applyCouponBtn.disabled = false;
       applyCouponBtn.textContent = "Apply Coupon";
       
@@ -761,7 +811,8 @@ function applyCoupon() {
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: error.message || 'An error occurred while applying the coupon'
+          text: error.message || 'An error occurred while applying the coupon',
+          confirmButtonColor: '#ef4444'
         });
       } else {
         alert(error.message || 'An error occurred while applying the coupon');
@@ -769,16 +820,51 @@ function applyCoupon() {
     });
 }
 
+function updateDiscountDisplay(discountAmount) {
+  // Check if discount row already exists
+  let discountRow = document.getElementById('couponDiscountRow');
+  
+  if (!discountRow) {
+    // Create new discount row
+    const tbody = document.querySelector('table tbody');
+    const totalRow = tbody.querySelector('tr:last-child');
+    
+    discountRow = document.createElement('tr');
+    discountRow.id = 'couponDiscountRow';
+    discountRow.className = 'bg-green-50';
+    discountRow.innerHTML = `
+      <td colspan="2" class="py-3 px-4"></td>
+      <td colspan="2" class="py-3 px-4">
+        <div class="flex justify-between items-center">
+          <span class="text-green-700 font-medium">Coupon Discount:</span>
+          <div class="flex items-center gap-1">
+            <span class="text-green-600 font-semibold">-₹</span>
+            <span id="couponDiscount" class="text-green-600 font-semibold">${discountAmount.toFixed(2)}</span>
+          </div>
+        </div>
+      </td>
+    `;
+    
+    // Insert before total row
+    tbody.insertBefore(discountRow, totalRow);
+  } else {
+    // Update existing discount amount
+    const couponDiscountElement = document.getElementById('couponDiscount');
+    if (couponDiscountElement) {
+      couponDiscountElement.textContent = discountAmount.toFixed(2);
+    }
+  }
+}
+
 function removeCoupon() {
   const selectedCouponId = document.getElementById('coupons').value;
   
-  // Disable button to prevent multiple clicks
   const removeCouponBtn = document.getElementById('removeCouponBtn');
   removeCouponBtn.disabled = true;
   removeCouponBtn.textContent = "Removing...";
 
   const data = {
-    couponCode: selectedCouponId  // Keep original key name
+    couponCode: selectedCouponId
   };
 
   fetch('/removeCoupon', {
@@ -789,7 +875,6 @@ function removeCoupon() {
     body: JSON.stringify(data)
   })
     .then(response => {
-      // Check if response is ok before parsing
       if (!response.ok) {
         return response.json().then(err => {
           throw new Error(err.message || 'Failed to remove coupon');
@@ -799,13 +884,21 @@ function removeCoupon() {
     })
     .then(result => {
       if (result.status === 'success') {
-        // Update the total amount if provided in response
-        if (result.newTotal) {
+        // Update UI
+        if (result.newTotal !== undefined) {
           totalAmount = result.newTotal;
+          document.getElementById('finalTotal').textContent = result.newTotal.toFixed(2);
+          
           const orderPlacementBtn = document.getElementById('place-order-btn');
           if (orderPlacementBtn) {
             orderPlacementBtn.setAttribute('data-amount', totalAmount);
           }
+        }
+        
+        // Remove discount row
+        const discountRow = document.getElementById('couponDiscountRow');
+        if (discountRow) {
+          discountRow.remove();
         }
         
         if (typeof Swal !== 'undefined') {
@@ -821,7 +914,6 @@ function removeCoupon() {
           window.location.reload();
         }
       } else {
-        // Re-enable button on error
         removeCouponBtn.disabled = false;
         removeCouponBtn.textContent = "Remove Coupon";
         
@@ -839,7 +931,6 @@ function removeCoupon() {
     .catch(error => {
       console.error('Error while removing coupon:', error);
       
-      // Re-enable button on error
       removeCouponBtn.disabled = false;
       removeCouponBtn.textContent = "Remove Coupon";
       
