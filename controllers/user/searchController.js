@@ -13,7 +13,7 @@ exports.searchProducts = async (req, res) => {
             searchQuery = { name: { $regex: q, $options: 'i' } };
         }
         const categories = await Category.find({isBlocked:false});
-        // Sort based on user's selection
+      
         if (sort) {
             switch (sort) {
                 case 'price_asc':

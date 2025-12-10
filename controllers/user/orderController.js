@@ -9,24 +9,22 @@ exports.placeOrder = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = 3;
 
-        // Get user from session
+   
         const user = req.session.user_id;
         if (!user) {
             req.flash('error', "User not found. Please login again.");
             return res.redirect("/login");
         }
 
-        // Calculate total orders for the specific user
         const orderCount = await Order.countDocuments({ userId: user });
 
-        // Fetch orders with pagination and populate product details
         const orderDetails = await Order.find({ userId: user })
             .populate({ path: 'items.productId' })
             .sort({ createdAt: -1 })
             .skip((page - 1) * limit)
             .limit(limit);
 
-        // Render the order page
+      
         res.render('user/order', {
             orderDetails,
             currentRoute: '/home',
@@ -35,7 +33,7 @@ exports.placeOrder = async (req, res) => {
             returnMessage: req.session.returnMessage || ''
         });
 
-        // Clear the return message after rendering
+     
         req.session.returnMessage = '';
 
     } catch (error) {

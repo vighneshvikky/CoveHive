@@ -40,21 +40,21 @@ exports.loadCategories = async (req,res) => {
 // }
 exports.insertCategories = async (req, res) => { 
   try {
-    // Ensure a file is uploaded
+  
     
     if (!req.file) {
-      return res.status(400).json({ error: 'Image file is required.' }); // Return error as JSON
+      return res.status(400).json({ error: 'Image file is required.' }); 
     }
 
-    // Check if category already exists
+    
     const exist = await Category.findOne({ name: req.body.name });
     if (exist) {
       console.log(`exist = ${exist}`);
       req.flash('error_msg', 'Category name should be unique.');
-      return res.redirect('/admin/categories'); // Redirect if exists
+      return res.redirect('/admin/categories'); 
     }
 
-    // Create and save the new category
+    
     const newCategory = new Category({
       name: req.body.name,
       img: req.file.filename,
@@ -62,13 +62,13 @@ exports.insertCategories = async (req, res) => {
     console.log(`categoryName = ${req.body.name}, image = ${req.file.filename}`)
     await newCategory.save();
 
-    // Flash message and redirect on success
+    
     req.flash('success_msg', 'Category added successfully.');
     res.redirect('/admin/categories');
   
   } catch (error) {
-    console.error('Error adding category:', error); // More detailed logging
-    res.status(500).json({ error: error.message }); // Return error message as JSON
+    console.error('Error adding category:', error); 
+    res.status(500).json({ error: error.message }); 
   }
 }
 

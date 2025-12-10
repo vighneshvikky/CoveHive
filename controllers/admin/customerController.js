@@ -40,7 +40,7 @@ exports.blockUser = async (req, res) => {
       // Toggle the is_Blocked field
       user.is_blocked = !user.is_blocked;
   
-      // Save the updated user to the database
+    
       await user.save();
   
       // console.log('Updated User:', user);
