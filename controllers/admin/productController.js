@@ -2,6 +2,7 @@ const Product = require('../../models/admin/productModel');
 
 const Category = require('../../models/admin/categoryModel');
 const { default: mongoose } = require('mongoose');
+const { ProductStatus, HttpStatus } = require('../../enums/app.enums');
 
 exports.loadProduct = async(req,res) => {
     const page = parseInt(req.query.page) || 1;
@@ -190,7 +191,7 @@ exports.deleteProduct = async (req,res) => {
     const productId = req.params.id;
     const deleteProduct = await Product.findByIdAndDelete(productId);
     if(!deleteProduct){
-      return res.status(404).send('Product not found'); 
+      return res.status(HttpStatus.NOT_FOUND).send('Product not found'); 
     }
 
     res.redirect('/admin/products')
@@ -201,16 +202,16 @@ exports.deleteProduct = async (req,res) => {
 
 
 exports.loadProductDetails = async (req,res) => {
-  const productId = req.params.id; // Get the product ID from the URL parameters
+  const productId = req.params.id; 
   try {
-      const product = await Product.findById(productId); // Fetch the product by ID directly
+      const product = await Product.findById(productId); 
       const relatedProducts = await Product.find({
         isBlocked:false,
         category:product.category,
         _id:{$ne:product._id}
       }).limit(4)
       if (!product) { 
-          return res.status(404).send('Product not found'); // Handle case where product doesn't exist
+          return res.status(HttpStatus.NOT_FOUND).send('Product not found'); 
       }
       const userName =  req.session.userName
       res.render('user/productDetails', {
@@ -218,9 +219,9 @@ exports.loadProductDetails = async (req,res) => {
          relatedProducts,
          currentRoute:'/home',
          userName 
-        }); // Render the product details EJS template
+        }); 
   } catch (error) {
       console.error(error);
-      res.status(500).send('Server Error'); // Handle server errors
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Server Error');
   }
 }

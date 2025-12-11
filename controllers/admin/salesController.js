@@ -1,6 +1,7 @@
 const Order = require('../../models/orderSchema')
 const xlsx = require('xlsx');
-const PDFDocument = require('pdfkit')
+const PDFDocument = require('pdfkit');
+const { HttpStatus } = require('../../enums/app.enums');
 
 const applyDateFilter = (filter) => {
   const now = new Date();
@@ -99,9 +100,9 @@ exports.sales = async (req, res) => {
     console.error('Error while rendering the sales report:', error);
 
     if (req.xhr || req.headers.accept.indexOf('json') > -1) {
-      return res.status(500).json({ message: 'Server Error', error: error.message });
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Server Error', error: error.message });
     } else {
-      res.status(500).render('error', { message: 'Server Error', error });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).render('error', { message: 'Server Error', error });
     }
   }
 };

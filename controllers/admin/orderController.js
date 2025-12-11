@@ -2,6 +2,7 @@ const Order = require('../../models/orderSchema');
 const Product = require('../../models/admin/productModel');
 const Wallet = require('../../models/walletSchema');
 const User = require('../../models/user/userSchema');
+const { OrderStatus, HttpStatus, ProductStatus, TransactionType, ActionsType } = require('../../enums/app.enums');
 exports.listOrders = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = 5;
@@ -14,7 +15,7 @@ exports.listOrders = async (req, res) => {
             .populate('userId')
             .populate('items.productId')
 
-        res.render('admin/order', {
+        res.rendxer('admin/order', {
             orders,
             currentPage: page,
             totalPages: Math.ceil(totalOrders / limit)
@@ -35,15 +36,15 @@ exports.changeOrderStatus = async (req, res) => {
             return res.json({ success: false, error: "Order not found" });
         }
 
-        // Find the product within the order and update its status
+       
         const item = order.items.find(item => item.productId.toString() === productId);
         if (!item) {
             return res.json({ success: false, error: "Product not found in the order" });
         }
 
         item.productStatus = status;
-        if (item.productStatus == 'Delivered') {
-            order.orderStatus = 'Pending'
+        if (item.productStatus == OrderStatus.DELIVERED) {
+            order.orderStatus = OrderStatus.PENDING
         }
 
         console.log(`product Status = ${item.productStatus}`)
@@ -65,13 +66,13 @@ exports.orderDetails = async (req, res) => {
             .populate('address');
 
         if (!order) {
-            return res.status(404).send('Order not found');
+            return res.status(HttpStatus.NOT_FOUND).send('Order not found');
         }
 
         res.render('admin/orderDetails', { order });
     } catch (error) {
         console.error('Error fetching order details:', error);
-        res.status(500).send('Server error');
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Server error');
     }
 }
 
@@ -83,13 +84,13 @@ exports.viewOrderDetails = async (req, res) => {
         const order = await Order.findById(orderId).populate('items.productId').exec();
 
         if (!order) {
-            return res.status(404).json({ message: 'Order not found' });
+            return res.status(HttpStatus.NOT_FOUND).json({ message: 'Order not found' });
         }
 
         res.json(order);
     } catch (error) {
         console.error(`Error from viewOrderDetails: ${error}`);
-        res.status(500).json({ message: 'Internal Server Error' });
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
     }
 };
 
@@ -103,11 +104,11 @@ exports.viewReturnReason = async (req, res) => {
         if (item && item.reasonForReturn) {
             res.render('admin/returnReason', { order, item, reasonForReturn: item.reasonForReturn });
         } else {
-            res.status(404).send('Return reason not found or item does not exist.');
+            res.status(HttpStatus.NOT_FOUND).send('Return reason not found or item does not exist.');
         }
     } catch (error) {
         console.log(`error from viewReturnReason ${error}`)
-        res.status(500).send('Error retrieving order details');
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Error retrieving order details');
     }
 }
 
@@ -122,15 +123,15 @@ exports.postViewReason = async (req, res) => {
         const item = order.items.find(item => item.productId._id.toString() === productId);
         console.log(`item = ${item}`)
         if (item) {
-            if (action === 'approve') {
-                item.productStatus = 'Returned';
+            if (action === ActionsType.APPROVE) {
+                item.productStatus = ProductStatus.RETURNED;
                 const userWallet = await Wallet.findOne({ userID: userId });
                 if (userWallet) {
                     userWallet.balance = (userWallet.balance || 0) + order.totalPrice;
                     userWallet.transaction.push({
                         wallet_amount: order.totalPrice,
                         order_id: order.orderId,
-                        transactionType: 'Credited',
+                        transactionType: TransactionType.CREDITED,
                         transaction_date: new Date()
                     });
                     await userWallet.save();
@@ -141,22 +142,22 @@ exports.postViewReason = async (req, res) => {
                         transaction: [{
                             wallet_amount: order.totalPrice,
                             order_id: order.orderId,
-                            transactionType: 'Credited',
+                            transactionType: TransactionType.CREDITED,
                             transaction_date: new Date()
                         }]
                     });
                 }
 
 
-            } else if (action == 'reject') {
-                item.productStatus = "Rejected"
+            } else if (action == ActionsType.REJECT) {
+                item.productStatus = ProductStatus.REJECTED
 
 
             } else {
-                res.status(400).send('Invalid action');
+                res.status(HttpStatus.BAD_REQUEST).send('Invalid action');
             }
         } else {
-            res.status(404).send('Item not found');
+            res.status(HttpStatus.NOT_FOUND).send('Item not found');
         }
 
         await order.save();

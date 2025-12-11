@@ -1,3 +1,4 @@
+const { HttpStatus } = require('../../enums/app.enums');
 const { findByIdAndUpdate } = require('../../models/admin/adminModel');
 const User = require('../../models/user/userSchema');
 
@@ -34,7 +35,7 @@ exports.blockUser = async (req, res) => {
   
       if (!user) {
         console.log('User not found');
-        return res.status(404).send('User not found');
+        return res.status(HttpStatus.NOT_FOUND).send('User not found');
       }
   
       // Toggle the is_Blocked field
@@ -48,7 +49,7 @@ exports.blockUser = async (req, res) => {
       res.redirect('/admin/customers');
     } catch (error) {
       console.error('Error updating user status:', error);
-      res.status(500).send('Error updating user status');
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Error updating user status');
     }
   };
   

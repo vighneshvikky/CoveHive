@@ -1,3 +1,4 @@
+const { HttpStatus } = require('../../enums/app.enums');
 const Category = require('../../models/admin/categoryModel');
 
 
@@ -43,7 +44,7 @@ exports.insertCategories = async (req, res) => {
   
     
     if (!req.file) {
-      return res.status(400).json({ error: 'Image file is required.' }); 
+      return res.status(HttpStatus.BAD_REQUEST).json({ error: 'Image file is required.' }); 
     }
 
     
@@ -68,7 +69,7 @@ exports.insertCategories = async (req, res) => {
   
   } catch (error) {
     console.error('Error adding category:', error); 
-    res.status(500).json({ error: error.message }); 
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: error.message }); 
   }
 }
 
