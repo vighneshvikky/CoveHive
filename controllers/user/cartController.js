@@ -1,6 +1,7 @@
 const User = require('../../models/user/userSchema');
 const Cart = require('../../models/user/cartSchema');
 const Product = require('../../models/admin/productModel');
+const { HttpStatus } = require('../../enums/app.enums');
 
 
 
@@ -18,7 +19,7 @@ try {
 } catch (error) {
   console.error('Error fetching cart:', error.message);
   req.flash('error', 'Error fetching cart');
-  res.status(500).send('Server error');
+  res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Server error');
 }
 };
 
@@ -94,7 +95,7 @@ const payableAmount  = cart.items.reduce((acc,item)=> acc+(item.productDiscountP
       return res.redirect('/cart');
   } catch (error) {
       console.error('Error adding to cart:', error.message);
-      return res.status(500).send('Server Error');
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Server Error');
   }
 };
 
@@ -109,19 +110,19 @@ exports.increment = async (req, res) => {
 
       
       if (!userId || !productId) {
-          return res.status(400).json({ success: false, message: 'Invalid request' });
+          return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: 'Invalid request' });
       }
 
       
       const product = await Product.findById(productId);
       if (!product) {
-          return res.status(404).json({ success: false, message: 'Product not found' });
+          return res.status(HttpStatus.NOT_FOUND).json({ success: false, message: 'Product not found' });
       }
 
       // Find the user's cart
       const cart = await Cart.findOne({ userId });
       if (!cart) {
-          return res.status(404).json({ success: false, message: 'Cart not found' });
+          return res.status(HttpStatus.NOT_FOUND).json({ success: false, message: 'Cart not found' });
       }
       cart.totalPrice = cart.items.reduce(
         (acc, item) => acc + item.productDiscountPrice,
@@ -130,7 +131,7 @@ exports.increment = async (req, res) => {
       // Find the product in the cart
       const index = cart.items.findIndex(p => p.productId.toString() === productId);
       if (index === -1) {
-          return res.status(404).json({ success: false, message: 'Product not found in cart' });
+          return res.status(HttpStatus.NOT_FOUND).json({ success: false, message: 'Product not found in cart' });
       }
 
       // Check current product count
@@ -141,12 +142,12 @@ exports.increment = async (req, res) => {
 
       // Validate maximum quantity
       if (newCount > maxQuantity) {
-          return res.status(400).json({ success: false, message: `Maximum quantity per product is ${maxQuantity}` });
+          return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: `Maximum quantity per product is ${maxQuantity}` });
       }
 
       // Validate available stock
       if (newCount > product.stock) { // Changed from product.productCount to product.stock
-          return res.status(400).json({ success: false, message: `Available quantity of this product is ${product.stock}` });
+          return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: `Available quantity of this product is ${product.stock}` });
       }
 
       // Update the product count in cart
@@ -160,7 +161,7 @@ exports.increment = async (req, res) => {
       await cart.save();
 
       // Send success response with updated cart information
-      res.status(200).json({
+      res.status(HttpStatus.OK).json({
           success: true,
           message: 'Product quantity updated successfully',
           updatedCart: cart,
@@ -170,7 +171,7 @@ exports.increment = async (req, res) => {
       });
   } catch (error) {
       console.error(`Error incrementing product quantity in cart: ${error}`);
-      res.status(500).json({ success: false, message: 'Internal server error' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ success: false, message: 'Internal server error' });
   }
 };
 
@@ -182,11 +183,11 @@ exports.decrement = async (req, res) => {
       const userId = req.session.user;
       const { productId } = req.body;
       if (!userId || !productId) {
-          return res.status(400).send('Invalid request');
+          return res.status(HttpStatus.BAD_REQUEST).send('Invalid request');
       }
       const cart = await Cart.findOne({ userId });
       if (!cart) {
-          return res.status(404).send('Cart not found');
+          return res.status(HttpStatus.NOT_FOUND).send('Cart not found');
       }
       const index = cart.items.findIndex(p => p.productId.toString() === productId);
 
@@ -201,7 +202,7 @@ exports.decrement = async (req, res) => {
           );
           cart.payableAmount =  cart.items.reduce((total, item) => total + (item.productDiscountPrice * item.productCount), 0);
           await cart.save();
-          res.status(200).json({
+          res.status(HttpStatus.OK).json({
               success: true,
               cartTotal: cart.items.reduce((total, item) => total + (item.productDiscountPrice * item.productCount), 0),
               productCount:cart.items[index].productCount,
@@ -209,7 +210,7 @@ exports.decrement = async (req, res) => {
               disableButton: cart.items[index]?.productCount === 1 
               productCount:cart.items[index].productCount;
       } else {
-          res.status(404).send('Product not found in cart');
+          res.status(HttpStatus.NOT_FOUND).send('Product not found in cart');
       }
   } catch (error) {
       console.error(`Error decrementing product quantity in cart: ${error}`);
@@ -245,6 +246,6 @@ exports.removeFromCart = async (req, res) => {
       res.redirect('/cart');
   } catch (error) {
       console.error('Error removing product from cart:', error);
-      res.status(500).send('Server error');
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Server error');
   }
 };

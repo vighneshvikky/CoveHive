@@ -1,5 +1,6 @@
 const PDFDocument = require('pdfkit');
 const Order = require('../../models/orderSchema');
+const { HttpStatus } = require('../../enums/app.enums');
 
 exports.generateOrderPDF = async (req, res) => {
     try {
@@ -9,13 +10,13 @@ exports.generateOrderPDF = async (req, res) => {
         const order = await Order.findById(orderId).populate('items.productId');
 
         if (!order) {
-            return res.status(404).json({ message: 'Order not found' });
+            return res.status(HttpStatus.NOT_FOUND).json({ message: 'Order not found' });
         }
 
         // Validate that products are populated
         const hasInvalidProducts = order.items.some(item => !item.productId);
         if (hasInvalidProducts) {
-            return res.status(400).json({ message: 'Some products could not be loaded' });
+            return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Some products could not be loaded' });
         }
 
         const doc = new PDFDocument({

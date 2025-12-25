@@ -336,7 +336,7 @@ exports.exportReport = async (req, res) => {
   } catch (error) {
     console.error('Error generating report:', error);
     if (!res.headersSent) {
-      res.status(500).json({ message: 'Server Error', error: error.message });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Server Error', error: error.message });
     }
   }
 };

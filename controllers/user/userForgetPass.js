@@ -4,6 +4,7 @@ const User = require('../../models/user/userSchema');
 const bcrypt = require('bcryptjs');
 const { error } = require('console');
 const { PerformanceObserverEntryList } = require('perf_hooks');
+const { HttpStatus } = require('../../enums/app.enums');
 
 
 let transporter = nodemailer.createTransport({
@@ -33,9 +34,7 @@ exports.forgotPassword = async (req, res) => {
 
         if (!user) {
             res.render('user/forgetPassword', { message: 'User with this email does not exist.' });
-            // res.render('user/forgetPassword', { message: 'User with this email does not exist.' });
-
-            // return res.status(400).send('User with this email does not exist.');
+        
         }
 
         // Generate a reset token
@@ -58,12 +57,12 @@ exports.forgotPassword = async (req, res) => {
         await transporter.sendMail(mailOptions);
 
         res.render('user/forgetPassword', { message: "Password reset link sent to your email." })
-        // res.status(200).send('Password reset link sent to your email.');
+       
 
     } catch (error) {
 
         console.log(error);
-        // res.status(500).send('Error sending reset link.');
+       
         res.render('user/forgetPassword', { message: 'Error sending reset link.' })
     }
 };
@@ -78,12 +77,12 @@ exports.getResetPassword = async (req, res) => {
         });
 
         if (!user) {
-            return res.status(400).send('Password reset token is invalid or has expired.');
+            return res.status(HttpStatus.BAD_REQUEST).send('Password reset token is invalid or has expired.');
         }
 
         res.render('user/resetPassword', { token }); // Render the reset password form
     } catch (error) {
-        res.status(500).send('Error loading reset password page.');
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Error loading reset password page.');
     }
 };
 
@@ -93,7 +92,7 @@ exports.postResetPassword = async (req, res) => {
         const { password, confirmPassword } = req.body;
 
         if (password !== confirmPassword) {
-            return res.status(400).send('Passwords do not match.');
+            return res.status(HttpStatus.BAD_REQUEST).send('Passwords do not match.');
         }
 
         const user = await User.findOne({
@@ -102,7 +101,7 @@ exports.postResetPassword = async (req, res) => {
         });
 
         if (!user) {
-            return res.status(400).send('Password reset token is invalid or has expired.');
+            return res.status(HttpStatus.BAD_REQUEST).send('Password reset token is invalid or has expired.');
         }
 
         // Update password and clear reset token
@@ -112,13 +111,13 @@ exports.postResetPassword = async (req, res) => {
 
         await user.save();
 
-        //  res.status(200).send('Password has been reset. You can now log in.');
+        
         req.flash('success_msg', 'Password has been reset. You can now log in.');
         return res.redirect('/login');
 
     } catch (error) {
         console.log(error);
-        res.status(500).send('Error resetting password.');
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Error resetting password.');
     }
 };
 

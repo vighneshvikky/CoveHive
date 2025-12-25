@@ -6,6 +6,7 @@ const dotenv = require('dotenv');
 const Product = require('../../models/admin/productModel');
 const Category = require('../../models/admin/categoryModel');
 const { isblocked } = require('../../middlewares/user/userAuth');
+const { HttpStatus } = require('../../enums/app.enums');
 dotenv.config()
 //------------------------------------ Function to hash the password---------------------------------------
 const securePassword = async (password) => {
@@ -288,7 +289,7 @@ exports.googleAuthCallback = async (req, res) => {
       
     } catch (error) {
       console.error(error.message);
-      res.status(500).send('Internal Server Error');
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Internal Server Error');
     }
   };
 
@@ -308,7 +309,7 @@ exports.googleAuthCallback = async (req, res) => {
           _id:{$ne:product._id}
         }).limit(4)
         if (!product) { 
-            return res.status(404).send('Product not found'); // Handle case where product doesn't exist
+            return res.status(HttpStatus.NOT_FOUND).send('Product not found'); // Handle case where product doesn't exist
         }
         const user = await User.findById(req.session.user_id)
         res.render('user/productDetails', {
@@ -418,7 +419,7 @@ exports.googleAuthCallback = async (req, res) => {
     
       } catch (error) {
         console.log("Error in all products page", error);
-        res.status(400).json({})
+        res.status(HttpStatus.BAD_REQUEST).json({})
         
       }
     }

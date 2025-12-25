@@ -1,7 +1,8 @@
 const e = require('connect-flash');
 const Product = require('../../models/admin/productModel');
 const User = require('../../models/user/userSchema')
-const Category = require('../../models/admin/categoryModel')
+const Category = require('../../models/admin/categoryModel');
+const { HttpStatus } = require('../../enums/app.enums');
 
 exports.searchProducts = async (req, res) => {
     try {
@@ -39,7 +40,7 @@ exports.searchProducts = async (req, res) => {
         res.render('user/allProducts', { products,user, searchQuery: q, selectedSort: sort,categories });
     } catch (error) {
         console.error('Error during search:', error.message);
-        res.status(500).send('Error during search');
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Error during search');
     }
 };
 
@@ -91,6 +92,6 @@ exports.searchAndFilterProducts = async (req, res) => {
         res.render('user/allProducts', { products, user, searchQuery: q, selectedSort: sort ,categories});
     } catch (error) {
         console.error('Error during search and filtering:', error.message);
-        res.status(500).send('Error during search and filtering');
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Error during search and filtering');
     }
 };

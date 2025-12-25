@@ -10,44 +10,45 @@ const  Razorpay = require('razorpay');
 const { concurrency } = require('sharp');
 const orderSchema = require('../../models/orderSchema');
 const Category = require('../../models/admin/categoryModel');
+const { HttpStatus } = require('../../enums/app.enums');
 
 exports.validateCheckout = async (req, res) => {
     try {
         if (!req.session.user) {
-            return res.status(401).json({ success: false, message: 'User not found, please log in again.' });
+            return res.status(HttpStatus.UNAUTHORIZED).json({ success: false, message: 'User not found, please log in again.' });
         }
 
         const userId = req.session.user_id;
         const cartDetails = await Cart.findOne({ userId }).populate('items.productId');
 
         if (!cartDetails) {
-            return res.status(404).json({ success: false, message: 'Cart not found.' });
+            return res.status(HttpStatus.NOT_FOUND).json({ success: false, message: 'Cart not found.' });
         }
 
         const items = cartDetails.items;
         if (items.length === 0) {
-            return res.status(400).json({ success: false, message: 'Your cart is empty.' });
+            return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: 'Your cart is empty.' });
         }
 
         for (const item of items) {
             const product = item.productId;
             if(product.isBlocked){
-                return res.status(400).json({ success: false, message: `Product "${product.name}" is not available.` });    
+                return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: `Product "${product.name}" is not available.` });    
             }
             if (!product.isAvailable) {
-                return res.status(400).json({ success: false, message: `Product "${product.name}" is not available.` });
+                return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: `Product "${product.name}" is not available.` });
             }
 
             if (item.productCount > product.stock) {
-                return res.status(400).json({ success: false, message: `The quantity of "${product.name}" exceeds the available stock.` });
+                return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: `The quantity of "${product.name}" exceeds the available stock.` });
             }
         }
 
         // If all checks pass
-        res.status(200).json({ success: true, message: 'Validation successful' });
+        res.status(HttpStatus.OK).json({ success: true, message: 'Validation successful' });
     } catch (error) {
         console.error('Error during checkout validation:', error);
-        res.status(500).json({ success: false, message: 'Server Error. Please try again later.' });
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ success: false, message: 'Server Error. Please try again later.' });
     }
 };
 
@@ -63,14 +64,14 @@ exports.getCheckoutPage = async (req,res) => {
       const user = await User.findById(userId).populate('addresses');
 
       if (!user) {
-        return res.status(404).send('User not found');
+        return res.status(HttpStatus.NOT_FOUND).send('User not found');
     }
     
     const cartDetails = await Cart.findOne({userId}).populate('items.productId');
 
     // console.log(`cartDetails = ${cartDetails}`)  
     if (!cartDetails) {
-        return res.status(404).send('Cart not found');
+        return res.status(HttpStatus.NOT_FOUND).send('Cart not found');
     }
     const items = cartDetails.items;
     if (items.length === 0) {
@@ -121,7 +122,7 @@ if (!wallet) {
             
         } catch (error) {
             console.error('Error fetching addresses:', error);
-            res.status(500).send('Server Error');
+            res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Server Error');
         }
     
 }
@@ -149,7 +150,7 @@ exports.paymentRender = async (req,res) =>{
         
         const totalAmount = req.params.amount;
         if(!totalAmount){
-            return res.status(404).json({error:'Amount parameter is missing'});
+            return res.status(HttpStatus.NOT_FOUND).json({error:'Amount parameter is missing'});
         }
 
         const instance = new Razorpay({
@@ -166,14 +167,14 @@ exports.paymentRender = async (req,res) =>{
         instance.orders.create(options, (error, order) => {
             if (error) {
                 console.error(`Failed to create order: ${error}`);
-                return res.status(500).json({ error: `Failed to create order: ${error.message}` });
+                return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: `Failed to create order: ${error.message}` });
             }
-            return res.status(200).json({ orderID: order.id });
+            return res.status(HttpStatus.OK).json({ orderID: order.id });
         });
 
     } catch (error) {
         console.error(`Error on orders in checkout: ${error}`);
-        return res.status(500).json({ error: 'Internal server error' });
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
     }
 }
 
@@ -209,7 +210,7 @@ let discountPrice = cartItems.totalPrice - cartItems.payableAmount;
 
 
 if (!cartItems || !cartItems.items || cartItems.items.length === 0) {
-    return res.status(400).json({ success: false, message: 'Your cart is empty or could not be found.' });
+    return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: 'Your cart is empty or could not be found.' });
 }
 
 const paymentDetails = ["Cash on delivery", "Wallet", "razorpay"];
@@ -224,12 +225,12 @@ const user = await User.findById(req.session.user_id).populate('addresses')
 
 if(paymentDetails[paymentMode] === 'Cash on delivery'){
     if(totalPrices > 1000){
-  return res.status(400).json({sucess:false,message:'COD below 1000 only.'})
+  return res.status(HttpStatus.BAD_REQUEST).json({sucess:false,message:'COD below 1000 only.'})
     }
 }
 
 if (!user || !user.addresses|| !user.addresses[addressIndex]) {
-    return res.status(400).json({ success: false, message: 'Selected address is not valid.' });
+    return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: 'Selected address is not valid.' });
 }
 
 const newOrder = new Order({
@@ -266,7 +267,7 @@ await newOrder.save();
 if(paymentDetails[paymentMode] === 'Wallet'){
     const wallet = await Wallet.findOne({ userID: userId });
     if (!wallet || wallet.balance < cartItems.payableAmount) {
-        return res.status(400).json({ success: false, message: 'Insufficient wallet balance.' });
+        return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: 'Insufficient wallet balance.' });
     }
     wallet.balance -= cartItems.payableAmount;
     wallet.transaction.push({
@@ -287,7 +288,7 @@ await wallet.save();
          }
 
 await Cart.deleteOne({ userId: req.session.user_id });
-return res.status(200).json({ success: true, message: 'Order placed successfully!' });
+return res.status(HttpStatus.OK).json({ success: true, message: 'Order placed successfully!' });
 
 
 } catch (error) {
@@ -308,14 +309,14 @@ exports.applyCoupon = async (req,res) =>{
           const coupon = await Coupon.findById(couponCode);
           
           if (!coupon) {
-            return res.status(400).json({
+            return res.status(HttpStatus.BAD_REQUEST).json({
               status: "error",
               message: "Coupon not found",
             });
           }
 
           if(!coupon.isActive){
-            return res.status(400).json({
+            return res.status(HttpStatus.BAD_REQUEST).json({
                 status:'error',
                 message:'Coupon not active'
             });
@@ -323,7 +324,7 @@ exports.applyCoupon = async (req,res) =>{
 
 
        if(!coupon.endDate > new Date()){
-        return res.status(400).json({
+        return res.status(HttpStatus.BAD_REQUEST).json({
             status:'error',
             message:'Coupon expired'
         })
@@ -339,7 +340,7 @@ exports.applyCoupon = async (req,res) =>{
 
        if(couponUsage && couponUsage.usageCount >= coupon.usageCount){
  
-        return res.status(400).json({
+        return res.status(HttpStatus.BAD_REQUEST).json({
             status:'error',
             message:"You've hit the limit for coupon usage."
         })
@@ -349,7 +350,7 @@ exports.applyCoupon = async (req,res) =>{
 
        if(!cart){
         return res
-        .status(404)
+        .status(HttpStatus.NOT_FOUND)
         .json({status:'error',message:'Cart not found'})
        }
        const total = cart.payableAmount;

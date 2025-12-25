@@ -1,6 +1,7 @@
 const dotenv = require('dotenv');
 const User = require('../../models/user/userSchema');
-const Address = require('../../models/addressSchema')
+const Address = require('../../models/addressSchema');
+const { HttpStatus } = require('../../enums/app.enums');
 
 dotenv.config();
 
@@ -47,26 +48,7 @@ exports.loadAddress = async (req,res) => {
 }
 
 
-// exports.postAddAddress = async (req,res) => {
-//     try {
-//         const { fullName,street, city, pincode, state, country } = req.body;
-//         const user = await User.findById(req.session.user_id);
-//         const newAddress = {
-//             fullName,
-//             street,
-//             city,
-//             pincode,
-//             state,
-//             country
-//         };
-//         user.addresses.push(newAddress)
-//         await user.save();
-//         console.log(`user is ${user}`);
-//         res.redirect('/user-address')    
-//     } catch (error) {
-//        console.log(error.message) 
-//     }
-// }
+
 exports.postAddAddress = async (req,res) => {
     try {
         const userId = req.session.user_id;
@@ -129,7 +111,7 @@ exports.checkOutAddress = async (req,res) => {
       console.log(`savedAddress = ${savedAddress}`)
         const user = await User.findById(req.session.user_id);
         if(!user) {
-            return res.status(404).send('User not found')
+            return res.status(HttpStatus.NOT_FOUND).send('User not found')
         }
         console.log(`user = ${user}`)
            // If the new address is marked as default, update the previous default address to false
@@ -155,7 +137,7 @@ exports.editAddress = async (req, res) => {
         const address = user.addresses.find(addr => addr._id.toString() === addressId);
         
         if (!address) {
-            return res.status(404).send('Address not found');
+            return res.status(HttpStatus.NOT_FOUND).send('Address not found');
         }
 
         // Render the edit address form, passing the address and user details
@@ -163,7 +145,7 @@ exports.editAddress = async (req, res) => {
         
     } catch (error) {
         console.log(error.message);
-        res.status(500).send('Server Error');
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Server Error');
     }
 };
 
@@ -178,7 +160,7 @@ exports.editAddress = async (req, res) => {
         const address = await Address.findOne({ _id: addressId });
 
         if (!address) {
-            return res.status(404).send('Address not found or does not belong to the user');
+            return res.status(HttpStatus.NOT_FOUND).send('Address not found or does not belong to the user');
         }
 
         // Update the address fields
@@ -206,7 +188,7 @@ exports.editAddress = async (req, res) => {
         res.redirect('/user-address');
     } catch (error) {
         console.log(error.message);
-        res.status(500).send('Server Error');
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Server Error');
     }
 };
 

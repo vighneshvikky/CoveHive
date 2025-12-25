@@ -2,7 +2,8 @@ const Order = require('../../models/orderSchema');
 const Product = require('../../models/admin/productModel')
 const Wallet = require('../../models/walletSchema')
 const Razorpay = require('razorpay');
-const Cart = require('../../models/user/cartSchema')
+const Cart = require('../../models/user/cartSchema');
+const { OrderStatus, PaymentMethod, TransactionType, ProductStatus, HttpStatus } = require('../../enums/app.enums');
 require('dotenv').config();
 exports.placeOrder = async (req, res) => {
     try {
@@ -44,7 +45,7 @@ exports.placeOrder = async (req, res) => {
 
 exports.cancelOrder = async (req, res) => {
     try {
-        console.log('hai')
+        
         const orderId = req.params.id;
 
         const { action, reason, productId } = req.body;
@@ -54,21 +55,22 @@ exports.cancelOrder = async (req, res) => {
             return res.json({ success: false, message: 'Invalid order ID' });
         }
         const order = await Order.findById(orderId);
-        order.orderStatus = 'Cancelled'
+        
+        order.orderStatus = OrderStatus.CANCELLED
 
         if (!order) {
             return res.json({ success: false, message: 'Order not found' });
         }
-        if (action == 'cancel') {
+        if (action == OrderStatus.CANCEL) {
             if (order.paid) {
-                if (order.paymentMethod === 'razorpay' || order.paymentMethod === 'Wallet') {
+                if (order.paymentMethod === PaymentMethod.RAZORPAY || order.paymentMethod === PaymentMethod.WALLET) {
                     const userWallet = await Wallet.findOne({ userID: order.userId });
                     if (userWallet) {
                         userWallet.balance = (userWallet.balance || 0) + order.totalPrice;
                         userWallet.transaction.push({
                             wallet_amount: order.totalPrice,
                             order_id: order.orderId,
-                            transactionType: 'Credited',
+                            transactionType: TransactionType.CREDITED,
                             transaction_date: new Date()
                         });
                         await userWallet.save();
@@ -79,7 +81,7 @@ exports.cancelOrder = async (req, res) => {
                             transaction: [{
                                 wallet_amount: order.totalPrice,
                                 order_id: order.orderId,
-                                transactionType: 'Credited',
+                                transactionType: TransactionType.CREDITED,
                                 transaction_date: new Date()
                             }]
                         });
@@ -93,9 +95,9 @@ exports.cancelOrder = async (req, res) => {
         const item = order.items.find(item => item.productId.toString() === productId);
 
         if (item) {
-            item.productStatus = action === 'return' ? 'Requested' : 'Cancelled';
-            item.reasonForCancellation = action === 'cancel' ? reason : null;
-            item.reasonForReturn = action === 'return' ? reason : null;
+            item.productStatus = action === OrderStatus.RETURN ? ProductStatus.REQUESTED : ProductStatus.CANCELLED;
+            item.reasonForCancellation = action === OrderStatus.CANCEL ? reason : null;
+            item.reasonForReturn = action === OrderStatus.RETURN ? reason : null;
         }
 
         const product = await Product.findById(productId);
@@ -128,18 +130,18 @@ exports.orderDetails = async (req, res) => {
             .populate('address');
 
         if (!order) {
-            return res.status(404).send('Order not found');
+            return res.status(HttpStatus.NOT_FOUND).send('Order not found');
         }
 
 
         if (order.userId._id.toString() !== req.session.user_id) {
-            return res.status(403).send('Unauthorized');
+            return res.status(HttpStatus.FORBIDDEN).send('Unauthorized');
         }
 
         res.render('user/orderDetails', { order });
     } catch (error) {
         console.error('Error fetching order details:', error);
-        res.status(500).send('Server error');
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Server error');
     }
 }
 
@@ -149,14 +151,14 @@ exports.viewOrderDetails = async (req, res) => {
         const order = await Order.findById(orderId).populate('items.productId').exec();
 
         if (!order) {
-            return res.status(404).json({ message: 'Order not found' });
+            return res.status(HttpStatus.NOT_FOUND).json({ message: 'Order not found' });
         }
 
 
         res.json(order);
     } catch (error) {
         console.error(`Error from viewOrderDetails: ${error}`);
-        res.status(500).json({ message: 'Internal Server Error' });
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
     }
 };
 
@@ -175,7 +177,7 @@ exports.retryRazorPay = async (req, res) => {
         console.log(`order = ${order}`)
 
         if (!order) {
-            return res.status(404).send('Order not found');
+            return res.status(HttpStatus.NOT_FOUND).send('Order not found');
         }
 
         const razorpayOrder = await razorpay.orders.create({
@@ -185,16 +187,16 @@ exports.retryRazorPay = async (req, res) => {
         });
 
         if (razorpayOrder) {
-            return res.status(200).json({
+            return res.status(HttpStatus.OK).json({
                 ...order.toObject(),
                 razorpayOrderId: razorpayOrder
             });
         } else {
-            return res.status(500).send('Razorpay order creation failed');
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Razorpay order creation failed');
         }
     } catch (error) {
         console.log(`error from retryRazorPay ${error}`)
-        res.status(500).send('Internal Server Error');
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Internal Server Error');
     }
 }
 
@@ -209,7 +211,7 @@ exports.retryPayment = async (req, res) => {
         };
         const order = await Order.findByIdAndUpdate(orderId, update, { new: true });
         if (!order) {
-            return res.status(404).send('Order not found');
+            return res.status(HttpStatus.NOT_FOUND).send('Order not found');
         }
         for (let product of order.items) {
             await Product.findByIdAndUpdate(product.productId, {
@@ -217,9 +219,9 @@ exports.retryPayment = async (req, res) => {
             });
         }
         await Cart.deleteOne({ userId: req.session.user_id });
-        res.status(200).json(order);
+        res.status(HttpStatus.OK).json(order);
     } catch (error) {
         console.log(`error from retryPayment ${error}`)
-        res.status(500).send('Internal Server Error');
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Internal Server Error');
     }
 }

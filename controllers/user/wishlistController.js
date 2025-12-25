@@ -1,6 +1,7 @@
 const Wishlist = require('../../models/wishlistSchema');
 const Category = require('../../models/admin/categoryModel');
 const Product = require('../../models/admin/productModel');
+const { HttpStatus } = require('../../enums/app.enums');
 
 exports.getWishlist = async(req,res) =>{
     try {
@@ -69,7 +70,7 @@ exports.postWishlist = async(req,res) =>{
           });
     } catch (error) {
        console.log(`error from postWishlist ${error}`);
-       return res.status(500).json({
+       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         status: "error",
         message: "Failed to add product to wishlist",
       });
@@ -88,13 +89,13 @@ exports.removeWishlist= async(req,res) =>{
             (item) => item.productId.toString() !== productId
         )
         await wishlist.save();
-        return res.status(200).json({status:'success',message:'Product removed from wishlist'})
+        return res.status(HttpStatus.OK).json({status:'success',message:'Product removed from wishlist'})
       }else{
-        res.status(404).json({ status: 'error', message: 'Wishlist not found' });
+        res.status(HttpStatus.NOT_FOUND).json({ status: 'error', message: 'Wishlist not found' });
       }
     } catch (error) {
        console.log(`error from removeWishlist ${error}`);
-       res.status(500).json({ status: 'error', message: 'Failed to remove product from wishlist' });
+       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ status: 'error', message: 'Failed to remove product from wishlist' });
         
     }
 }

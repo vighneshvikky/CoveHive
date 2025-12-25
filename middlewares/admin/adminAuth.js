@@ -1,3 +1,5 @@
+const { HttpStatus } = require("../../enums/app.enums");
+
 exports. auth = async (req,res,next) => {
     try {
         if(req.session.admin){
@@ -8,7 +10,7 @@ exports. auth = async (req,res,next) => {
       
     } catch (error) {
         console.log(error.message);
-         res.status(500).send('Internal Server Error');
+         res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Internal Server Error');
     }
 
 }

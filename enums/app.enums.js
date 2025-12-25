@@ -15,7 +15,9 @@ const OrderStatus = {
     SHIPPED: 'Shipped',
     DELIVERED: 'Delivered',
     CANCELLED: 'Cancelled',
-    RETURNED: 'Returned'
+    RETURNED: 'Returned',
+    CANCEL: 'cancel',
+    RETURN: 'return'
 };
 
 
@@ -27,7 +29,7 @@ const ProductStatus = {
     CANCELLED: 'Cancelled',
     RETURNED: 'Returned',
     REJECTED: 'Rejected',
-    RETURN_REQUESTED: 'Return Requested'
+    REQUESTED: 'Requested',
 };
 
 
@@ -43,6 +45,7 @@ const PaymentMethod = {
     COD: 'COD',
     CARD: 'Card',
     UPI: 'UPI',
+    RAZORPAY: 'razorpay',
     WALLET: 'Wallet',
     NET_BANKING: 'Net Banking'
 };
