@@ -2,40 +2,56 @@
 <div class="flex ml-64">
   <%- include('../layouts/sidebar.ejs') %>
   <div class="flex min-h-screen">
-    <main class="flex-1 bg-gray-50 dark:bg-gray-900">
+    <main class="flex-1 bg-gradient-to-br from-gray-50 to-gray-100">
       <div class="container mx-auto px-6 py-8">
         <!-- Page Header -->
         <div class="mb-8">
-          <h1 class="text-3xl font-bold text-gray-800 dark:text-white">
+          <h1 class="text-4xl font-bold text-gray-800 mb-2">
             Offer Management
           </h1>
-          <p class="mt-2 text-gray-600 dark:text-gray-400">
+          <p class="text-lg text-gray-600">
             Create and manage discount offers for different categories
           </p>
         </div>
 
         <!-- Add Offer Form -->
-        <div class="mb-8 bg-white dark:bg-gray-800 rounded-xl shadow-md">
-          <div class="p-6">
-            <h2
-              class="text-xl font-semibold text-gray-800 dark:text-white mb-6"
-            >
-              Add New Offer
-            </h2>
+        <div class="mb-8 bg-white rounded-2xl shadow-lg border border-gray-200">
+          <div class="p-8">
+            <div class="flex items-center mb-6">
+              <div
+                class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mr-3"
+              >
+                <svg
+                  class="w-6 h-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                  />
+                </svg>
+              </div>
+              <h2 class="text-2xl font-bold text-gray-800">Add New Offer</h2>
+            </div>
+
             <form id="offerForm" class="space-y-6">
               <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Offer Category -->
                 <div>
                   <label
                     for="offerCategory"
-                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    class="block text-sm font-semibold text-gray-700 mb-2"
                   >
                     Offer Category
                   </label>
                   <select
                     id="offerCategory"
                     name="offerCategory"
-                    class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                    class="w-full rounded-xl border-2 border-gray-200 bg-white text-gray-700 px-4 py-3 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all duration-200 hover:border-gray-300"
                   >
                     <option value="">Select Category</option>
                     <% categories.forEach(category => { %>
@@ -54,7 +70,7 @@
                 <div>
                   <label
                     for="offerName"
-                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    class="block text-sm font-semibold text-gray-700 mb-2"
                   >
                     Offer Name
                   </label>
@@ -62,7 +78,7 @@
                     type="text"
                     id="offerName"
                     name="offerName"
-                    class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                    class="w-full rounded-xl border-2 border-gray-200 bg-white text-gray-700 px-4 py-3 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all duration-200 hover:border-gray-300"
                     placeholder="Enter offer name"
                   />
                   <p
@@ -75,7 +91,7 @@
                 <div>
                   <label
                     for="offerPercentage"
-                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    class="block text-sm font-semibold text-gray-700 mb-2"
                   >
                     Discount Percentage
                   </label>
@@ -84,13 +100,13 @@
                       type="number"
                       id="offerPercentage"
                       name="offerPercentage"
-                      class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                      class="w-full rounded-xl border-2 border-gray-200 bg-white text-gray-700 px-4 py-3 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all duration-200 hover:border-gray-300"
                       placeholder="Enter percentage"
                     />
                     <div
                       class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none"
                     >
-                      <span class="text-gray-500 dark:text-gray-400">%</span>
+                      <span class="text-gray-500 font-semibold">%</span>
                     </div>
                   </div>
                   <p
@@ -101,10 +117,10 @@
               </div>
 
               <!-- Submit Button -->
-              <div class="flex justify-end">
+              <div class="flex justify-end pt-4">
                 <button
                   type="submit"
-                  class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 text-white font-medium rounded-lg text-sm transition duration-200 flex items-center"
+                  class="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:ring-blue-300 text-white font-semibold rounded-xl text-sm transition-all duration-200 flex items-center shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                 >
                   <svg
                     class="w-5 h-5 mr-2"
@@ -127,71 +143,85 @@
         </div>
 
         <!-- Offer Listing -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md">
-          <div class="p-6">
-            <h2
-              class="text-xl font-semibold text-gray-800 dark:text-white mb-6"
-            >
-              Active Offers
-            </h2>
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200">
+          <div class="p-8">
+            <div class="flex items-center mb-6">
+              <div
+                class="w-10 h-10 bg-gradient-to-br from-gray-600 to-gray-700 rounded-lg flex items-center justify-center mr-3"
+              >
+                <svg
+                  class="w-6 h-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                  />
+                </svg>
+              </div>
+              <h2 class="text-2xl font-bold text-gray-800">Active Offers</h2>
+            </div>
+
             <div class="overflow-x-auto">
               <table class="w-full">
                 <thead>
                   <tr
-                    class="bg-gray-50 dark:bg-gray-700 border-b dark:border-gray-600"
+                    class="bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200"
                   >
                     <th
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                      class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider"
                     >
                       Category
                     </th>
                     <th
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                      class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider"
                     >
                       Offer Name
                     </th>
                     <th
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                      class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider"
                     >
                       Discount
                     </th>
                     <th
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                      class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider"
                     >
                       Status
                     </th>
                     <th
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                      class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider"
                     >
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200 dark:divide-gray-600">
+                <tbody class="divide-y divide-gray-200">
                   <% if(offers.length > 0) { %> <% offers.forEach(offer => { %>
-                  <tr
-                    class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
-                  >
-                    <td
-                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300"
-                    >
-                      <%= offer.offerCategory.name %>
+                  <tr class="hover:bg-gray-50 transition-all duration-200">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="text-sm font-medium text-gray-700">
+                        <%= offer.offerCategory.name %>
+                      </span>
                     </td>
-                    <td
-                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300"
-                    >
-                      <%= offer.offerName %>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="text-sm font-medium text-gray-700">
+                        <%= offer.offerName %>
+                      </span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                       <span
-                        class="px-3 py-1 text-sm font-medium bg-blue-100 text-blue-800 rounded-full"
+                        class="px-4 py-2 text-sm font-bold bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 rounded-full shadow-sm"
                       >
                         <%= offer.discountPercentage %>%
                       </span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                       <span
-                        class="px-3 py-1 text-sm font-medium <%= offer.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %> rounded-full"
+                        class="px-4 py-2 text-sm font-bold <%= offer.isActive ? 'bg-gradient-to-r from-green-100 to-green-200 text-green-800' : 'bg-gradient-to-r from-red-100 to-red-200 text-red-800' %> rounded-full shadow-sm"
                       >
                         <%= offer.isActive ? 'Active' : 'Inactive' %>
                       </span>
@@ -199,7 +229,7 @@
                     <td class="px-6 py-4 whitespace-nowrap">
                       <button
                         onclick="toggleDelete('<%= offer._id %>')"
-                        class="px-4 py-2 text-sm font-medium rounded-lg <%= offer.isActive ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-green-600 hover:bg-green-700 text-white' %> transition-colors duration-200"
+                        class="px-5 py-2.5 text-sm font-semibold rounded-xl <%= offer.isActive ? 'bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white' : 'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white' %> transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                       >
                         <%= offer.isActive ? 'Deactivate' : 'Activate' %>
                       </button>
@@ -207,11 +237,28 @@
                   </tr>
                   <% }) %> <% } else { %>
                   <tr>
-                    <td
-                      colspan="5"
-                      class="px-6 py-8 text-center text-gray-500 dark:text-gray-400"
-                    >
-                      No offers available
+                    <td colspan="5" class="px-6 py-12 text-center">
+                      <div class="flex flex-col items-center justify-center">
+                        <svg
+                          class="w-16 h-16 text-gray-300 mb-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+                          />
+                        </svg>
+                        <p class="text-lg font-medium text-gray-500">
+                          No offers available
+                        </p>
+                        <p class="text-sm text-gray-400 mt-1">
+                          Create your first offer to get started
+                        </p>
+                      </div>
                     </td>
                   </tr>
                   <% } %>
@@ -224,7 +271,6 @@
     </main>
   </div>
 </div>
-
 <script>
   function toggleDelete(offerId) {
     Swal.fire({

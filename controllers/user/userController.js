@@ -38,8 +38,8 @@ let transporter = nodemailer.createTransport({
     secure: true,
     service: 'Gmail',
     auth: {
-        user:process.env.MY_EMAIL,
-       pass:process.env.MY_PASSWORD
+        user: process.env.MY_EMAIL,
+        pass: process.env.MY_PASSWORD
     }
 });
 //------------------------------------Send OTP -------------------------------------------------------
@@ -49,13 +49,13 @@ exports.insertUser = async (req, res) => {
         email = req.body.email;
         otp = Math.floor(Math.random() * 100000);
         otpExpirationTime = Date.now() + (1 * 60 * 1000); // OTP valid for 1 minute
-         console.log(otp)
+        console.log(otp)
         // Store form data in session temporarily
         req.session.tempUserData = {
             fullName: req.body.fullname,
             email: req.body.email,
             phone: req.body.phone,
-            password: req.body.password, 
+            password: req.body.password,
         };
 
         // Email options
@@ -65,6 +65,12 @@ exports.insertUser = async (req, res) => {
             html: "<h3>OTP for account verification is:</h3>" +
                 "<h1 style='font-weight:bold;'>" + otp + "</h1>"
         };
+
+        transporter.verify((error, success) => {
+            if (error) console.log(error);
+            else console.log("SMTP Ready");
+        });
+
 
         // Send OTP email
         transporter.sendMail(mailOptions, (err) => {
@@ -101,7 +107,7 @@ exports.verifyOtp = async (req, res) => {
                     phone: tempUserData.phone,
                     password: spassword,
                 });
-               
+
                 const userData = await user.save(); // Save user to the database
                 req.session.user_id = userData._id; // Set session user ID after registration
                 req.session.user = userData;
@@ -122,10 +128,10 @@ exports.verifyOtp = async (req, res) => {
 
 exports.loginLoad = async (req, res) => {
     try {
-        res.render('user/userLogin'); 
+        res.render('user/userLogin');
     } catch (error) {
         console.log(error.message);
-        
+
     }
 };
 
@@ -139,26 +145,26 @@ exports.verifyLogin = async (req, res) => {
         const password = req.body.password;
 
         const userData = await User.findOne({ email });
-         if (userData) {
+        if (userData) {
             const isPasswordMatch = await bcrypt.compare(password, userData.password);
-            if(userData.is_blocked){
-                
-                    res.render('user/userLogin',{msg:"Your account has been blocked"})
-                 }
-         else if(isPasswordMatch) {
+            if (userData.is_blocked) {
+
+                res.render('user/userLogin', { msg: "Your account has been blocked" })
+            }
+            else if (isPasswordMatch) {
                 req.session.user = userData;
                 req.session.user_id = userData._id;
                 req.session.fullName = userData.fullName;
                 req.session.isBlocked = userData.is_blocked
-                
-                
+
+
                 res.redirect("/home");
             } else {
                 res.render('user/userLogin', { message: 'Password or email is incorrect' });
             }
-                 
+
         }
-         else {
+        else {
             res.render('user/userLogin', { message: 'Password or email is incorrect' });
         }
     } catch (error) {
@@ -172,20 +178,20 @@ exports.loadHome = async (req, res) => {
         const limit = 10; // Number of items per page
         const page = parseInt(req.query.page) || 1; // Current page number
         const skip = (page - 1) * limit; // Number of documents to skip
-        let products = await Product.find({isBlocked:false})
-        .populate('category') 
-        .sort({ createdAt: -1 }) // Sort by createdAt in descending order
-        .skip(skip) // Skip the previous pages
-        .limit(8);
-        
-       products =  products.filter(item => !item.category.isBlocked)// Limit to 'limit' items
+        let products = await Product.find({ isBlocked: false })
+            .populate('category')
+            .sort({ createdAt: -1 }) // Sort by createdAt in descending order
+            .skip(skip) // Skip the previous pages
+            .limit(8);
+
+        products = products.filter(item => !item.category.isBlocked)// Limit to 'limit' items
         const totalProduct = await Product.countDocuments({ isBlocked: false }); // Get total count of products
-        const categories = await Category.find({isBlocked:false}); 
+        const categories = await Category.find({ isBlocked: false });
         // console.log(req.session)
         // const userName =   req.session.fullName;
         // console.log(userName)
         const user = await User.findById(req.session.user_id)
-        res.render("user/userHome",{
+        res.render("user/userHome", {
             products,
             categories,
             currentPage: page,
@@ -204,7 +210,7 @@ exports.resendOtp = async (req, res) => {
     try {
         otp = Math.floor(Math.random() * 100000); // Generate new OTP
         otpExpirationTime = Date.now() + (1 * 60 * 1000); // Reset OTP expiration
-         console.log(`resend OTP :${otp}`)
+        console.log(`resend OTP :${otp}`)
         let mailOptions = {
             to: email,
             subject: "OTP for registration",
@@ -245,7 +251,7 @@ exports.loadCategory = async (req, res) => {
         const products = await Product.find({ isBlocked: false, category: categoryId })
             .skip(skip)  // Skip the first 'skip' number of products
             .limit(limit);  // Limit the result to 'limit' number of products
-    
+
         // Calculate the total number of pages
         const totalPages = Math.ceil(totalProducts / limit);
         // Render the view with category, products, and pagination details
@@ -268,158 +274,158 @@ exports.loadCategory = async (req, res) => {
 
 exports.googleAuthCallback = async (req, res) => {
     try {
-      const user = await User.findOne({ email: req.user.email });
-  
-      if (user.is_blocked) {
-        return res.render('user/userSignup', { message: 'Your Account has Been blocked' });
-      }
-  
-      // Set session data
-      req.session.user=user;
-      req.session.user_id = user._id;
-      console.log(`user_id = ${req.session.user_id}`)
-      req.session.fullName = user.fullName;
-  
-      // Pass session data to the view
-      
-      console.log(req.session.fullName+"hai");
-  
-      // Render home page with the userName
-       res.redirect('/home');
-      
-    } catch (error) {
-      console.error(error.message);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Internal Server Error');
-    }
-  };
+        const user = await User.findOne({ email: req.user.email });
 
-  exports.loadProductDetails = async (req,res) => {
+        if (user.is_blocked) {
+            return res.render('user/userSignup', { message: 'Your Account has Been blocked' });
+        }
+
+        // Set session data
+        req.session.user = user;
+        req.session.user_id = user._id;
+        console.log(`user_id = ${req.session.user_id}`)
+        req.session.fullName = user.fullName;
+
+        // Pass session data to the view
+
+        console.log(req.session.fullName + "hai");
+
+        // Render home page with the userName
+        res.redirect('/home');
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Internal Server Error');
+    }
+};
+
+exports.loadProductDetails = async (req, res) => {
     const productId = req.params.id; // Get the product ID from the URL parameters
     try {
         const product = await Product.findById(productId);
-        if(!product){
+        if (!product) {
             res.render('user/500')
         }
-        
-        
+
+
         // Fetch the product by ID directly
         const relatedProducts = await Product.find({
-          isBlocked:false,
-          category:product.category,
-          _id:{$ne:product._id}
+            isBlocked: false,
+            category: product.category,
+            _id: { $ne: product._id }
         }).limit(4)
-        if (!product) { 
+        if (!product) {
             return res.status(HttpStatus.NOT_FOUND).send('Product not found'); // Handle case where product doesn't exist
         }
         const user = await User.findById(req.session.user_id)
         res.render('user/productDetails', {
-           product,
-           relatedProducts,
-           currentRoute:'/home',
-           user 
-          }); // Render the product details EJS template
+            product,
+            relatedProducts,
+            currentRoute: '/home',
+            user
+        }); // Render the product details EJS template
     } catch (error) {
         res.render('user/500')
     }
-  }
+}
 
 
-  //-----------------------------------------------user Logout---------------------------
+//-----------------------------------------------user Logout---------------------------
 
 
-  exports.userLogout = async (req,res) => {
+exports.userLogout = async (req, res) => {
     try {
-       req.session.destroy((err) => {
-        if(err){
-            console.log(err.message)
-        }
-        res.redirect('/login')
-       })
+        req.session.destroy((err) => {
+            if (err) {
+                console.log(err.message)
+            }
+            res.redirect('/login')
+        })
     } catch (error) {
         console.log(error.message)
     }
-  }
+}
 
-  exports.allProducts = async (req, res) => {
+exports.allProducts = async (req, res) => {
     try {
-    
+
         const categoryFilter = req.query.category || "all";
         const sortOption = req.query.sort || "latest";
         const searchQuery = req.query.q || "";
-    
+
         // Pagination settings
-        const limit = 8 ;
+        const limit = 8;
         const page = parseInt(req.query.page) || 1; // default to page 1
         const skip = (page - 1) * limit;
-        let filterOption={isBlocked:false};
+        let filterOption = { isBlocked: false };
         const totalProducts = await Product.countDocuments(filterOption);
         if (categoryFilter !== "all") {
-          const category = await Category.findOne({ name: categoryFilter });
-          if (!category) {
-            return res.status(400).send("category not found");
-          }
-          filterOption.category = category._id;
+            const category = await Category.findOne({ name: categoryFilter });
+            if (!category) {
+                return res.status(400).send("category not found");
+            }
+            filterOption.category = category._id;
         }
-    
+
         if (searchQuery) {
-          filterOption.name = { $regex: searchQuery, $options: 'i' };
+            filterOption.name = { $regex: searchQuery, $options: 'i' };
         }
-      
-         
+
+
         // Fetch all products based on the filter
         let products = await Product
-        .find(filterOption)
-        .populate("category")
-        .skip(skip)
-        .limit(limit)
-        .lean();
+            .find(filterOption)
+            .populate("category")
+            .skip(skip)
+            .limit(limit)
+            .lean();
 
-         products = products.filter(item => !item.category.isBlocked)
+        products = products.filter(item => !item.category.isBlocked)
         switch (sortOption) {
-          case 'discount':
-            products.sort((a, b) => {
-              const priceA = a.discountedPrice !== undefined ? a.discountedPrice : a.price; 
-              const priceB = b.discountedPrice !== undefined ? b.discountedPrice : b.price; 
-              return priceA - priceB; // Sort by discounted price (low to high)
-            });
-            break;
-          case 'discount-desc':
-            products.sort((a, b) => {
-              const priceA = a.discountedPrice !== undefined ? a.discountedPrice : a.price; 
-              const priceB = b.discountedPrice !== undefined ? b.discountedPrice : b.price; 
-              return priceB - priceA; // Sort by discounted price (high to low)
-            });
-            break;
-          case 'a-z':
-            products.sort((a, b) => a.name.localeCompare(b.name)); 
-            break;
-          case 'z-a':
-            products.sort((a, b) => b.name.localeCompare(a.name)); 
-            break;
-          default:
-            products.sort((a, b) => b.createdAt - a.createdAt); 
-            break;
+            case 'discount':
+                products.sort((a, b) => {
+                    const priceA = a.discountedPrice !== undefined ? a.discountedPrice : a.price;
+                    const priceB = b.discountedPrice !== undefined ? b.discountedPrice : b.price;
+                    return priceA - priceB; // Sort by discounted price (low to high)
+                });
+                break;
+            case 'discount-desc':
+                products.sort((a, b) => {
+                    const priceA = a.discountedPrice !== undefined ? a.discountedPrice : a.price;
+                    const priceB = b.discountedPrice !== undefined ? b.discountedPrice : b.price;
+                    return priceB - priceA; // Sort by discounted price (high to low)
+                });
+                break;
+            case 'a-z':
+                products.sort((a, b) => a.name.localeCompare(b.name));
+                break;
+            case 'z-a':
+                products.sort((a, b) => b.name.localeCompare(a.name));
+                break;
+            default:
+                products.sort((a, b) => b.createdAt - a.createdAt);
+                break;
         }
 
-      
+
         const totalPages = Math.ceil(totalProducts / limit);
-       
-    
+
+
         const categories = await Category.find({ isBlocked: false });
-    
+
         res.render('user/allProducts', {
-          categories,
-          categoryFilter,
-          currentPage: page,
-          sortOption,
-          searchQuery,
-          products,
-          totalPages:totalPages
+            categories,
+            categoryFilter,
+            currentPage: page,
+            sortOption,
+            searchQuery,
+            products,
+            totalPages: totalPages
         });
-    
-      } catch (error) {
+
+    } catch (error) {
         console.log("Error in all products page", error);
         res.status(HttpStatus.BAD_REQUEST).json({})
-        
-      }
+
     }
+}

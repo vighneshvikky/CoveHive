@@ -15,7 +15,7 @@ exports.listOrders = async (req, res) => {
             .populate('userId')
             .populate('items.productId')
 
-        res.rendxer('admin/order', {
+        res.render('admin/order', {
             orders,
             currentPage: page,
             totalPages: Math.ceil(totalOrders / limit)
